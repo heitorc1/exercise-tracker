@@ -7,6 +7,10 @@ import { UsernameTakenException } from 'src/exception/username-taken.exception';
 export class UserService {
   constructor(private readonly repository: UserRepository) {}
 
+  async list() {
+    return this.repository.list();
+  }
+
   async create(data: CreateUserDTO) {
     const usernameTaken = await this.repository.hasUsername(data.username);
     if (usernameTaken) {

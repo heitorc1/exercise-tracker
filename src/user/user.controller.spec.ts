@@ -23,6 +23,24 @@ describe('UserController', () => {
     expect(controller).toBeDefined();
   });
 
+  it('should list users', async () => {
+    const users = [
+      {
+        _id: '71f56db9-ad8a-4978-8995-e3a1584aa3ae',
+        username: 'heitorc1',
+      },
+      {
+        _id: 'a4ddb39d-90f2-41b0-b3da-35118f4bf969',
+        username: 'user',
+      },
+    ];
+    jest.spyOn(service, 'list').mockResolvedValue(users);
+
+    const response = await service.list();
+
+    expect(response).toStrictEqual(users);
+  });
+
   it('should create a new user', async () => {
     const data = {
       username: 'heitorc1',
