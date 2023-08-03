@@ -75,4 +75,10 @@ describe('UserController', () => {
       UsernameTakenException,
     );
   });
+
+  it('should not create a user without a username', async () => {
+    const response = await controller.create({ username: '' });
+
+    expect(response).toContain('Validation failed');
+  });
 });

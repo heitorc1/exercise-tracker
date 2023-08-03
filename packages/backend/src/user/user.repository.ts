@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common/decorators';
 import { PrismaService } from 'src/prisma.service';
 import { CreateUserDTO } from './dto/create-user.dto';
+import { CreateExerciseDTO } from './dto/create-exercise.dto';
 
 @Injectable()
 export class UserRepository {
@@ -30,5 +31,20 @@ export class UserRepository {
     });
 
     return !!user;
+  }
+
+  createExercise(id: string, body: CreateExerciseDTO) {
+    return this.prisma.exercise.create({
+      data: {
+        description: body.description,
+        duration: body.duration,
+        date: body.date,
+        user: {
+          connect: {
+            id,
+          },
+        },
+      },
+    });
   }
 }

@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { UserRepository } from './user.repository';
 import { CreateUserDTO } from './dto/create-user.dto';
 import { UsernameTakenException } from 'src/exception/username-taken.exception';
+import { CreateExerciseDTO } from './dto/create-exercise.dto';
 
 @Injectable()
 export class UserService {
@@ -22,5 +23,9 @@ export class UserService {
       _id: user.id,
       username: user.username,
     };
+  }
+
+  async createExercise(id: string, body: CreateExerciseDTO) {
+    return this.repository.createExercise(id, body);
   }
 }
