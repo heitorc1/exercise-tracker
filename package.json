@@ -4,7 +4,9 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "database": "cd packages/backend && docker compose up -d",
+    "database:down": "cd packages/backend && docker compose down"
   },
   "keywords": [],
   "author": "",

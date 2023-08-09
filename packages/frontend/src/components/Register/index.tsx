@@ -3,10 +3,12 @@ import { Link } from "react-router-dom";
 
 type FieldType = {
   username?: string;
+  email?: string;
   password?: string;
+  confirmPassword?: string;
 };
 
-const Login = () => {
+const Register = () => {
   const onSubmit = (values: any) => {
     console.log(values);
   };
@@ -22,9 +24,25 @@ const Login = () => {
       </Form.Item>
 
       <Form.Item<FieldType>
+        label="Email"
+        name="email"
+        rules={[{ required: true, message: "Please type your email!" }]}
+      >
+        <Input />
+      </Form.Item>
+
+      <Form.Item<FieldType>
         label="Password"
         name="password"
         rules={[{ required: true, message: "Please type your password!" }]}
+      >
+        <Input.Password />
+      </Form.Item>
+
+      <Form.Item<FieldType>
+        label="Confirm your password"
+        name="confirmPassword"
+        rules={[{ required: true, message: "Please confirm your password!" }]}
       >
         <Input.Password />
       </Form.Item>
@@ -34,8 +52,8 @@ const Login = () => {
           align="center"
           style={{ display: "flex", justifyContent: "center" }}
         >
-          <Link to="register">
-            <Button type="text">Register</Button>
+          <Link to="/">
+            <Button type="text">Cancel</Button>
           </Link>
           <Button type="primary" htmlType="submit">
             Submit
@@ -46,4 +64,4 @@ const Login = () => {
   );
 };
 
-export default Login;
+export default Register;
