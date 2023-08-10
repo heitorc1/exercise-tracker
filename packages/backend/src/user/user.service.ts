@@ -18,11 +18,7 @@ export class UserService {
       throw new UsernameTakenException();
     }
 
-    const user = await this.repository.create(data);
-    return {
-      _id: user.id,
-      username: user.username,
-    };
+    return this.repository.create(data);
   }
 
   async createExercise(id: string, body: CreateExerciseDTO) {

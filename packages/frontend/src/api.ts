@@ -6,6 +6,10 @@ export const api = axios.create({
   timeout: 30000,
 });
 
-export const get = (url: string, config: AxiosRequestConfig = {}) => {
-  return api.get(url, config);
+export const get = (url: string, params?: any) => {
+  return api.get(url, params);
+};
+
+export const post = (url: string, body?: any) => {
+  return api.post(url, body);
 };

@@ -17,9 +17,13 @@ export class UserController {
   }
 
   @Post()
-  @UsePipes(new JoiValidationPipe(createUserSchema))
-  create(@Body() createUserDto: CreateUserDTO) {
-    return this.userService.create(createUserDto);
+  async create(@Body() createUserDto: any) {
+    try {
+      const data = await createUserSchema.validateAsync(createUserDto.params);
+      return this.userService.create(data);
+    } catch (err) {
+      throw err;
+    }
   }
 
   @Post(':id/exercises')
