@@ -1,14 +1,16 @@
-import { Injectable } from '@nestjs/common/decorators';
-import { PrismaService } from 'src/prisma.service';
-import { CreateUserDTO } from './dto/create-user.dto';
-import { CreateExerciseDTO } from './dto/create-exercise.dto';
-import { hashPassword } from 'helpers/passwordHandler';
+import { PrismaClient } from '@prisma/client';
+import { hashPassword } from '../../../../helpers/passwordHandler';
+import { CreateUserDTO } from '../dto/create-user.dto';
+import { CreateExerciseDTO } from '../dto/create-exercise.dto';
 
-@Injectable()
 export class UserRepository {
-  constructor(private readonly prisma: PrismaService) {}
+  private prisma: PrismaClient;
 
-  async list() {
+  constructor() {
+    this.prisma = new PrismaClient();
+  }
+
+  public async list() {
     return this.prisma.user
       .findMany()
       .then((users) =>
@@ -16,7 +18,7 @@ export class UserRepository {
       );
   }
 
-  async create(data: CreateUserDTO) {
+  public async create(data: CreateUserDTO) {
     const modifiedPassword = await hashPassword(data.password);
     return this.prisma.user.create({
       data: {
@@ -27,7 +29,7 @@ export class UserRepository {
     });
   }
 
-  async hasUsername(username: string) {
+  public async hasUsername(username: string) {
     const user = await this.prisma.user.findUnique({
       where: {
         username,
@@ -52,3 +54,5 @@ export class UserRepository {
     });
   }
 }
+
+export const userRepository = new UserRepository();
