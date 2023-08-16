@@ -1,7 +1,6 @@
 import { PrismaClient } from '@prisma/client';
-import { hashPassword } from '../../../../helpers/passwordHandler';
-import { CreateUserDTO } from '../dto/create-user.dto';
-import { CreateExerciseDTO } from '../dto/create-exercise.dto';
+import { ICreateExercise, ICreateUser } from './interfaces';
+import { hashPassword } from '../../../helpers/passwordHandler';
 
 export class UserRepository {
   private prisma: PrismaClient;
@@ -18,7 +17,7 @@ export class UserRepository {
       );
   }
 
-  public async create(data: CreateUserDTO) {
+  public async create(data: ICreateUser) {
     const modifiedPassword = await hashPassword(data.password);
     return this.prisma.user.create({
       data: {
@@ -39,7 +38,7 @@ export class UserRepository {
     return !!user;
   }
 
-  createExercise(id: string, body: CreateExerciseDTO) {
+  createExercise(id: string, body: ICreateExercise) {
     return this.prisma.exercise.create({
       data: {
         description: body.description,

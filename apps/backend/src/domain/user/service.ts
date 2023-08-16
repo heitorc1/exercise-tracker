@@ -1,14 +1,13 @@
-import { UsernameTakenError } from '../../../infra/exception/UsernameTakenError';
-import { CreateExerciseDTO } from '../dto/create-exercise.dto';
-import { CreateUserDTO } from '../dto/create-user.dto';
-import { userRepository } from '../repository/user.repository';
+import { UsernameTakenError } from '../../infra/exception/UsernameTakenError';
+import { ICreateExercise, ICreateUser } from './interfaces';
+import { userRepository } from './repository';
 
 export class UserService {
   public async list() {
     return userRepository.list();
   }
 
-  public async create(data: CreateUserDTO) {
+  public async create(data: ICreateUser) {
     const usernameTaken = await userRepository.hasUsername(data.username);
     if (usernameTaken) {
       throw new UsernameTakenError('Username already in use');
@@ -17,7 +16,7 @@ export class UserService {
     return userRepository.create(data);
   }
 
-  public async createExercise(id: string, body: CreateExerciseDTO) {
+  public async createExercise(id: string, body: ICreateExercise) {
     return userRepository.createExercise(id, body);
   }
 }
