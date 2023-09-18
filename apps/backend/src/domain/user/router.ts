@@ -1,8 +1,10 @@
 import { Router } from 'express';
-import { userController } from './controller';
+import makeUserController from '../factories/controller/UserControllerFactory';
 
 export const router = Router();
 
-router.get('/', userController.list);
-router.post('/', userController.create);
-router.post('/:id/exercises', userController.createExercise);
+const controller = makeUserController();
+
+router.get('/', controller.list);
+router.post('/', controller.create);
+router.post('/:id/exercises', controller.createExercise);

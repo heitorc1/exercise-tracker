@@ -1,7 +1,7 @@
 import { BaseError } from './BaseError';
 
 export class UsernameTakenError extends BaseError {
-  constructor(message: string) {
-    super(message, 422);
+  constructor() {
+    super('Username already in use', 422);
   }
 }

@@ -1,35 +1,36 @@
-import { PrismaClient } from '@prisma/client';
-import { ICreateExercise, ICreateUser } from './interfaces';
+import { ICreateExercise, ICreateUser, IUserRepository } from './interfaces';
 import { hashPassword } from '../../../helpers/passwordHandler';
+import prisma from '../../infra/prisma';
 
-export class UserRepository {
-  private prisma: PrismaClient;
-
-  constructor() {
-    this.prisma = new PrismaClient();
-  }
-
+export class UserRepository implements IUserRepository {
   public async list() {
-    return this.prisma.user
-      .findMany()
-      .then((users) =>
-        users.map((user) => ({ _id: user.id, username: user.username })),
-      );
+    return prisma.user.findMany({
+      select: {
+        id: true,
+        username: true,
+        email: true,
+      },
+    });
   }
 
   public async create(data: ICreateUser) {
     const modifiedPassword = await hashPassword(data.password);
-    return this.prisma.user.create({
+    return prisma.user.create({
       data: {
         username: data.username,
         email: data.username,
         password: modifiedPassword,
       },
+      select: {
+        id: true,
+        username: true,
+        email: true,
+      },
     });
   }
 
   public async hasUsername(username: string) {
-    const user = await this.prisma.user.findUnique({
+    const user = await prisma.user.findUnique({
       where: {
         username,
       },
@@ -38,8 +39,8 @@ export class UserRepository {
     return !!user;
   }
 
-  createExercise(id: string, body: ICreateExercise) {
-    return this.prisma.exercise.create({
+  public async createExercise(id: string, body: ICreateExercise) {
+    return prisma.exercise.create({
       data: {
         description: body.description,
         duration: body.duration,
@@ -53,5 +54,3 @@ export class UserRepository {
     });
   }
 }
-
-export const userRepository = new UserRepository();

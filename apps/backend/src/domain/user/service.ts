@@ -1,24 +1,40 @@
 import { UsernameTakenError } from '../../infra/exception/UsernameTakenError';
-import { ICreateExercise, ICreateUser } from './interfaces';
-import { userRepository } from './repository';
+import {
+  ICreateExercise,
+  ICreateUser,
+  IUserRepository,
+  IUserService,
+} from './interfaces';
 
-export class UserService {
-  public async list() {
-    return userRepository.list();
-  }
+export class UserService implements IUserService {
+  constructor(private readonly userRepository: IUserRepository) {}
 
-  public async create(data: ICreateUser) {
-    const usernameTaken = await userRepository.hasUsername(data.username);
+  public list = async () => {
+    const response = await this.userRepository.list();
+
+    return {
+      data: response,
+    };
+  };
+
+  public create = async (data: ICreateUser) => {
+    const usernameTaken = await this.userRepository.hasUsername(data.username);
     if (usernameTaken) {
-      throw new UsernameTakenError('Username already in use');
+      throw new UsernameTakenError();
     }
 
-    return userRepository.create(data);
-  }
+    const response = await this.userRepository.create(data);
 
-  public async createExercise(id: string, body: ICreateExercise) {
-    return userRepository.createExercise(id, body);
-  }
+    return {
+      data: response,
+    };
+  };
+
+  public createExercise = async (id: string, body: ICreateExercise) => {
+    const response = await this.userRepository.createExercise(id, body);
+
+    return {
+      data: response,
+    };
+  };
 }
-
-export const userService = new UserService();

@@ -1,43 +1,57 @@
 import { NextFunction, Request, Response } from 'express';
-import * as Joi from 'joi';
-import { userService } from './service';
+import { z } from 'zod';
+import { IUserController, IUserService } from './interfaces';
 
-class UserController {
-  public async list(req: Request, res: Response, next: NextFunction) {
-    return userService.list();
-  }
+export class UserController implements IUserController {
+  constructor(private readonly userService: IUserService) {}
 
-  public async create(req: Request, res: Response, next: NextFunction) {
+  public list = async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const schema = Joi.object({
-        username: Joi.string().min(3).max(255).alphanum().required(),
-        email: Joi.string().email().required(),
-        password: Joi.string().alphanum().min(8).max(255).required(),
+      const response = await this.userService.list();
+      return res.json(response);
+    } catch (error) {
+      next(error);
+    }
+  };
+
+  public create = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      const schema = z.object({
+        username: z.string().min(3).max(255),
+        email: z.string().email(),
+        password: z.string().min(8).max(255),
       });
 
-      const data = await schema.validateAsync(req.body);
+      const data = schema.parse(req.body);
+      const response = await this.userService.create(data);
 
-      return userService.create(data);
+      return res.status(201).json(response);
     } catch (err) {
       next(err);
     }
-  }
+  };
 
-  public async createExercise(req: Request, res: Response, next: NextFunction) {
+  public createExercise = async (
+    req: Request,
+    res: Response,
+    next: NextFunction,
+  ) => {
     try {
-      const schema = Joi.object({
-        description: Joi.string().min(3).max(255).required(),
-        duration: Joi.number().min(1).required(),
-        date: Joi.date().iso(),
+      const schema = z.object({
+        description: z.string().min(3).max(255),
+        duration: z.number().min(1),
+        date: z.date(),
       });
 
-      const data = await schema.validateAsync(req.body);
+      const data = await schema.parse(req.body);
 
-      return userService.createExercise(req.params.id, data);
+      const response = await this.userService.createExercise(
+        req.params.id,
+        data,
+      );
+      return res.status(201).json(response);
     } catch (err) {
       next(err);
     }
-  }
+  };
 }
-
-export const userController = new UserController();

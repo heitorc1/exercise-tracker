@@ -1,4 +1,5 @@
 import { NextFunction, Request, Response } from 'express';
+import { ZodError } from 'zod';
 
 export const errorHandler = (
   error: any,
@@ -7,10 +8,9 @@ export const errorHandler = (
   next: NextFunction,
 ) => {
   const statusCode = error?.statusCode || 500;
-  console.log(error);
-  if (error?.isJoi) {
-    const errors: Array<unknown> = error.details.map((e: any) => ({
-      field: e.context.key,
+  if (error instanceof ZodError) {
+    const errors: Array<unknown> = error.errors.map((e) => ({
+      field: e.path,
       message: e.message,
     }));
     return response.status(400).json({ errors });

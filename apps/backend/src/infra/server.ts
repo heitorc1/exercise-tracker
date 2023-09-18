@@ -2,9 +2,11 @@ import * as express from 'express';
 import * as cors from 'cors';
 import helmet from 'helmet';
 import * as morgan from 'morgan';
+import 'dotenv/config';
 
 import { router } from './router';
 import { errorHandler } from './middlewares/errorHandler';
+import { PrismaClient } from '@prisma/client';
 
 const app = express();
 

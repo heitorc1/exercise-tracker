@@ -8,7 +8,6 @@
   "scripts": {
     "build": "nest build",
     "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
-    "predev": "docker compose up -d",
     "dev": "tsnd --respawn src/infra/server.ts",
     "lint": "eslint \"{src,apps,libs,test}/**/*.ts\" --fix",
     "test": "jest",
@@ -19,19 +18,24 @@
     "@prisma/client": "5.0.0",
     "bcrypt": "^5.1.0",
     "cors": "^2.8.5",
+    "dotenv": "^16.3.1",
     "express": "^4.18.2",
     "helmet": "^7.0.0",
-    "joi": "^17.9.2",
-    "morgan": "^1.10.0"
+    "morgan": "^1.10.0",
+    "zod": "^3.22.2"
   },
   "devDependencies": {
+    "@jest/globals": "^29.7.0",
     "@types/bcrypt": "^5.0.0",
+    "@types/cors": "^2.8.14",
     "@types/express": "^4.17.17",
     "@types/express-serve-static-core": "^4.17.35",
-    "@types/jest": "^29.5.2",
+    "@types/jest": "^29.5.0",
+    "@types/morgan": "^1.9.5",
     "@types/node": "^20.3.1",
     "eslint-config": "*",
     "jest": "^29.5.0",
+    "node-mocks-http": "^1.13.0",
     "prettier": "^2.8.8",
     "prisma": "^5.0.0",
     "source-map-support": "^0.5.21",
@@ -40,25 +44,5 @@
     "ts-node": "^10.9.1",
     "ts-node-dev": "^2.0.0",
     "tsconfig": "*"
-  },
-  "jest": {
-    "moduleFileExtensions": [
-      "js",
-      "json",
-      "ts"
-    ],
-    "rootDir": "src",
-    "testRegex": ".*\\.spec\\.ts$",
-    "transform": {
-      "^.+\\.(t|j)s$": "ts-jest"
-    },
-    "collectCoverageFrom": [
-      "**/*.(t|j)s"
-    ],
-    "coverageDirectory": "../coverage",
-    "testEnvironment": "node",
-    "moduleNameMapper": {
-      "^src/(.*)$": "<rootDir>/$1"
-    }
   }
 }
