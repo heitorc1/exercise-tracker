@@ -8,6 +8,7 @@ import { UserRepository } from '../../src/domain/user/repository';
 import { UserService } from '../../src/domain/user/service';
 import * as httpMocks from 'node-mocks-http';
 import { UsernameTakenError } from '../../src/infra/exception/UsernameTakenError';
+import { ZodError } from 'zod';
 
 describe('UserController', () => {
   let repository: IUserRepository;
@@ -73,7 +74,7 @@ describe('UserController', () => {
 
     await controller.create(req, res, next);
 
-    expect(next).toHaveBeenCalled();
+    expect(next).toHaveBeenCalledWith(new UsernameTakenError());
   });
 
   it('should not create a user without a username', async () => {
@@ -91,7 +92,7 @@ describe('UserController', () => {
 
     await controller.create(req, res, next);
 
-    expect(next).toHaveBeenCalled();
+    expect(next).toHaveBeenCalledWith(expect.any(ZodError));
   });
 
   it('should not create a user with a username with less than 3 chars', async () => {
@@ -108,7 +109,7 @@ describe('UserController', () => {
 
     await controller.create(req, res, next);
 
-    expect(next).toHaveBeenCalled();
+    expect(next).toHaveBeenCalledWith(expect.any(ZodError));
   });
 
   it('should not create a user with a username with more than 255 chars', async () => {
@@ -129,7 +130,7 @@ describe('UserController', () => {
 
     await controller.create(req, res, next);
 
-    expect(next).toHaveBeenCalled();
+    expect(next).toHaveBeenCalledWith(expect.any(ZodError));
   });
 
   it('should not create a user without email', async () => {
@@ -145,7 +146,7 @@ describe('UserController', () => {
 
     await controller.create(req, res, next);
 
-    expect(next).toHaveBeenCalled();
+    expect(next).toHaveBeenCalledWith(expect.any(ZodError));
   });
 
   it('should not create a user with an invalid email', async () => {
@@ -162,7 +163,7 @@ describe('UserController', () => {
 
     await controller.create(req, res, next);
 
-    expect(next).toHaveBeenCalled();
+    expect(next).toHaveBeenCalledWith(expect.any(ZodError));
   });
 
   it('should not create a user without a password', async () => {
@@ -178,7 +179,7 @@ describe('UserController', () => {
 
     await controller.create(req, res, next);
 
-    expect(next).toHaveBeenCalled();
+    expect(next).toHaveBeenCalledWith(expect.any(ZodError));
   });
 
   it('should not create a user with a password less than 8 chars', async () => {
@@ -195,7 +196,7 @@ describe('UserController', () => {
 
     await controller.create(req, res, next);
 
-    expect(next).toHaveBeenCalled();
+    expect(next).toHaveBeenCalledWith(expect.any(ZodError));
   });
 
   it('should not create a user with a password more than 255 chars', async () => {
@@ -216,6 +217,6 @@ describe('UserController', () => {
 
     await controller.create(req, res, next);
 
-    expect(next).toHaveBeenCalled();
+    expect(next).toHaveBeenCalledWith(expect.any(ZodError));
   });
 });

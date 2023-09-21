@@ -6,9 +6,11 @@ import 'dotenv/config';
 
 import { router } from './router';
 import { errorHandler } from './middlewares/errorHandler';
-import { PrismaClient } from '@prisma/client';
+import { Logger, logger as defaultLogger } from 'tracker-commons';
 
 const app = express();
+
+export const logger: Logger = defaultLogger('backend');
 
 app.use(cors());
 app.use(helmet());
@@ -22,4 +24,4 @@ app.use(router);
 
 app.use(errorHandler);
 
-app.listen(3000, () => console.log(`listening on port 3000`));
+app.listen(3000, () => logger.info(`listening on port 3000`));

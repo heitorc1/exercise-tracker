@@ -1,4 +1,4 @@
-import axios, { AxiosRequestConfig } from "axios";
+import axios from "axios";
 import { API_ENDPOINT } from "./config";
 
 export const api = axios.create({
