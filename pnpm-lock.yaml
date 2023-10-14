@@ -129,9 +129,6 @@ importers:
       react-router-dom:
         specifier: ^6.14.2
         version: 6.14.2(react-dom@18.2.0)(react@18.2.0)
-      tracker-commons:
-        specifier: workspace:*
-        version: link:../../packages/tracker-commons
     devDependencies:
       '@tanstack/eslint-plugin-query':
         specifier: ^4.32.1
