@@ -1,15 +1,34 @@
-import axios from "axios";
+import axios, { AxiosInstance } from "axios";
 import { API_ENDPOINT } from "./config";
+import { Response } from "./interfaces";
 
-export const api = axios.create({
-  baseURL: API_ENDPOINT,
-  timeout: 30000,
-});
+class Api {
+  private _instance: AxiosInstance;
 
-export const get = (url: string, params?: any) => {
-  return api.get(url, params);
-};
+  constructor() {
+    this._instance = axios.create({
+      baseURL: API_ENDPOINT,
+      timeout: 30000,
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+  }
 
-export const post = (url: string, body?: any) => {
-  return api.post(url, body);
-};
+  public async get<T>(url: string, params?: any): Promise<Response<T>> {
+    const response = await this._instance.get(url, params);
+    return response.data;
+  }
+
+  public async post<T>(url: string, body?: any): Promise<Response<T>> {
+    const response = await this._instance.post(url, body);
+    return response.data;
+  }
+
+  public get instance() {
+    return this._instance;
+  }
+}
+
+const api = new Api();
+export default api;

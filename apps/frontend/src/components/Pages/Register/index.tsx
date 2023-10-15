@@ -1,23 +1,27 @@
 import React from "react";
 import { useMutation } from "@tanstack/react-query";
-import { Button, Form, Input, Row, Space, Typography } from "antd";
-import { Link } from "react-router-dom";
+import { Button, Form, Input, Row, Space } from "antd";
+import { Link, redirect } from "react-router-dom";
 import userService from "../../../services/users";
 import { ICreateUser } from "../../../interfaces/users";
 import PageHeader from "../../PageHeader/index";
-
-type FieldType = {
-  username: string;
-  email: string;
-  password: string;
-};
+import { toast } from "react-toastify";
 
 const Register = () => {
-  const mutation = useMutation({
-    mutationFn: (createUser: ICreateUser) => {
+  const mutation = useMutation(
+    (createUser: ICreateUser) => {
       return userService.createUser(createUser);
     },
-  });
+    {
+      onSuccess: () => {
+        toast.success("User created successfully");
+        redirect("/login");
+      },
+      onError: () => {
+        toast.error("User not created");
+      },
+    }
+  );
 
   const onSubmit = (values: ICreateUser) => {
     mutation.mutate({

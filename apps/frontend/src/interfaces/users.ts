@@ -1,6 +1,9 @@
+import { Response } from ".";
+
 export interface IUser {
-  _id: string;
+  id: string;
   username: string;
+  email: string;
 }
 
 export interface ICreateUser {
@@ -9,9 +12,4 @@ export interface ICreateUser {
   password: string;
 }
 
-export type GetUserResponse = Response<IUser>;
-
-interface Response<T> {
-  data: T[];
-  status: number;
-}
+export type GetUserResponse = Response<IUser[]>;

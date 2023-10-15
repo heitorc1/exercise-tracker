@@ -1,13 +1,13 @@
-import { get, post } from "../api";
-import { ICreateUser } from "../interfaces/users";
+import api from "../api";
+import { ICreateUser, IUser } from "../interfaces/users";
 
 class UserService {
   public async getUsers() {
-    return get("/user");
+    return api.get<IUser[]>("/user");
   }
 
-  public async createUser(params: ICreateUser) {
-    return post("/user", { params });
+  public async createUser(data: ICreateUser) {
+    return api.post<IUser>("/user", data);
   }
 }
 

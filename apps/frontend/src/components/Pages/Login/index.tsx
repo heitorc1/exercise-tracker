@@ -1,7 +1,12 @@
 import React from "react";
 import { Button, Col, Form, Input, Row, Space } from "antd";
-import { Link } from "react-router-dom";
+import { Link, redirect, useNavigate } from "react-router-dom";
 import PageHeader from "../../PageHeader/index";
+import { useMutation } from "@tanstack/react-query";
+import loginService from "../../../services/login";
+import { ILogin } from "../../../interfaces/login";
+import { toast } from "react-toastify";
+import api from "../../../api";
 
 type FieldType = {
   username?: string;
@@ -9,8 +14,30 @@ type FieldType = {
 };
 
 const Login = () => {
-  const onSubmit = (values: any) => {
-    console.log(values);
+  const navigate = useNavigate();
+  const mutation = useMutation(
+    (data: ILogin) => {
+      return loginService.login(data);
+    },
+    {
+      onSuccess: (data) => {
+        toast.success("User logged in");
+        api.instance.defaults.headers.common[
+          "Authorization"
+        ] = `Bearer ${data}`;
+        navigate("/dashboard");
+      },
+      onError: () => {
+        toast.error("Incorrect data provided");
+      },
+    }
+  );
+
+  const onSubmit = (values: ILogin) => {
+    mutation.mutate({
+      username: values.username,
+      password: values.password,
+    });
   };
 
   return (
