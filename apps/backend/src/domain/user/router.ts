@@ -1,19 +1,24 @@
 import { NextFunction, Request, Response, Router } from 'express';
 import makeUserService from '../factories/service/UserServiceFactory';
 import { exerciseSchema, userSchema } from './schemas';
+import { authenticate } from '../../infra/middlewares/authenticate';
 
 export const router = Router();
 
 const service = makeUserService();
 
-router.get('/', async (req: Request, res: Response, next: NextFunction) => {
-  try {
-    const response = await service.list();
-    return res.json(response);
-  } catch (error) {
-    next(error);
-  }
-});
+router.get(
+  '/',
+  authenticate,
+  async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      const response = await service.list();
+      return res.json(response);
+    } catch (error) {
+      next(error);
+    }
+  },
+);
 
 router.post('/', async (req: Request, res: Response, next: NextFunction) => {
   try {
@@ -28,6 +33,7 @@ router.post('/', async (req: Request, res: Response, next: NextFunction) => {
 
 router.post(
   '/:id/exercises',
+  authenticate,
   async (req: Request, res: Response, next: NextFunction) => {
     try {
       const data = await exerciseSchema.parse(req.body);

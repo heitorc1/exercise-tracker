@@ -3,6 +3,7 @@
   "include": ["**/*.ts"],
   "exclude": ["node_modules"],
   "compilerOptions": {
-    "typeRoots": ["./src/types", "./node_modules/@types"]
-  }
+    "typeRoots": ["./src/types", "./node_modules/@types", "./@types"]
+  },
+  "files": ["./@types/express/index.d.ts"]
 }
