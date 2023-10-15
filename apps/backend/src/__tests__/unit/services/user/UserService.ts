@@ -1,6 +1,7 @@
 import { IUserRepository, IUserService } from 'domain/user/interfaces';
 import { UserRepository } from 'domain/user/repository';
 import { UserService } from 'domain/user/service';
+import { EmailAlreadyInUseError } from 'infra/exception/EmailAlreadyInUseError';
 import { UsernameTakenError } from 'infra/exception/UsernameTakenError';
 
 const userList = [
@@ -47,6 +48,7 @@ describe('UserService', () => {
     jest
       .spyOn(UserRepository.prototype, 'hasUsername')
       .mockResolvedValue(false);
+    jest.spyOn(UserRepository.prototype, 'hasEmail').mockResolvedValue(false);
     jest.spyOn(UserRepository.prototype, 'create').mockResolvedValue({
       id: '71f56db9-ad8a-4978-8995-e3a1584aa3ae',
       username: 'heitorc1',
@@ -73,5 +75,19 @@ describe('UserService', () => {
     jest.spyOn(UserRepository.prototype, 'hasUsername').mockResolvedValue(true);
 
     expect(service.create(data)).rejects.toThrowError(UsernameTakenError);
+  });
+
+  it('should not create a new user with a email in use', () => {
+    const data = {
+      username: 'heitorc1',
+      email: 'heitor@gmail.com',
+      password: 'teste',
+    };
+    jest
+      .spyOn(UserRepository.prototype, 'hasUsername')
+      .mockResolvedValue(false);
+    jest.spyOn(UserRepository.prototype, 'hasEmail').mockResolvedValue(true);
+
+    expect(service.create(data)).rejects.toThrowError(EmailAlreadyInUseError);
   });
 });

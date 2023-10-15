@@ -19,5 +19,6 @@ export interface IUserRepository {
   list(): Promise<any[]>;
   create(data: User): Promise<any>;
   hasUsername(username: string): Promise<boolean>;
+  hasEmail(email: string): Promise<boolean>;
   createExercise(id: string, body: Exercise): Promise<any>;
 }

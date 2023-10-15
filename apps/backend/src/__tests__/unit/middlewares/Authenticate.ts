@@ -57,6 +57,20 @@ describe('Authenticate', () => {
     expect(() => authenticate(req, res, next)).toThrow(InvalidTokenError);
   });
 
+  it('should not proceed if verify return a string', () => {
+    const req = httpMocks.createRequest({
+      headers: {
+        authorization: 'Bearer jwt',
+      },
+    });
+    const res = httpMocks.createResponse();
+    const next = jest.fn();
+
+    jest.spyOn(Jwt.prototype, 'verify').mockReturnValue('mytoken');
+
+    expect(() => authenticate(req, res, next)).toThrow(InvalidTokenError);
+  });
+
   it('should not proceed if token is expired', () => {
     const req = httpMocks.createRequest({
       headers: {

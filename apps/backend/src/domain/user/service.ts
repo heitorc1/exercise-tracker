@@ -1,5 +1,6 @@
 import { UsernameTakenError } from 'infra/exception/UsernameTakenError';
 import { Exercise, User, IUserRepository, IUserService } from './interfaces';
+import { EmailAlreadyInUseError } from 'infra/exception/EmailAlreadyInUseError';
 
 export class UserService implements IUserService {
   constructor(private readonly userRepository: IUserRepository) {}
@@ -16,6 +17,11 @@ export class UserService implements IUserService {
     const usernameTaken = await this.userRepository.hasUsername(data.username);
     if (usernameTaken) {
       throw new UsernameTakenError();
+    }
+
+    const emailInUse = await this.userRepository.hasEmail(data.email);
+    if (emailInUse) {
+      throw new EmailAlreadyInUseError();
     }
 
     const response = await this.userRepository.create(data);

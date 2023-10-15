@@ -39,6 +39,16 @@ export class UserRepository implements IUserRepository {
     return !!user;
   }
 
+  public async hasEmail(email: string) {
+    const user = await prisma.user.findUnique({
+      where: {
+        email,
+      },
+    });
+
+    return !!user;
+  }
+
   public async createExercise(id: string, body: Exercise) {
     return prisma.exercise.create({
       data: {
