@@ -1,14 +1,11 @@
-import {
-  ILoginRepository,
-  ILoginService,
-} from '../../../../src/domain/login/interfaces';
-import { LoginRepository } from '../../../../src/domain/login/repository';
-import { LoginService } from '../../../../src/domain/login/service';
-import { IUserRepository } from '../../../../src/domain/user/interfaces';
-import { UserRepository } from '../../../../src/domain/user/repository';
-import jwtHandler from '../../../../src/helpers/jwtHandler';
-import { InvalidCredentialsError } from '../../../../src/infra/exception/InvalidCredentialsError';
-import { UserNotFoundError } from '../../../../src/infra/exception/UserNotFoundError';
+import { ILoginRepository, ILoginService } from 'domain/login/interfaces';
+import { LoginRepository } from 'domain/login/repository';
+import { LoginService } from 'domain/login/service';
+import { IUserRepository } from 'domain/user/interfaces';
+import { UserRepository } from 'domain/user/repository';
+import jwtHandler from 'helpers/jwtHandler';
+import { InvalidCredentialsError } from 'infra/exception/InvalidCredentialsError';
+import { UserNotFoundError } from 'infra/exception/UserNotFoundError';
 
 describe('LoginService', () => {
   let loginRepository: ILoginRepository;
@@ -25,7 +22,7 @@ describe('LoginService', () => {
     expect(service).toBeDefined();
   });
 
-  it('should create token for successfull login', async () => {
+  it('should create token for successful login', async () => {
     const data = {
       username: 'heitorc1',
       password: 'password',

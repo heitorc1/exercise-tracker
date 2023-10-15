@@ -1,6 +1,6 @@
+import prisma from 'infra/prisma';
 import { Exercise, User, IUserRepository } from './interfaces';
-import { hashPassword } from '../../helpers/passwordHandler';
-import prisma from '../../infra/prisma';
+import { hashPassword } from 'helpers/passwordHandler';
 
 export class UserRepository implements IUserRepository {
   public async list() {

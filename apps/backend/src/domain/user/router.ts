@@ -1,7 +1,7 @@
 import { NextFunction, Request, Response, Router } from 'express';
-import makeUserService from '../factories/service/UserServiceFactory';
 import { exerciseSchema, userSchema } from './schemas';
-import { authenticate } from '../../infra/middlewares/authenticate';
+import makeUserService from 'domain/factories/service/UserServiceFactory';
+import { authenticate } from 'infra/middlewares/authenticate';
 
 export const router = Router();
 

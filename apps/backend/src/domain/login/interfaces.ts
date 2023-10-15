@@ -1,7 +1,6 @@
-import { NextFunction, Request, Response } from 'express';
 import { z } from 'zod';
 import { loginSchema } from './schemas';
-import { User } from '../user/interfaces';
+import { User } from 'domain/user/interfaces';
 
 export type Login = z.infer<typeof loginSchema>;
 

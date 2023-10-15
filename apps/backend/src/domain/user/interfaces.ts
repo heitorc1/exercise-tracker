@@ -1,5 +1,3 @@
-import { Request, Response } from 'express';
-import { NextFunction } from 'express-serve-static-core';
 import { z } from 'zod';
 import { exerciseSchema, userSchema } from './schemas';
 

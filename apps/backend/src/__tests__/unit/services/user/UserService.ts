@@ -1,10 +1,7 @@
-import {
-  IUserRepository,
-  IUserService,
-} from '../../../../src/domain/user/interfaces';
-import { UserRepository } from '../../../../src/domain/user/repository';
-import { UserService } from '../../../../src/domain/user/service';
-import { UsernameTakenError } from '../../../../src/infra/exception/UsernameTakenError';
+import { IUserRepository, IUserService } from 'domain/user/interfaces';
+import { UserRepository } from 'domain/user/repository';
+import { UserService } from 'domain/user/service';
+import { UsernameTakenError } from 'infra/exception/UsernameTakenError';
 
 const userList = [
   {

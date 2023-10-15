@@ -1,6 +1,6 @@
-import { IUserService } from '../../user/interfaces';
-import { UserRepository } from '../../user/repository';
-import { UserService } from '../../user/service';
+import { IUserService } from 'domain/user/interfaces';
+import { UserRepository } from 'domain/user/repository';
+import { UserService } from 'domain/user/service';
 
 const makeUserService = (): IUserService => {
   const repository = new UserRepository();

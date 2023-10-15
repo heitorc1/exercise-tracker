@@ -1,7 +1,7 @@
 import { NextFunction, Request, Response } from 'express';
 import { ZodError } from 'zod';
-import { logger } from '../server';
 import * as jwt from 'jsonwebtoken';
+import { logger } from 'infra/server';
 
 export const errorHandler = (
   error: any,

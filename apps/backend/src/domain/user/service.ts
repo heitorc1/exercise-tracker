@@ -1,4 +1,4 @@
-import { UsernameTakenError } from '../../infra/exception/UsernameTakenError';
+import { UsernameTakenError } from 'infra/exception/UsernameTakenError';
 import { Exercise, User, IUserRepository, IUserService } from './interfaces';
 
 export class UserService implements IUserService {

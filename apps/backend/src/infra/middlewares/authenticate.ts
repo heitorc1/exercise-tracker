@@ -1,7 +1,7 @@
 import { NextFunction, Request, Response } from 'express';
 import { TokenNotFoundError } from '../exception/TokenNotFoundError';
-import { InvalidTokenError } from '../exception/InvalidTokenError';
 import jwtHandler from '../../helpers/jwtHandler';
+import { InvalidTokenError } from '../exception/InvalidTokenError';
 
 export const authenticate = (
   req: Request,

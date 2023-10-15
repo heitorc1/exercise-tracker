@@ -1,8 +1,8 @@
-import jwtHandler from '../../helpers/jwtHandler';
-import { InvalidCredentialsError } from '../../infra/exception/InvalidCredentialsError';
-import { UserNotFoundError } from '../../infra/exception/UserNotFoundError';
-import { IUserRepository } from '../user/interfaces';
+import { IUserRepository } from 'domain/user/interfaces';
 import { ILoginRepository, ILoginService, Login } from './interfaces';
+import { UserNotFoundError } from 'infra/exception/UserNotFoundError';
+import { InvalidCredentialsError } from 'infra/exception/InvalidCredentialsError';
+import jwtHandler from 'helpers/jwtHandler';
 
 export class LoginService implements ILoginService {
   constructor(

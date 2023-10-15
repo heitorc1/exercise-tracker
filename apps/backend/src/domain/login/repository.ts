@@ -1,7 +1,7 @@
-import { comparePassword } from '../../helpers/passwordHandler';
-import prisma from '../../infra/prisma';
-import { User } from '../user/interfaces';
+import { User } from 'domain/user/interfaces';
 import { ILoginRepository, Login } from './interfaces';
+import prisma from 'infra/prisma';
+import { comparePassword } from 'helpers/passwordHandler';
 
 export class LoginRepository implements ILoginRepository {
   public async checkLogin(data: Login): Promise<Omit<User, 'password'> | null> {

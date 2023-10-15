@@ -1,9 +1,9 @@
 import * as httpMocks from 'node-mocks-http';
-import { authenticate } from '../../../src/infra/middlewares/authenticate';
-import { TokenNotFoundError } from '../../../src/infra/exception/TokenNotFoundError';
-import { Jwt } from '../../../src/helpers/jwtHandler';
 import * as jwt from 'jsonwebtoken';
-import { InvalidTokenError } from '../../../src/infra/exception/InvalidTokenError';
+import { TokenNotFoundError } from 'infra/exception/TokenNotFoundError';
+import { InvalidTokenError } from 'infra/exception/InvalidTokenError';
+import { authenticate } from 'infra/middlewares/authenticate';
+import { Jwt } from 'helpers/jwtHandler';
 
 describe('Authenticate', () => {
   it('should authenticate', () => {

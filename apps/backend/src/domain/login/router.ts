@@ -1,6 +1,6 @@
 import { NextFunction, Request, Response, Router } from 'express';
 import { loginSchema } from './schemas';
-import makeLoginService from '../factories/service/LoginServiceFactory';
+import makeLoginService from 'domain/factories/service/LoginServiceFactory';
 
 export const router = Router();
 

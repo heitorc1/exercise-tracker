@@ -1,5 +1,5 @@
+import { APP_KEY } from 'infra/config';
 import * as jwt from 'jsonwebtoken';
-import { APP_KEY } from '../infra/config';
 
 export class Jwt {
   public sign(data: any) {
