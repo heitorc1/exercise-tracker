@@ -9,7 +9,7 @@
     "prebuild": "rf -rf dist",
     "build": "pnpm tsc",
     "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
-    "dev": "tsnd --inspect --respawn src/infra/server.ts",
+    "dev": "tsnd --inspect -r tsconfig-paths/register --respawn src/infra/server.ts",
     "lint": "eslint \"{src,apps,libs,test}/**/*.ts\" --fix",
     "test": "jest",
     "test:watch": "jest --watch",
@@ -25,6 +25,7 @@
     "jsonwebtoken": "^9.0.2",
     "morgan": "^1.10.0",
     "tracker-commons": "workspace:*",
+    "tsconfig-paths": "^4.2.0",
     "zod": "^3.22.2"
   },
   "devDependencies": {

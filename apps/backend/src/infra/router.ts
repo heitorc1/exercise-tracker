@@ -1,6 +1,6 @@
 import { Router } from 'express';
-import { router as userRouter } from 'domain/user/router';
-import { router as loginRouter } from 'domain/login/router';
+import { loginRouter } from 'domain/login/router';
+import { userRouter } from 'domain/user/router';
 
 export const router = Router();
 

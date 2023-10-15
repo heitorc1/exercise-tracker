@@ -2,7 +2,7 @@ import { NextFunction, Request, Response, Router } from 'express';
 import { loginSchema } from './schemas';
 import makeLoginService from 'domain/factories/service/LoginServiceFactory';
 
-export const router = Router();
+const router = Router();
 
 const service = makeLoginService();
 
@@ -17,3 +17,5 @@ router.post('/', async (req: Request, res: Response, next: NextFunction) => {
     next(error);
   }
 });
+
+export { router as loginRouter };

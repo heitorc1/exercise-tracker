@@ -4,9 +4,9 @@ import helmet from 'helmet';
 import * as morgan from 'morgan';
 import 'dotenv/config';
 
-import { router } from './router';
 import { errorHandler } from './middlewares/errorHandler';
 import { Logger, logger as defaultLogger } from 'tracker-commons';
+import { router } from './router';
 
 const app = express();
 

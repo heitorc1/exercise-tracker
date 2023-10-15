@@ -3,7 +3,7 @@ import { exerciseSchema, userSchema } from './schemas';
 import makeUserService from 'domain/factories/service/UserServiceFactory';
 import { authenticate } from 'infra/middlewares/authenticate';
 
-export const router = Router();
+const router = Router();
 
 const service = makeUserService();
 
@@ -45,3 +45,5 @@ router.post(
     }
   },
 );
+
+export { router as userRouter };
