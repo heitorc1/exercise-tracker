@@ -1,4 +1,4 @@
-import { comparePassword } from '../../../helpers/passwordHandler';
+import { comparePassword } from '../../helpers/passwordHandler';
 import prisma from '../../infra/prisma';
 import { User } from '../user/interfaces';
 import { ILoginRepository, Login } from './interfaces';

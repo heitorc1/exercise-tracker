@@ -1,6 +1,7 @@
 import { NextFunction, Request, Response } from 'express';
 import { ZodError } from 'zod';
 import { logger } from '../server';
+import * as jwt from 'jsonwebtoken';
 
 export const errorHandler = (
   error: any,
@@ -9,6 +10,11 @@ export const errorHandler = (
   next: NextFunction,
 ) => {
   const statusCode = error?.statusCode || 500;
+
+  if (error instanceof jwt.TokenExpiredError) {
+    return response.status(401).json(error);
+  }
+
   if (error instanceof ZodError) {
     return response.status(400).json({ errors: error.issues });
   }

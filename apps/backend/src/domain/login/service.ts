@@ -1,9 +1,8 @@
-import { APP_KEY } from '../../infra/config';
+import jwtHandler from '../../helpers/jwtHandler';
 import { InvalidCredentialsError } from '../../infra/exception/InvalidCredentialsError';
 import { UserNotFoundError } from '../../infra/exception/UserNotFoundError';
 import { IUserRepository } from '../user/interfaces';
 import { ILoginRepository, ILoginService, Login } from './interfaces';
-import * as jwt from 'jsonwebtoken';
 
 export class LoginService implements ILoginService {
   constructor(
@@ -24,9 +23,7 @@ export class LoginService implements ILoginService {
       throw new InvalidCredentialsError();
     }
 
-    const token = jwt.sign({ data: user }, APP_KEY as jwt.Secret, {
-      expiresIn: '4h',
-    });
+    const token = jwtHandler.sign(user);
 
     return { data: token };
   }
