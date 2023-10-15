@@ -3,7 +3,11 @@ import { NextFunction } from 'express-serve-static-core';
 import { z } from 'zod';
 import { exerciseSchema, userSchema } from './schemas';
 
-export type User = z.infer<typeof userSchema>;
+type UserSchema = z.infer<typeof userSchema>;
+
+export interface User extends UserSchema {
+  id?: string;
+}
 
 export type Exercise = z.infer<typeof exerciseSchema>;
 

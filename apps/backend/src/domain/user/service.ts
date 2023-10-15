@@ -4,15 +4,15 @@ import { Exercise, User, IUserRepository, IUserService } from './interfaces';
 export class UserService implements IUserService {
   constructor(private readonly userRepository: IUserRepository) {}
 
-  public list = async () => {
+  public async list() {
     const response = await this.userRepository.list();
 
     return {
       data: response,
     };
-  };
+  }
 
-  public create = async (data: User) => {
+  public async create(data: User) {
     const usernameTaken = await this.userRepository.hasUsername(data.username);
     if (usernameTaken) {
       throw new UsernameTakenError();
@@ -23,13 +23,13 @@ export class UserService implements IUserService {
     return {
       data: response,
     };
-  };
+  }
 
-  public createExercise = async (id: string, body: Exercise) => {
+  public async createExercise(id: string, body: Exercise) {
     const response = await this.userRepository.createExercise(id, body);
 
     return {
       data: response,
     };
-  };
+  }
 }
