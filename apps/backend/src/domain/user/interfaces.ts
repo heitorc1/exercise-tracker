@@ -7,12 +7,6 @@ export type User = z.infer<typeof userSchema>;
 
 export type Exercise = z.infer<typeof exerciseSchema>;
 
-export interface IUserController {
-  list(req: Request, res: Response, next: NextFunction): Promise<any>;
-  create(req: Request, res: Response, next: NextFunction): Promise<any>;
-  createExercise(req: Request, res: Response, next: NextFunction): Promise<any>;
-}
-
 export interface IUserService {
   list(): Promise<{ data: any[] }>;
   create(data: User): Promise<any>;

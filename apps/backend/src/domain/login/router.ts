@@ -1,5 +1,4 @@
 import { NextFunction, Request, Response, Router } from 'express';
-import makeLoginController from '../factories/controller/LoginControllerFactory';
 import { loginSchema } from './schemas';
 import makeLoginService from '../factories/service/LoginServiceFactory';
 

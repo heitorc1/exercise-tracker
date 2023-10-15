@@ -4,10 +4,6 @@ import { loginSchema } from './schemas';
 
 export type Login = z.infer<typeof loginSchema>;
 
-export interface ILoginController {
-  login: (req: Request, res: Response, next: NextFunction) => Promise<any>;
-}
-
 export interface ILoginService {
   login: (data: Login) => Promise<{ data: boolean }>;
 }
