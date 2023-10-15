@@ -1,10 +1,5 @@
 import { UsernameTakenError } from '../../infra/exception/UsernameTakenError';
-import {
-  ICreateExercise,
-  ICreateUser,
-  IUserRepository,
-  IUserService,
-} from './interfaces';
+import { Exercise, User, IUserRepository, IUserService } from './interfaces';
 
 export class UserService implements IUserService {
   constructor(private readonly userRepository: IUserRepository) {}
@@ -17,7 +12,7 @@ export class UserService implements IUserService {
     };
   };
 
-  public create = async (data: ICreateUser) => {
+  public create = async (data: User) => {
     const usernameTaken = await this.userRepository.hasUsername(data.username);
     if (usernameTaken) {
       throw new UsernameTakenError();
@@ -30,7 +25,7 @@ export class UserService implements IUserService {
     };
   };
 
-  public createExercise = async (id: string, body: ICreateExercise) => {
+  public createExercise = async (id: string, body: Exercise) => {
     const response = await this.userRepository.createExercise(id, body);
 
     return {

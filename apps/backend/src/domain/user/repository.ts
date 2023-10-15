@@ -1,4 +1,4 @@
-import { ICreateExercise, ICreateUser, IUserRepository } from './interfaces';
+import { Exercise, User, IUserRepository } from './interfaces';
 import { hashPassword } from '../../../helpers/passwordHandler';
 import prisma from '../../infra/prisma';
 
@@ -13,12 +13,12 @@ export class UserRepository implements IUserRepository {
     });
   }
 
-  public async create(data: ICreateUser) {
+  public async create(data: User) {
     const modifiedPassword = await hashPassword(data.password);
     return prisma.user.create({
       data: {
         username: data.username,
-        email: data.username,
+        email: data.email,
         password: modifiedPassword,
       },
       select: {
@@ -39,7 +39,7 @@ export class UserRepository implements IUserRepository {
     return !!user;
   }
 
-  public async createExercise(id: string, body: ICreateExercise) {
+  public async createExercise(id: string, body: Exercise) {
     return prisma.exercise.create({
       data: {
         description: body.description,

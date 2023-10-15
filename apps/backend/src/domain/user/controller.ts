@@ -1,6 +1,7 @@
 import { NextFunction, Request, Response } from 'express';
 import { z } from 'zod';
 import { IUserController, IUserService } from './interfaces';
+import { exerciseSchema, userSchema } from './schemas';
 
 export class UserController implements IUserController {
   constructor(private readonly userService: IUserService) {}
@@ -16,13 +17,7 @@ export class UserController implements IUserController {
 
   public create = async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const schema = z.object({
-        username: z.string().min(3).max(255),
-        email: z.string().email(),
-        password: z.string().min(8).max(255),
-      });
-
-      const data = schema.parse(req.body);
+      const data = userSchema.parse(req.body);
       const response = await this.userService.create(data);
 
       return res.status(201).json(response);
@@ -37,13 +32,7 @@ export class UserController implements IUserController {
     next: NextFunction,
   ) => {
     try {
-      const schema = z.object({
-        description: z.string().min(3).max(255),
-        duration: z.number().min(1),
-        date: z.date(),
-      });
-
-      const data = await schema.parse(req.body);
+      const data = await exerciseSchema.parse(req.body);
 
       const response = await this.userService.createExercise(
         req.params.id,
