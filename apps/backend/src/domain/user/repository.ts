@@ -1,9 +1,14 @@
 import prisma from 'infra/prisma';
-import { Exercise, User, IUserRepository } from './interfaces';
+import {
+  ExerciseSchema,
+  User,
+  IUserRepository,
+  UserSchema,
+} from './interfaces';
 import { hashPassword } from 'helpers/passwordHandler';
 
 export class UserRepository implements IUserRepository {
-  public async list() {
+  public async list(): Promise<Omit<User, 'password'>[]> {
     return prisma.user.findMany({
       select: {
         id: true,
@@ -13,7 +18,7 @@ export class UserRepository implements IUserRepository {
     });
   }
 
-  public async create(data: User) {
+  public async create(data: UserSchema) {
     const modifiedPassword = await hashPassword(data.password);
     return prisma.user.create({
       data: {
@@ -49,7 +54,7 @@ export class UserRepository implements IUserRepository {
     return !!user;
   }
 
-  public async createExercise(id: string, body: Exercise) {
+  public async createExercise(id: string, body: ExerciseSchema) {
     return prisma.exercise.create({
       data: {
         description: body.description,

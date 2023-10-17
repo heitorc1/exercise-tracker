@@ -1,5 +1,10 @@
 import { UsernameTakenError } from 'infra/exception/UsernameTakenError';
-import { Exercise, User, IUserRepository, IUserService } from './interfaces';
+import {
+  ExerciseSchema,
+  IUserRepository,
+  IUserService,
+  UserSchema,
+} from './interfaces';
 import { EmailAlreadyInUseError } from 'infra/exception/EmailAlreadyInUseError';
 
 export class UserService implements IUserService {
@@ -13,7 +18,7 @@ export class UserService implements IUserService {
     };
   }
 
-  public async create(data: User) {
+  public async create(data: UserSchema) {
     const usernameTaken = await this.userRepository.hasUsername(data.username);
     if (usernameTaken) {
       throw new UsernameTakenError();
@@ -31,7 +36,7 @@ export class UserService implements IUserService {
     };
   }
 
-  public async createExercise(id: string, body: Exercise) {
+  public async createExercise(id: string, body: ExerciseSchema) {
     const response = await this.userRepository.createExercise(id, body);
 
     return {

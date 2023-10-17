@@ -1,24 +1,32 @@
 import { z } from 'zod';
 import { exerciseSchema, userSchema } from './schemas';
+import { Exercise } from '@prisma/client';
 
-type UserSchema = z.infer<typeof userSchema>;
+export type UserSchema = z.infer<typeof userSchema>;
 
-export interface User extends UserSchema {
+export interface User {
   id?: string;
+  username: string;
+  email: string;
+  password?: string;
 }
 
-export type Exercise = z.infer<typeof exerciseSchema>;
+export type ExerciseSchema = z.infer<typeof exerciseSchema>;
+
+export interface Response<T> {
+  data: T;
+}
 
 export interface IUserService {
-  list(): Promise<{ data: any[] }>;
-  create(data: User): Promise<any>;
-  createExercise(id: string, body: Exercise): Promise<any>;
+  list(): Promise<Response<User[]>>;
+  create(data: UserSchema): Promise<Response<Omit<User, 'password'>>>;
+  createExercise(id: string, body: ExerciseSchema): Promise<Response<Exercise>>;
 }
 
 export interface IUserRepository {
-  list(): Promise<any[]>;
-  create(data: User): Promise<any>;
+  list(): Promise<User[]>;
+  create(data: UserSchema): Promise<User>;
   hasUsername(username: string): Promise<boolean>;
   hasEmail(email: string): Promise<boolean>;
-  createExercise(id: string, body: Exercise): Promise<any>;
+  createExercise(id: string, body: ExerciseSchema): Promise<Exercise>;
 }

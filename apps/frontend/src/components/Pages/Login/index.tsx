@@ -1,6 +1,6 @@
 import React from "react";
 import { Button, Col, Form, Input, Row, Space } from "antd";
-import { Link, redirect, useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import PageHeader from "../../PageHeader/index";
 import { useMutation } from "@tanstack/react-query";
 import loginService from "../../../services/login";

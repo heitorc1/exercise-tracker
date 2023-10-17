@@ -1,10 +1,9 @@
-import { User } from 'domain/user/interfaces';
 import { ILoginRepository, Login } from './interfaces';
 import prisma from 'infra/prisma';
 import { comparePassword } from 'helpers/passwordHandler';
 
 export class LoginRepository implements ILoginRepository {
-  public async checkLogin(data: Login): Promise<Omit<User, 'password'> | null> {
+  public async checkLogin(data: Login) {
     const user = await prisma.user.findUnique({
       where: {
         username: data.username,

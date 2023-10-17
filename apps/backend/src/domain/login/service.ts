@@ -10,7 +10,7 @@ export class LoginService implements ILoginService {
     private readonly userRepository: IUserRepository,
   ) {}
 
-  public async login(data: Login): Promise<{ data: string }> {
+  public async login(data: Login) {
     const userExists = await this.userRepository.hasUsername(data.username);
 
     if (!userExists) {

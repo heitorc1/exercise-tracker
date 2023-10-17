@@ -15,11 +15,13 @@ class Api {
     });
   }
 
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   public async get<T>(url: string, params?: any): Promise<Response<T>> {
     const response = await this._instance.get(url, params);
     return response.data;
   }
 
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   public async post<T>(url: string, body?: any): Promise<Response<T>> {
     const response = await this._instance.post(url, body);
     return response.data;

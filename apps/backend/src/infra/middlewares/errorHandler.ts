@@ -1,13 +1,13 @@
-import { NextFunction, Request, Response } from 'express';
+import { Request, Response } from 'express';
 import { ZodError } from 'zod';
 import * as jwt from 'jsonwebtoken';
 import { logger } from 'infra/server';
 
 export const errorHandler = (
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   error: any,
-  req: Request,
+  _: Request,
   response: Response,
-  next: NextFunction,
 ) => {
   const statusCode = error?.statusCode || 500;
 
