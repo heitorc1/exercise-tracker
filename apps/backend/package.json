@@ -1,12 +1,12 @@
 {
-  "name": "exercise-tracker",
+  "name": "backend",
   "version": "0.0.1",
   "description": "",
   "author": "",
   "private": true,
   "license": "UNLICENSED",
   "scripts": {
-    "prebuild": "rf -rf dist",
+    "prebuild": "rm -rf dist",
     "build": "pnpm tsc",
     "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
     "dev": "tsnd --inspect -r tsconfig-paths/register --respawn src/infra/server.ts",
@@ -38,7 +38,7 @@
     "@types/jsonwebtoken": "^9.0.3",
     "@types/morgan": "^1.9.5",
     "@types/node": "^20.3.1",
-    "eslint-config": "workspace:*",
+    "eslint-config-custom": "workspace:*",
     "jest": "^29.5.0",
     "node-mocks-http": "^1.13.0",
     "prettier": "^2.8.8",

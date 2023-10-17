@@ -75,9 +75,9 @@ importers:
       '@types/node':
         specifier: ^20.3.1
         version: 20.3.1
-      eslint-config:
+      eslint-config-custom:
         specifier: workspace:*
-        version: link:../../packages/eslint-config
+        version: link:../../packages/eslint-config-custom
       jest:
         specifier: ^29.5.0
         version: 29.5.0(@types/node@20.3.1)(ts-node@10.9.1)
@@ -154,9 +154,9 @@ importers:
       '@vitejs/plugin-react':
         specifier: ^4.0.3
         version: 4.0.3(vite@4.4.5)
-      eslint-config:
+      eslint-config-custom:
         specifier: workspace:*
-        version: link:../../packages/eslint-config
+        version: link:../../packages/eslint-config-custom
       tsconfig:
         specifier: workspace:*
         version: link:../../packages/tsconfig
@@ -164,7 +164,7 @@ importers:
         specifier: ^4.4.5
         version: 4.4.5
 
-  packages/eslint-config:
+  packages/eslint-config-custom:
     devDependencies:
       '@typescript-eslint/eslint-plugin':
         specifier: ^6.0.0
