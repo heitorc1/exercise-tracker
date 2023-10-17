@@ -31,6 +31,10 @@ jobs:
       - name: Install dependencies
         run: pnpm install
 
+      - name: Generate prisma models
+        working-directory: ./apps/backend
+        run: pnpm prisma generate
+
       - name: Build
         run: pnpm build
 
