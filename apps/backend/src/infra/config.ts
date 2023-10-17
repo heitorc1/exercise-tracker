@@ -1,1 +1,2 @@
-export const APP_KEY = process.env.APP_KEY ?? null;
+export const APP_KEY =
+  process.env.APP_KEY ?? 'd41d8cd98f00b204e9800998ecf8427e';
