@@ -1,71 +1,88 @@
-import prisma from 'infra/prisma';
 import {
   ExerciseSchema,
   User,
   IUserRepository,
   UserSchema,
+  Exercise,
 } from './interfaces';
 import { hashPassword } from 'helpers/passwordHandler';
+import { v4 as uuidv4 } from 'uuid';
+import db from 'infra/db';
 
 export class UserRepository implements IUserRepository {
-  public async list(): Promise<Omit<User, 'password'>[]> {
-    return prisma.user.findMany({
-      select: {
-        id: true,
-        username: true,
-        email: true,
-      },
-    });
+  public async list(): Promise<User[] | null> {
+    const users = db
+      .prepare('SELECT id, username, email, createdAt, updatedAt FROM users')
+      .all();
+
+    if (!users.length) {
+      return null;
+    }
+
+    return users as User[];
   }
 
   public async create(data: UserSchema) {
+    const id = uuidv4();
+    const date = new Date().toISOString();
     const modifiedPassword = await hashPassword(data.password);
-    return prisma.user.create({
-      data: {
+    return db
+      .prepare(
+        `
+          INSERT INTO users
+          VALUES (@id, @username, @password, @email, @createdAt, @updatedAt)
+          RETURNING id, username, email, password, createdAt, updatedAt
+        `,
+      )
+      .get({
+        id,
         username: data.username,
-        email: data.email,
         password: modifiedPassword,
-      },
-      select: {
-        id: true,
-        username: true,
-        email: true,
-      },
-    });
+        email: data.email,
+        createdAt: date,
+        updatedAt: date,
+      }) as User;
   }
 
   public async hasUsername(username: string) {
-    const user = await prisma.user.findUnique({
-      where: {
+    return !!db
+      .prepare('SELECT COUNT(1) FROM users WHERE username = @username')
+      .pluck()
+      .get({
         username,
-      },
-    });
-
-    return !!user;
+      });
   }
 
   public async hasEmail(email: string) {
-    const user = await prisma.user.findUnique({
-      where: {
+    return !!db
+      .prepare('SELECT COUNT(1) FROM users WHERE email = @email')
+      .pluck()
+      .get({
         email,
-      },
-    });
-
-    return !!user;
+      });
   }
 
   public async createExercise(id: string, body: ExerciseSchema) {
-    return prisma.exercise.create({
-      data: {
+    const uuid = uuidv4();
+    const date = new Date().toISOString();
+    const formattedDate = new Date(body.date).toISOString();
+
+    return db
+      .prepare(
+        `
+          INSERT INTO exercises 
+          VALUES (@id, @description, @userId, @duration, @date, @createdAt, @updatedAt)
+          RETURNING *
+        `,
+      )
+      .get({
+        id: uuid,
         description: body.description,
+        userId: id,
         duration: body.duration,
-        date: body.date,
-        user: {
-          connect: {
-            id,
-          },
-        },
-      },
-    });
+        date: formattedDate,
+        createdAt: date,
+        updatedAt: date,
+      }) as Exercise;
   }
 }

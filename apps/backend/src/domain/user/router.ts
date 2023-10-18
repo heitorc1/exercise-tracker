@@ -2,6 +2,7 @@ import { NextFunction, Request, Response, Router } from 'express';
 import { exerciseSchema, userSchema } from './schemas';
 import makeUserService from 'domain/factories/service/UserServiceFactory';
 import { authenticate } from 'infra/middlewares/authenticate';
+import { UserNotFoundError } from 'infra/exception/UserNotFoundError';
 
 const router = Router();
 
@@ -32,13 +33,17 @@ router.post('/', async (req: Request, res: Response, next: NextFunction) => {
 });
 
 router.post(
-  '/:id/exercises',
+  '/exercises',
   authenticate,
   async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const data = await exerciseSchema.parse(req.body);
+      const data = exerciseSchema.parse(req.body);
 
-      const response = await service.createExercise(req.params.id, data);
+      if (!req.user) {
+        throw new UserNotFoundError();
+      }
+
+      const response = await service.createExercise(req.user.id, data);
       return res.status(201).json(response);
     } catch (err) {
       next(err);

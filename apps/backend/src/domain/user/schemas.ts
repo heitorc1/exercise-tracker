@@ -9,5 +9,5 @@ export const userSchema = z.object({
 export const exerciseSchema = z.object({
   description: z.string().min(3).max(255),
   duration: z.number().min(1),
-  date: z.date(),
+  date: z.coerce.date(),
 });

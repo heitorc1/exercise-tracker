@@ -1,13 +1,15 @@
-import { Request, Response } from 'express';
+/* eslint-disable @typescript-eslint/no-explicit-any */
+/* eslint-disable @typescript-eslint/no-unused-vars */
+import { NextFunction, Request, Response } from 'express';
 import { ZodError } from 'zod';
 import * as jwt from 'jsonwebtoken';
 import { logger } from 'infra/server';
 
 export const errorHandler = (
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   error: any,
-  _: Request,
+  request: Request,
   response: Response,
+  next: NextFunction,
 ) => {
   const statusCode = error?.statusCode || 500;
 

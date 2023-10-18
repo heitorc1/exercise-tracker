@@ -7,9 +7,7 @@
     "dev": "turbo dev",
     "build": "turbo build",
     "test": "turbo test",
-    "lint": "turbo lint",
-    "database": "cd packages/backend && docker compose up -d",
-    "database:down": "cd packages/backend && docker compose down"
+    "lint": "turbo lint"
   },
   "keywords": [],
   "author": "",
