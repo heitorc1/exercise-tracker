@@ -37,4 +37,4 @@ lerna-debug.log*
 pgdata
 .env
 .turbo
-*.db
+*.db*
