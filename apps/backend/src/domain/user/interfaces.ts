@@ -1,9 +1,14 @@
 import { z } from 'zod';
-import { exerciseSchema, userSchema } from './schemas';
+import {
+  createExerciseSchema,
+  createUserSchema,
+  updateUserSchema,
+} from './schemas';
 
-export type UserSchema = z.infer<typeof userSchema>;
+export interface ICreateUser extends z.infer<typeof createUserSchema> {}
+export interface IUpdateUser extends z.infer<typeof updateUserSchema> {}
 
-export interface User {
+export interface IUser {
   id: string;
   username: string;
   email: string;
@@ -12,7 +17,7 @@ export interface User {
   updatedAt?: string;
 }
 
-export interface Exercise {
+export interface IExercise {
   id: string;
   userId: string;
   description: string;
@@ -22,22 +27,27 @@ export interface Exercise {
   updatedAt?: string;
 }
 
-export type ExerciseSchema = z.infer<typeof exerciseSchema>;
+export interface ICreateExercise extends z.infer<typeof createExerciseSchema> {}
 
-export interface Response<T> {
+export interface IResponse<T> {
   data: T;
 }
 
 export interface IUserService {
-  list(): Promise<Response<User[] | null>>;
-  create(data: UserSchema): Promise<Response<User>>;
-  createExercise(id: string, body: ExerciseSchema): Promise<Response<Exercise>>;
+  list(): Promise<IResponse<IUser[] | null>>;
+  create(data: ICreateUser): Promise<IResponse<IUser>>;
+  update(id: string, data: IUpdateUser): Promise<IResponse<IUser>>;
+  createExercise(
+    id: string,
+    body: ICreateExercise,
+  ): Promise<IResponse<IExercise>>;
 }
 
 export interface IUserRepository {
-  list(): Promise<User[] | null>;
-  create(data: UserSchema): Promise<User>;
+  list(): Promise<IUser[] | null>;
+  create(data: ICreateUser): Promise<IUser>;
+  update(id: string, data: IUpdateUser): Promise<IUser>;
   hasUsername(username: string): Promise<boolean>;
   hasEmail(email: string): Promise<boolean>;
-  createExercise(id: string, body: ExerciseSchema): Promise<Exercise>;
+  createExercise(id: string, body: ICreateExercise): Promise<IExercise>;
 }

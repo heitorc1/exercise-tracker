@@ -1,13 +1,13 @@
 import { z } from 'zod';
 import { loginSchema } from './schemas';
-import { Response, User } from 'domain/user/interfaces';
+import { IResponse, IUser } from 'domain/user/interfaces';
 
-export type Login = z.infer<typeof loginSchema>;
+export interface ILogin extends z.infer<typeof loginSchema> {}
 
 export interface ILoginService {
-  login: (data: Login) => Promise<Response<string>>;
+  login: (data: ILogin) => Promise<IResponse<string>>;
 }
 
 export interface ILoginRepository {
-  checkLogin: (data: Login) => Promise<User | null>;
+  checkLogin: (data: ILogin) => Promise<IUser | null>;
 }

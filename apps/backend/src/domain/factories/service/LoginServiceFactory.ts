@@ -1,11 +1,11 @@
 import { ILoginService } from 'domain/login/interfaces';
-import { LoginRepository } from 'domain/login/repository';
 import { LoginService } from 'domain/login/service';
-import { UserRepository } from 'domain/user/repository';
+import makeUserRepository from '../repository/UserRepositoryFactory';
+import makeLoginRepository from '../repository/LoginRepositoryFactory';
 
 const makeLoginService = (): ILoginService => {
-  const userRepository = new UserRepository();
-  const loginRepository = new LoginRepository();
+  const userRepository = makeUserRepository();
+  const loginRepository = makeLoginRepository();
   return new LoginService(loginRepository, userRepository);
 };
 

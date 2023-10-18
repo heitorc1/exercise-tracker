@@ -1,3 +1,6 @@
-import { userSchema } from 'domain/user/schemas';
+import { z } from 'zod';
 
-export const loginSchema = userSchema.omit({ email: true });
+export const loginSchema = z.object({
+  username: z.string().min(3).max(255),
+  password: z.string().min(8).max(255),
+});

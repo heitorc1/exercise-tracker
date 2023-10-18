@@ -1,5 +1,5 @@
 import { IUserRepository } from 'domain/user/interfaces';
-import { ILoginRepository, ILoginService, Login } from './interfaces';
+import { ILoginRepository, ILoginService, ILogin } from './interfaces';
 import { UserNotFoundError } from 'infra/exception/UserNotFoundError';
 import { InvalidCredentialsError } from 'infra/exception/InvalidCredentialsError';
 import jwtHandler from 'helpers/jwtHandler';
@@ -10,7 +10,7 @@ export class LoginService implements ILoginService {
     private readonly userRepository: IUserRepository,
   ) {}
 
-  public async login(data: Login) {
+  public async login(data: ILogin) {
     const userExists = await this.userRepository.hasUsername(data.username);
 
     if (!userExists) {

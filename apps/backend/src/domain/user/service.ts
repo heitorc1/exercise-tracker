@@ -1,11 +1,15 @@
 import { UsernameTakenError } from 'infra/exception/UsernameTakenError';
 import {
-  ExerciseSchema,
+  ICreateExercise,
+  IResponse,
+  IUpdateUser,
+  IUser,
   IUserRepository,
   IUserService,
-  UserSchema,
+  ICreateUser,
 } from './interfaces';
 import { EmailAlreadyInUseError } from 'infra/exception/EmailAlreadyInUseError';
+import { NothingToUpdateError } from 'infra/exception/NothingToUpdateError';
 
 export class UserService implements IUserService {
   constructor(private readonly userRepository: IUserRepository) {}
@@ -18,16 +22,9 @@ export class UserService implements IUserService {
     };
   }
 
-  public async create(data: UserSchema) {
-    const usernameTaken = await this.userRepository.hasUsername(data.username);
-    if (usernameTaken) {
-      throw new UsernameTakenError();
-    }
-
-    const emailInUse = await this.userRepository.hasEmail(data.email);
-    if (emailInUse) {
-      throw new EmailAlreadyInUseError();
-    }
+  public async create(data: ICreateUser) {
+    await this.verifyUsername(data.username);
+    await this.verifyEmail(data.email);
 
     const response = await this.userRepository.create(data);
 
@@ -36,11 +33,46 @@ export class UserService implements IUserService {
     };
   }
 
-  public async createExercise(id: string, body: ExerciseSchema) {
+  public async update(
+    id: string,
+    data: IUpdateUser,
+  ): Promise<IResponse<IUser>> {
+    if (Object.values(data).every((x) => !x)) {
+      throw new NothingToUpdateError();
+    }
+
+    if (data.username) {
+      await this.verifyUsername(data.username);
+    }
+
+    if (data.email) {
+      await this.verifyUsername(data.email);
+    }
+
+    const response = await this.userRepository.update(id, data);
+
+    return { data: response };
+  }
+
+  public async createExercise(id: string, body: ICreateExercise) {
     const response = await this.userRepository.createExercise(id, body);
 
     return {
       data: response,
     };
+  }
+
+  private async verifyUsername(username: string) {
+    const usernameTaken = await this.userRepository.hasUsername(username);
+    if (usernameTaken) {
+      throw new UsernameTakenError();
+    }
+  }
+
+  private async verifyEmail(email: string) {
+    const emailInUse = await this.userRepository.hasEmail(email);
+    if (emailInUse) {
+      throw new EmailAlreadyInUseError();
+    }
   }
 }

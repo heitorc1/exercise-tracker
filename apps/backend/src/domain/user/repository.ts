@@ -1,17 +1,20 @@
 import {
-  ExerciseSchema,
-  User,
+  ICreateExercise,
+  IUser,
   IUserRepository,
-  UserSchema,
-  Exercise,
+  ICreateUser,
+  IExercise,
+  IUpdateUser,
 } from './interfaces';
 import { hashPassword } from 'helpers/passwordHandler';
 import { v4 as uuidv4 } from 'uuid';
-import db from 'infra/db';
+import type { Database } from 'better-sqlite3';
 
 export class UserRepository implements IUserRepository {
-  public async list(): Promise<User[] | null> {
-    const users = db
+  constructor(private readonly db: Database) {}
+
+  public async list(): Promise<IUser[] | null> {
+    const users = this.db
       .prepare('SELECT id, username, email, createdAt, updatedAt FROM users')
       .all();
 
@@ -19,14 +22,14 @@ export class UserRepository implements IUserRepository {
       return null;
     }
 
-    return users as User[];
+    return users as IUser[];
   }
 
-  public async create(data: UserSchema) {
+  public async create(data: ICreateUser) {
     const id = uuidv4();
     const date = new Date().toISOString();
     const modifiedPassword = await hashPassword(data.password);
-    return db
+    return this.db
       .prepare(
         `
           INSERT INTO users
@@ -41,11 +44,11 @@ export class UserRepository implements IUserRepository {
         email: data.email,
         createdAt: date,
         updatedAt: date,
-      }) as User;
+      }) as IUser;
   }
 
   public async hasUsername(username: string) {
-    return !!db
+    return !!this.db
       .prepare('SELECT COUNT(1) FROM users WHERE username = @username')
       .pluck()
       .get({
@@ -54,7 +57,7 @@ export class UserRepository implements IUserRepository {
   }
 
   public async hasEmail(email: string) {
-    return !!db
+    return !!this.db
       .prepare('SELECT COUNT(1) FROM users WHERE email = @email')
       .pluck()
       .get({
@@ -62,12 +65,41 @@ export class UserRepository implements IUserRepository {
       });
   }
 
-  public async createExercise(id: string, body: ExerciseSchema) {
+  public async update(id: string, data: IUpdateUser): Promise<IUser> {
+    let modifiedPassword: string | null = null;
+    if (data.password) {
+      modifiedPassword = await hashPassword(data.password);
+    }
+    const date = new Date().toISOString();
+
+    return this.db
+      .prepare(
+        `
+          UPDATE users 
+          SET 
+            username = IFNULL(@username, username),
+            email = IFNULL(@email, email),
+            password = IFNULL(@password, password),
+            updatedAt = @updatedAt
+          WHERE id = @id
+          RETURNING id, username, email, createdAt, updatedAt
+        `,
+      )
+      .get({
+        username: data.username,
+        email: data.email,
+        password: modifiedPassword,
+        updatedAt: date,
+        id,
+      }) as IUser;
+  }
+
+  public async createExercise(id: string, body: ICreateExercise) {
     const uuid = uuidv4();
     const date = new Date().toISOString();
     const formattedDate = new Date(body.date).toISOString();
 
-    return db
+    return this.db
       .prepare(
         `
           INSERT INTO exercises 
@@ -83,6 +115,6 @@ export class UserRepository implements IUserRepository {
         date: formattedDate,
         createdAt: date,
         updatedAt: date,
-      }) as Exercise;
+      }) as IExercise;
   }
 }

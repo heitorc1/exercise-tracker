@@ -1,9 +1,9 @@
 import { IUserService } from 'domain/user/interfaces';
-import { UserRepository } from 'domain/user/repository';
 import { UserService } from 'domain/user/service';
+import makeUserRepository from '../repository/UserRepositoryFactory';
 
 const makeUserService = (): IUserService => {
-  const repository = new UserRepository();
+  const repository = makeUserRepository();
   return new UserService(repository);
 };
 

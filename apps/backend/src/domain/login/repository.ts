@@ -1,15 +1,17 @@
-import { ILoginRepository, Login } from './interfaces';
+import { ILoginRepository, ILogin } from './interfaces';
 import { comparePassword } from 'helpers/passwordHandler';
-import db from 'infra/db';
-import { User } from 'domain/user/interfaces';
+import { IUser } from 'domain/user/interfaces';
+import type { Database } from 'better-sqlite3';
 
 export class LoginRepository implements ILoginRepository {
-  public async checkLogin(data: Login) {
-    const user = db
+  constructor(private readonly db: Database) {}
+
+  public async checkLogin(data: ILogin) {
+    const user = this.db
       .prepare(
         'SELECT id, username, email, password FROM users WHERE username = @username',
       )
-      .get({ username: data.username }) as User;
+      .get({ username: data.username }) as IUser;
 
     if (!user || !user.password) {
       return null;

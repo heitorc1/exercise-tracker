@@ -1,3 +1,7 @@
+import { faker } from '@faker-js/faker';
+import unitTestDb from '__tests__/unit/db';
+import { getUser } from '__tests__/unit/db/helpers/getUser';
+import { insertUser } from '__tests__/unit/db/helpers/insertUser';
 import { ILoginRepository, ILoginService } from 'domain/login/interfaces';
 import { LoginRepository } from 'domain/login/repository';
 import { LoginService } from 'domain/login/service';
@@ -13,8 +17,8 @@ describe('LoginService', () => {
   let service: ILoginService;
 
   beforeEach(() => {
-    loginRepository = new LoginRepository();
-    userRepository = new UserRepository();
+    loginRepository = new LoginRepository(unitTestDb);
+    userRepository = new UserRepository(unitTestDb);
     service = new LoginService(loginRepository, userRepository);
   });
 
@@ -24,47 +28,37 @@ describe('LoginService', () => {
 
   it('should create token for successful login', async () => {
     const data = {
-      username: 'heitorc1',
-      password: 'password',
-    };
-    const user = {
-      id: 'c834e0c8-588b-422c-ac1f-37504e5e0508',
-      username: 'heitorc1',
-      email: 'heitorcarneiro1@gmail.com',
+      username: faker.internet.userName(),
+      password: faker.internet.password(),
     };
 
-    jest.spyOn(UserRepository.prototype, 'hasUsername').mockResolvedValue(true);
-    jest.spyOn(LoginRepository.prototype, 'checkLogin').mockResolvedValue(user);
+    const user = await insertUser(data.username, data.password);
 
     const response = await service.login(data);
 
     expect(response).toStrictEqual({
-      data: jwtHandler.sign(user),
+      data: jwtHandler.sign({
+        id: user.id,
+        username: user.username,
+        email: user.email,
+      }),
     });
   });
 
   it('should not login with invalid user', () => {
     const data = {
-      username: 'heitorc',
+      username: 'invalid-username',
       password: 'password',
     };
-
-    jest
-      .spyOn(UserRepository.prototype, 'hasUsername')
-      .mockResolvedValue(false);
 
     expect(service.login(data)).rejects.toThrowError(UserNotFoundError);
   });
 
-  it('should not login with invalid password', () => {
-    const data = {
-      username: 'heitorc',
-      password: 'invalid',
-    };
+  it('should not login with invalid password', async () => {
+    const user = await getUser();
 
-    jest.spyOn(UserRepository.prototype, 'hasUsername').mockResolvedValue(true);
-    jest.spyOn(LoginRepository.prototype, 'checkLogin').mockResolvedValue(null);
-
-    expect(service.login(data)).rejects.toThrowError(InvalidCredentialsError);
+    expect(
+      service.login({ username: user.username, password: 'invalid' }),
+    ).rejects.toThrowError(InvalidCredentialsError);
   });
 });
