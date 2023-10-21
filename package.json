@@ -7,13 +7,15 @@
     "dev": "turbo dev",
     "build": "turbo build",
     "test": "turbo test",
-    "lint": "turbo lint"
+    "lint": "turbo lint",
+    "prepare": "husky install"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "devDependencies": {
     "turbo": "^1.10.15",
-    "typescript": "^5.1.3"
+    "typescript": "^5.1.3",
+    "husky": "^8.0.0"
   }
 }
