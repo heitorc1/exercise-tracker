@@ -1,27 +1,16 @@
-import * as express from 'express';
-import * as cors from 'cors';
-import helmet from 'helmet';
-import * as morgan from 'morgan';
-import 'dotenv/config';
+import build from './app';
 
-import { errorHandler } from './middlewares/errorHandler';
-import { Logger, logger as defaultLogger } from 'tracker-commons';
-import { router } from './router';
+const fastify = build({
+  logger: true,
+});
 
-const app = express();
+const start = async () => {
+  try {
+    fastify.listen({ port: 3000 });
+  } catch (err) {
+    fastify.log.error(err);
+    process.exit(1);
+  }
+};
 
-export const logger: Logger = defaultLogger('backend');
-
-app.use(cors());
-app.use(helmet());
-app.use(morgan('tiny'));
-
-app.use(express.json());
-
-app.get('/', (req, res) => res.json({ success: true }));
-
-app.use(router);
-
-app.use(errorHandler);
-
-app.listen(3000, () => logger.info(`listening on port 3000`));
+start();

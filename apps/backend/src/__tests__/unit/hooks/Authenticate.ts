@@ -2,15 +2,11 @@ import * as httpMocks from 'node-mocks-http';
 import * as jwt from 'jsonwebtoken';
 import { TokenNotFoundError } from 'infra/exception/TokenNotFoundError';
 import { InvalidTokenError } from 'infra/exception/InvalidTokenError';
-import { authenticate } from 'infra/middlewares/authenticate';
 import { Jwt } from 'helpers/jwtHandler';
+import { authenticate } from 'hooks/authenticate';
 
 describe('Authenticate', () => {
-  it('should authenticate', () => {
-    expect(true).toBe(true);
-  });
-
-  it('should call next function', () => {
+  it('should return success', async () => {
     const req = httpMocks.createRequest({
       headers: {
         authorization: 'Bearer jwt',

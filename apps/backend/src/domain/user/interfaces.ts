@@ -34,20 +34,17 @@ export interface IResponse<T> {
 }
 
 export interface IUserService {
-  list(): Promise<IResponse<IUser[] | null>>;
+  list(): IResponse<IUser[] | null>;
   create(data: ICreateUser): Promise<IResponse<IUser>>;
   update(id: string, data: IUpdateUser): Promise<IResponse<IUser>>;
-  createExercise(
-    id: string,
-    body: ICreateExercise,
-  ): Promise<IResponse<IExercise>>;
+  createExercise(id: string, body: ICreateExercise): IResponse<IExercise>;
 }
 
 export interface IUserRepository {
-  list(): Promise<IUser[] | null>;
+  list(): IUser[] | null;
   create(data: ICreateUser): Promise<IUser>;
   update(id: string, data: IUpdateUser): Promise<IUser>;
-  hasUsername(username: string): Promise<boolean>;
-  hasEmail(email: string): Promise<boolean>;
-  createExercise(id: string, body: ICreateExercise): Promise<IExercise>;
+  hasUsername(username: string): boolean;
+  hasEmail(email: string): boolean;
+  createExercise(id: string, body: ICreateExercise): IExercise;
 }

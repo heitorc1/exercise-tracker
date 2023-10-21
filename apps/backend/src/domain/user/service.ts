@@ -1,9 +1,7 @@
 import { UsernameTakenError } from 'infra/exception/UsernameTakenError';
 import {
   ICreateExercise,
-  IResponse,
   IUpdateUser,
-  IUser,
   IUserRepository,
   IUserService,
   ICreateUser,
@@ -14,8 +12,8 @@ import { NothingToUpdateError } from 'infra/exception/NothingToUpdateError';
 export class UserService implements IUserService {
   constructor(private readonly userRepository: IUserRepository) {}
 
-  public async list() {
-    const response = await this.userRepository.list();
+  public list() {
+    const response = this.userRepository.list();
 
     return {
       data: response,
@@ -23,8 +21,8 @@ export class UserService implements IUserService {
   }
 
   public async create(data: ICreateUser) {
-    await this.verifyUsername(data.username);
-    await this.verifyEmail(data.email);
+    this.verifyUsername(data.username);
+    this.verifyEmail(data.email);
 
     const response = await this.userRepository.create(data);
 
@@ -33,20 +31,17 @@ export class UserService implements IUserService {
     };
   }
 
-  public async update(
-    id: string,
-    data: IUpdateUser,
-  ): Promise<IResponse<IUser>> {
+  public async update(id: string, data: IUpdateUser) {
     if (Object.values(data).every((x) => !x)) {
       throw new NothingToUpdateError();
     }
 
     if (data.username) {
-      await this.verifyUsername(data.username);
+      this.verifyUsername(data.username);
     }
 
     if (data.email) {
-      await this.verifyUsername(data.email);
+      this.verifyUsername(data.email);
     }
 
     const response = await this.userRepository.update(id, data);
@@ -54,23 +49,23 @@ export class UserService implements IUserService {
     return { data: response };
   }
 
-  public async createExercise(id: string, body: ICreateExercise) {
-    const response = await this.userRepository.createExercise(id, body);
+  public createExercise(id: string, body: ICreateExercise) {
+    const response = this.userRepository.createExercise(id, body);
 
     return {
       data: response,
     };
   }
 
-  private async verifyUsername(username: string) {
-    const usernameTaken = await this.userRepository.hasUsername(username);
+  private verifyUsername(username: string) {
+    const usernameTaken = this.userRepository.hasUsername(username);
     if (usernameTaken) {
       throw new UsernameTakenError();
     }
   }
 
-  private async verifyEmail(email: string) {
-    const emailInUse = await this.userRepository.hasEmail(email);
+  private verifyEmail(email: string) {
+    const emailInUse = this.userRepository.hasEmail(email);
     if (emailInUse) {
       throw new EmailAlreadyInUseError();
     }

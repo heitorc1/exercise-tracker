@@ -13,7 +13,7 @@ import type { Database } from 'better-sqlite3';
 export class UserRepository implements IUserRepository {
   constructor(private readonly db: Database) {}
 
-  public async list(): Promise<IUser[] | null> {
+  public list() {
     const users = this.db
       .prepare('SELECT id, username, email, createdAt, updatedAt FROM users')
       .all();
@@ -47,7 +47,7 @@ export class UserRepository implements IUserRepository {
       }) as IUser;
   }
 
-  public async hasUsername(username: string) {
+  public hasUsername(username: string) {
     return !!this.db
       .prepare('SELECT COUNT(1) FROM users WHERE username = @username')
       .pluck()
@@ -56,7 +56,7 @@ export class UserRepository implements IUserRepository {
       });
   }
 
-  public async hasEmail(email: string) {
+  public hasEmail(email: string) {
     return !!this.db
       .prepare('SELECT COUNT(1) FROM users WHERE email = @email')
       .pluck()
@@ -94,7 +94,7 @@ export class UserRepository implements IUserRepository {
       }) as IUser;
   }
 
-  public async createExercise(id: string, body: ICreateExercise) {
+  public createExercise(id: string, body: ICreateExercise) {
     const uuid = uuidv4();
     const date = new Date().toISOString();
     const formattedDate = new Date(body.date).toISOString();

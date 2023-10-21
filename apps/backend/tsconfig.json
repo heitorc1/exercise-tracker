@@ -5,6 +5,5 @@
   "compilerOptions": {
     "baseUrl": "./src",
     "typeRoots": ["./src/types", "./node_modules/@types", "./@types"]
-  },
-  "files": ["./@types/express/index.d.ts"]
+  }
 }

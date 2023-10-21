@@ -11,7 +11,7 @@ export class LoginService implements ILoginService {
   ) {}
 
   public async login(data: ILogin) {
-    const userExists = await this.userRepository.hasUsername(data.username);
+    const userExists = this.userRepository.hasUsername(data.username);
 
     if (!userExists) {
       throw new UserNotFoundError();

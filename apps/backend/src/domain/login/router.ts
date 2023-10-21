@@ -1,21 +1,24 @@
-import { NextFunction, Request, Response, Router } from 'express';
 import { loginSchema } from './schemas';
 import makeLoginService from 'domain/factories/service/LoginServiceFactory';
-
-const router = Router();
+import { FastifyInstance } from 'fastify';
+import { ILogin } from './interfaces';
 
 const service = makeLoginService();
 
-router.post('/', async (req: Request, res: Response, next: NextFunction) => {
-  try {
-    const data = loginSchema.parse(req.body);
+async function loginRoutes(fastify: FastifyInstance) {
+  fastify.post<{ Body: ILogin }>(
+    '/',
+    {
+      schema: {
+        body: loginSchema,
+      },
+    },
+    async (req, reply) => {
+      const response = await service.login(req.body);
 
-    const response = await service.login(data);
+      reply.status(200).send(response);
+    },
+  );
+}
 
-    return res.status(200).json(response);
-  } catch (error) {
-    next(error);
-  }
-});
-
-export { router as loginRouter };
+export default loginRoutes;
