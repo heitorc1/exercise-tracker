@@ -4,6 +4,7 @@ import { TokenNotFoundError } from 'infra/exception/TokenNotFoundError';
 import { InvalidTokenError } from 'infra/exception/InvalidTokenError';
 import { Jwt } from 'helpers/jwtHandler';
 import { authenticate } from 'hooks/authenticate';
+import { UserRepository } from 'domain/user/repository';
 
 describe('Authenticate', () => {
   it('should return success', async () => {
@@ -24,6 +25,7 @@ describe('Authenticate', () => {
     jest
       .spyOn(Jwt.prototype, 'verify')
       .mockReturnValue({ data: user, exp: new Date().getTime() + 4 * 60 * 60 });
+    jest.spyOn(UserRepository.prototype, 'find').mockReturnValue(user);
 
     authenticate(req, res, next);
 

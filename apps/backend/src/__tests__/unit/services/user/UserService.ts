@@ -182,4 +182,10 @@ describe('UserService', () => {
       NothingToUpdateError,
     );
   });
+
+  it('should delete user', () => {
+    const existingUser = getUser();
+
+    expect(service.delete(existingUser.id)).toStrictEqual({ data: true });
+  });
 });

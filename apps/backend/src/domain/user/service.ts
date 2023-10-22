@@ -5,6 +5,7 @@ import {
   IUserRepository,
   IUserService,
   ICreateUser,
+  IResponse,
 } from './interfaces';
 import { EmailAlreadyInUseError } from 'infra/exception/EmailAlreadyInUseError';
 import { NothingToUpdateError } from 'infra/exception/NothingToUpdateError';
@@ -47,6 +48,13 @@ export class UserService implements IUserService {
     const response = await this.userRepository.update(id, data);
 
     return { data: response };
+  }
+
+  public delete(id: string): IResponse<boolean> {
+    const response = this.userRepository.delete(id);
+    return {
+      data: response,
+    };
   }
 
   public createExercise(id: string, body: ICreateExercise) {

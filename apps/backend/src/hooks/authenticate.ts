@@ -1,9 +1,13 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable @typescript-eslint/no-unused-vars */
+import makeUserRepository from 'domain/factories/repository/UserRepositoryFactory';
+import { IJwtUser } from 'domain/user/interfaces';
+import { jwtUserSchema } from 'domain/user/schemas';
 import { FastifyReply, FastifyRequest } from 'fastify';
 import jwtHandler from 'helpers/jwtHandler';
 import { InvalidTokenError } from 'infra/exception/InvalidTokenError';
 import { TokenNotFoundError } from 'infra/exception/TokenNotFoundError';
+import { UserNotFoundError } from 'infra/exception/UserNotFoundError';
 
 export function authenticate(
   req: FastifyRequest,
@@ -28,7 +32,17 @@ export function authenticate(
     throw new InvalidTokenError();
   }
 
-  req.user = response.data;
+  const user: IJwtUser = jwtUserSchema.parse(response.data);
+
+  const repository = makeUserRepository();
+
+  const validUser = repository.find(user.id);
+
+  if (!validUser) {
+    throw new InvalidTokenError();
+  }
+
+  req.user = user;
 
   done();
 }

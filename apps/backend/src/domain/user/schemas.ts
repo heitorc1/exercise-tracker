@@ -8,6 +8,12 @@ export const createUserSchema = z.object({
 
 export const updateUserSchema = createUserSchema.partial();
 
+export const jwtUserSchema = z.object({
+  id: z.string().uuid(),
+  username: z.string().min(3).max(255),
+  email: z.string().email(),
+});
+
 export const createExerciseSchema = z.object({
   description: z.string().min(3).max(255),
   duration: z.number().min(1),

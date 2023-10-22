@@ -4,6 +4,12 @@ import { IExercise, IUser, IUserQueries } from './interfaces';
 export class UserQueries implements IUserQueries {
   constructor(private readonly db: Database) {}
 
+  public find(id: string): IUser | undefined {
+    return this.db.prepare('SELECT * FROM users WHERE id = @id').get({
+      id,
+    }) as IUser;
+  }
+
   public getByUsername(username: string): IUser | undefined {
     return this.db
       .prepare(
@@ -67,6 +73,11 @@ export class UserQueries implements IUserQueries {
         updatedAt: data.updatedAt,
         id,
       }) as IUser;
+  }
+
+  delete(id: string): boolean {
+    return !!this.db.prepare('DELETE FROM users WHERE id = @id').run({ id })
+      .changes;
   }
 
   public createExercise(id: string, data: IExercise): IExercise {

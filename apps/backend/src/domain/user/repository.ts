@@ -12,6 +12,10 @@ import { v4 as uuidv4 } from 'uuid';
 export class UserRepository implements IUserRepository {
   constructor(private readonly userQueries: IUserQueries) {}
 
+  public find(id: string): IUser | undefined {
+    return this.userQueries.find(id);
+  }
+
   public list() {
     const users = this.userQueries.list();
 
@@ -58,6 +62,10 @@ export class UserRepository implements IUserRepository {
       updatedAt: date,
       id,
     });
+  }
+
+  public delete(id: string): boolean {
+    return this.userQueries.delete(id);
   }
 
   public createExercise(id: string, body: ICreateExercise) {
