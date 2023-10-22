@@ -1,9 +1,10 @@
 import { IUserRepository } from 'domain/user/interfaces';
 import { UserRepository } from 'domain/user/repository';
-import db from 'infra/db';
+import makeUserQueries from '../queries/UserQueriesFactory';
 
 const makeUserRepository = (): IUserRepository => {
-  return new UserRepository(db);
+  const userQueries = makeUserQueries();
+  return new UserRepository(userQueries);
 };
 
 export default makeUserRepository;

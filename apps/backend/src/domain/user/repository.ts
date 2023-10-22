@@ -3,22 +3,19 @@ import {
   IUser,
   IUserRepository,
   ICreateUser,
-  IExercise,
   IUpdateUser,
+  IUserQueries,
 } from './interfaces';
 import { hashPassword } from 'helpers/passwordHandler';
 import { v4 as uuidv4 } from 'uuid';
-import type { Database } from 'better-sqlite3';
 
 export class UserRepository implements IUserRepository {
-  constructor(private readonly db: Database) {}
+  constructor(private readonly userQueries: IUserQueries) {}
 
   public list() {
-    const users = this.db
-      .prepare('SELECT id, username, email, createdAt, updatedAt FROM users')
-      .all();
+    const users = this.userQueries.list();
 
-    if (!users.length) {
+    if (!users?.length) {
       return null;
     }
 
@@ -29,69 +26,38 @@ export class UserRepository implements IUserRepository {
     const id = uuidv4();
     const date = new Date().toISOString();
     const modifiedPassword = await hashPassword(data.password);
-    return this.db
-      .prepare(
-        `
-          INSERT INTO users
-          VALUES (@id, @username, @password, @email, @createdAt, @updatedAt)
-          RETURNING id, username, email, password, createdAt, updatedAt
-        `,
-      )
-      .get({
-        id,
-        username: data.username,
-        password: modifiedPassword,
-        email: data.email,
-        createdAt: date,
-        updatedAt: date,
-      }) as IUser;
+    return this.userQueries.create({
+      id,
+      username: data.username,
+      password: modifiedPassword,
+      email: data.email,
+      createdAt: date,
+      updatedAt: date,
+    });
   }
 
   public hasUsername(username: string) {
-    return !!this.db
-      .prepare('SELECT COUNT(1) FROM users WHERE username = @username')
-      .pluck()
-      .get({
-        username,
-      });
+    return !!this.userQueries.getByUsername(username);
   }
 
   public hasEmail(email: string) {
-    return !!this.db
-      .prepare('SELECT COUNT(1) FROM users WHERE email = @email')
-      .pluck()
-      .get({
-        email,
-      });
+    return this.userQueries.hasEmail(email);
   }
 
   public async update(id: string, data: IUpdateUser): Promise<IUser> {
-    let modifiedPassword: string | null = null;
+    let modifiedPassword: string | undefined;
     if (data.password) {
-      modifiedPassword = await hashPassword(data.password);
+      modifiedPassword = await hashPassword(data.password!);
     }
     const date = new Date().toISOString();
 
-    return this.db
-      .prepare(
-        `
-          UPDATE users 
-          SET 
-            username = IFNULL(@username, username),
-            email = IFNULL(@email, email),
-            password = IFNULL(@password, password),
-            updatedAt = @updatedAt
-          WHERE id = @id
-          RETURNING id, username, email, createdAt, updatedAt
-        `,
-      )
-      .get({
-        username: data.username,
-        email: data.email,
-        password: modifiedPassword,
-        updatedAt: date,
-        id,
-      }) as IUser;
+    return this.userQueries.update(id, {
+      username: data.username,
+      email: data.email,
+      password: modifiedPassword,
+      updatedAt: date,
+      id,
+    });
   }
 
   public createExercise(id: string, body: ICreateExercise) {
@@ -99,22 +65,14 @@ export class UserRepository implements IUserRepository {
     const date = new Date().toISOString();
     const formattedDate = new Date(body.date).toISOString();
 
-    return this.db
-      .prepare(
-        `
-          INSERT INTO exercises 
-          VALUES (@id, @description, @userId, @duration, @date, @createdAt, @updatedAt)
-          RETURNING *
-        `,
-      )
-      .get({
-        id: uuid,
-        description: body.description,
-        userId: id,
-        duration: body.duration,
-        date: formattedDate,
-        createdAt: date,
-        updatedAt: date,
-      }) as IExercise;
+    return this.userQueries.createExercise(id, {
+      id: uuid,
+      description: body.description,
+      userId: id,
+      duration: body.duration,
+      date: formattedDate,
+      createdAt: date,
+      updatedAt: date,
+    });
   }
 }

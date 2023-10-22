@@ -1,5 +1,9 @@
 import unitTestDb from '__tests__/unit/db';
-import { IUserRepository, IUserService } from 'domain/user/interfaces';
+import {
+  IUserQueries,
+  IUserRepository,
+  IUserService,
+} from 'domain/user/interfaces';
 import { UserRepository } from 'domain/user/repository';
 import { UserService } from 'domain/user/service';
 import { EmailAlreadyInUseError } from 'infra/exception/EmailAlreadyInUseError';
@@ -8,13 +12,16 @@ import { faker } from '@faker-js/faker';
 import { comparePassword } from 'helpers/passwordHandler';
 import { getUser } from '__tests__/unit/db/helpers/getUser';
 import { NothingToUpdateError } from 'infra/exception/NothingToUpdateError';
+import { UserQueries } from 'domain/user/queries';
 
 describe('UserService', () => {
   let repository: IUserRepository;
   let service: IUserService;
+  let userQueries: IUserQueries;
 
   beforeEach(() => {
-    repository = new UserRepository(unitTestDb);
+    userQueries = new UserQueries(unitTestDb);
+    repository = new UserRepository(userQueries);
     service = new UserService(repository);
   });
 
@@ -22,8 +29,8 @@ describe('UserService', () => {
     expect(service).toBeDefined();
   });
 
-  it('should list users', async () => {
-    const response = await service.list();
+  it('should list users', () => {
+    const response = service.list();
 
     expect(response.data?.length).toBeGreaterThan(1);
     expect(response.data?.[0]).toHaveProperty('id');
@@ -53,7 +60,7 @@ describe('UserService', () => {
   });
 
   it('should not create a new user with a username in use', async () => {
-    const user = await getUser();
+    const user = getUser();
     const data = {
       username: user.username,
       email: faker.internet.email(),
@@ -64,7 +71,7 @@ describe('UserService', () => {
   });
 
   it('should not create a new user with a email in use', async () => {
-    const user = await getUser();
+    const user = getUser();
     const data = {
       username: faker.internet.userName(),
       email: user.email,
@@ -75,7 +82,7 @@ describe('UserService', () => {
   });
 
   it('should update a valid user', async () => {
-    const existingUser = await getUser();
+    const existingUser = getUser();
     const user = {
       username: faker.internet.userName(),
       password: faker.internet.password(),
@@ -99,7 +106,7 @@ describe('UserService', () => {
   });
 
   it('should update a user with only username', async () => {
-    const existingUser = await getUser();
+    const existingUser = getUser();
     const user = {
       username: faker.internet.userName(),
     };
@@ -121,7 +128,7 @@ describe('UserService', () => {
   });
 
   it('should update a user with only email', async () => {
-    const existingUser = await getUser();
+    const existingUser = getUser();
     const user = {
       email: faker.internet.email(),
     };
@@ -143,7 +150,7 @@ describe('UserService', () => {
   });
 
   it('should update a user with only password', async () => {
-    const existingUser = await getUser();
+    const existingUser = getUser();
     const user = {
       password: faker.internet.password(),
     };
@@ -165,7 +172,7 @@ describe('UserService', () => {
   });
 
   it('should not update a user without any data', async () => {
-    const existingUser = await getUser();
+    const existingUser = getUser();
     const user = {};
 
     const date = new Date('2023-10-18');

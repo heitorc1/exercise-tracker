@@ -16,7 +16,7 @@ async function loginRoutes(fastify: FastifyInstance) {
     async (req, reply) => {
       const response = await service.login(req.body);
 
-      reply.status(200).send(response);
+      return reply.status(200).send(response);
     },
   );
 }

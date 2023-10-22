@@ -1,9 +1,10 @@
 import { ILoginRepository } from 'domain/login/interfaces';
 import { LoginRepository } from 'domain/login/repository';
-import db from 'infra/db';
+import makeUserQueries from '../queries/UserQueriesFactory';
 
 const makeLoginRepository = (): ILoginRepository => {
-  return new LoginRepository(db);
+  const userQueries = makeUserQueries();
+  return new LoginRepository(userQueries);
 };
 
 export default makeLoginRepository;

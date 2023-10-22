@@ -21,7 +21,7 @@ export interface IExercise {
   id: string;
   userId: string;
   description: string;
-  duration: string;
+  duration: number;
   date: string;
   createdAt?: string;
   updatedAt?: string;
@@ -47,4 +47,13 @@ export interface IUserRepository {
   hasUsername(username: string): boolean;
   hasEmail(email: string): boolean;
   createExercise(id: string, body: ICreateExercise): IExercise;
+}
+
+export interface IUserQueries {
+  list(): IUser[] | null;
+  getByUsername(username: string): IUser | undefined;
+  create(data: IUser): IUser;
+  hasEmail(email: string): boolean;
+  update(id: string, data: Partial<IUser>): IUser;
+  createExercise(id: string, body: IExercise): IExercise;
 }

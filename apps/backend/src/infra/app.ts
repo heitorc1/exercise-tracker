@@ -47,15 +47,15 @@ function build(options: FastifyHttpOptions<Server, FastifyBaseLogger>) {
     const statusCode = error?.statusCode || 500;
 
     if (error instanceof jwt.TokenExpiredError) {
-      reply.status(401).send({ error: error.message });
+      return reply.status(401).send({ error: error.message });
     }
 
     if (error instanceof ZodError) {
-      reply.status(400).send({ errors: error.issues });
+      return reply.status(400).send({ errors: error.issues });
     }
 
     if (error?.toJSON) {
-      reply.status(statusCode).send(error.toJSON());
+      return reply.status(statusCode).send(error.toJSON());
     }
 
     const outputError = {
@@ -68,12 +68,12 @@ function build(options: FastifyHttpOptions<Server, FastifyBaseLogger>) {
     if (error?.type === 'entity.parse.failed') {
       outputError.message = 'Corpo da request inválido';
       outputError.statusCode = 400;
-      reply.status(statusCode).send(outputError);
+      return reply.status(statusCode).send(outputError);
     }
 
     this.log.error('> Error: ', error);
 
-    reply.status(statusCode).send(outputError);
+    return reply.status(statusCode).send(outputError);
   });
 
   return fastify;
