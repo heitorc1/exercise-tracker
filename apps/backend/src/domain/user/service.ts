@@ -1,6 +1,5 @@
 import { UsernameTakenError } from 'infra/exception/UsernameTakenError';
 import {
-  ICreateExercise,
   IUpdateUser,
   IUserRepository,
   IUserService,
@@ -52,14 +51,6 @@ export class UserService implements IUserService {
 
   public delete(id: string): IResponse<boolean> {
     const response = this.userRepository.delete(id);
-    return {
-      data: response,
-    };
-  }
-
-  public createExercise(id: string, body: ICreateExercise) {
-    const response = this.userRepository.createExercise(id, body);
-
     return {
       data: response,
     };

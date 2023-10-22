@@ -10,16 +10,16 @@ import { EmailAlreadyInUseError } from 'infra/exception/EmailAlreadyInUseError';
 import { UsernameTakenError } from 'infra/exception/UsernameTakenError';
 import { faker } from '@faker-js/faker';
 import { comparePassword } from 'helpers/passwordHandler';
-import { getUser } from '__tests__/unit/db/helpers/getUser';
 import { NothingToUpdateError } from 'infra/exception/NothingToUpdateError';
 import { UserQueries } from 'domain/user/queries';
+import userHelper from '__tests__/unit/db/helpers/UserHelper';
 
 describe('UserService', () => {
   let repository: IUserRepository;
   let service: IUserService;
   let userQueries: IUserQueries;
 
-  beforeEach(() => {
+  beforeAll(() => {
     userQueries = new UserQueries(unitTestDb);
     repository = new UserRepository(userQueries);
     service = new UserService(repository);
@@ -60,7 +60,7 @@ describe('UserService', () => {
   });
 
   it('should not create a new user with a username in use', async () => {
-    const user = getUser();
+    const user = userHelper.getUser();
     const data = {
       username: user.username,
       email: faker.internet.email(),
@@ -71,7 +71,7 @@ describe('UserService', () => {
   });
 
   it('should not create a new user with a email in use', async () => {
-    const user = getUser();
+    const user = userHelper.getUser();
     const data = {
       username: faker.internet.userName(),
       email: user.email,
@@ -82,7 +82,7 @@ describe('UserService', () => {
   });
 
   it('should update a valid user', async () => {
-    const existingUser = getUser();
+    const existingUser = userHelper.getUser();
     const user = {
       username: faker.internet.userName(),
       password: faker.internet.password(),
@@ -106,7 +106,7 @@ describe('UserService', () => {
   });
 
   it('should update a user with only username', async () => {
-    const existingUser = getUser();
+    const existingUser = userHelper.getUser();
     const user = {
       username: faker.internet.userName(),
     };
@@ -128,7 +128,7 @@ describe('UserService', () => {
   });
 
   it('should update a user with only email', async () => {
-    const existingUser = getUser();
+    const existingUser = userHelper.getUser();
     const user = {
       email: faker.internet.email(),
     };
@@ -150,7 +150,7 @@ describe('UserService', () => {
   });
 
   it('should update a user with only password', async () => {
-    const existingUser = getUser();
+    const existingUser = userHelper.getUser();
     const user = {
       password: faker.internet.password(),
     };
@@ -172,7 +172,7 @@ describe('UserService', () => {
   });
 
   it('should not update a user without any data', async () => {
-    const existingUser = getUser();
+    const existingUser = userHelper.getUser();
     const user = {};
 
     const date = new Date('2023-10-18');
@@ -184,7 +184,7 @@ describe('UserService', () => {
   });
 
   it('should delete user', () => {
-    const existingUser = getUser();
+    const existingUser = userHelper.getUser();
 
     expect(service.delete(existingUser.id)).toStrictEqual({ data: true });
   });

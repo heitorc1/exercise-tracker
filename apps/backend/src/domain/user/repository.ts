@@ -1,5 +1,4 @@
 import {
-  ICreateExercise,
   IUser,
   IUserRepository,
   ICreateUser,
@@ -16,17 +15,11 @@ export class UserRepository implements IUserRepository {
     return this.userQueries.find(id);
   }
 
-  public list() {
-    const users = this.userQueries.list();
-
-    if (!users?.length) {
-      return null;
-    }
-
-    return users as IUser[];
+  public list(): IUser[] {
+    return this.userQueries.list();
   }
 
-  public async create(data: ICreateUser) {
+  public async create(data: ICreateUser): Promise<IUser> {
     const id = uuidv4();
     const date = new Date().toISOString();
     const modifiedPassword = await hashPassword(data.password);
@@ -40,11 +33,11 @@ export class UserRepository implements IUserRepository {
     });
   }
 
-  public hasUsername(username: string) {
+  public hasUsername(username: string): boolean {
     return !!this.userQueries.getByUsername(username);
   }
 
-  public hasEmail(email: string) {
+  public hasEmail(email: string): boolean {
     return this.userQueries.hasEmail(email);
   }
 
@@ -66,21 +59,5 @@ export class UserRepository implements IUserRepository {
 
   public delete(id: string): boolean {
     return this.userQueries.delete(id);
-  }
-
-  public createExercise(id: string, body: ICreateExercise) {
-    const uuid = uuidv4();
-    const date = new Date().toISOString();
-    const formattedDate = new Date(body.date).toISOString();
-
-    return this.userQueries.createExercise(id, {
-      id: uuid,
-      description: body.description,
-      userId: id,
-      duration: body.duration,
-      date: formattedDate,
-      createdAt: date,
-      updatedAt: date,
-    });
   }
 }

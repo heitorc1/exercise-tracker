@@ -1,5 +1,5 @@
 import type { Database } from 'better-sqlite3';
-import { IExercise, IUser, IUserQueries } from './interfaces';
+import { IUser, IUserQueries } from './interfaces';
 
 export class UserQueries implements IUserQueries {
   constructor(private readonly db: Database) {}
@@ -80,23 +80,7 @@ export class UserQueries implements IUserQueries {
       .changes;
   }
 
-  public createExercise(id: string, data: IExercise): IExercise {
-    return this.db
-      .prepare(
-        `
-          INSERT INTO exercises 
-          VALUES (@id, @description, @userId, @duration, @date, @createdAt, @updatedAt)
-          RETURNING *
-        `,
-      )
-      .get({
-        id: data.id,
-        description: data.description,
-        userId: id,
-        duration: data.duration,
-        date: data.date,
-        createdAt: data.createdAt,
-        updatedAt: data.updatedAt,
-      }) as IExercise;
+  public findFirst() {
+    return this.db.prepare('SELECT * FROM users LIMIT 1').get() as IUser;
   }
 }

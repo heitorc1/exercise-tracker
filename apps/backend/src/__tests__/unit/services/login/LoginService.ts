@@ -1,7 +1,6 @@
 import { faker } from '@faker-js/faker';
 import unitTestDb from '__tests__/unit/db';
-import { getUser } from '__tests__/unit/db/helpers/getUser';
-import { insertUser } from '__tests__/unit/db/helpers/insertUser';
+import userHelper from '__tests__/unit/db/helpers/UserHelper';
 import { ILoginRepository, ILoginService } from 'domain/login/interfaces';
 import { LoginRepository } from 'domain/login/repository';
 import { LoginService } from 'domain/login/service';
@@ -18,7 +17,7 @@ describe('LoginService', () => {
   let userRepository: IUserRepository;
   let service: ILoginService;
 
-  beforeEach(() => {
+  beforeAll(() => {
     userQueries = new UserQueries(unitTestDb);
     loginRepository = new LoginRepository(userQueries);
     userRepository = new UserRepository(userQueries);
@@ -35,7 +34,7 @@ describe('LoginService', () => {
       password: faker.internet.password(),
     };
 
-    const user = await insertUser(data.username, data.password);
+    const user = await userHelper.insertUser(data.username, data.password);
 
     const response = await service.login(data);
 
@@ -58,7 +57,7 @@ describe('LoginService', () => {
   });
 
   it('should not login with invalid password', async () => {
-    const user = getUser();
+    const user = userHelper.getUser();
 
     expect(
       service.login({ username: user.username, password: 'invalid' }),

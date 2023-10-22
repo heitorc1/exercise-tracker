@@ -10,6 +10,7 @@ import { privateUserRoutes, publicUserRoutes } from 'domain/user/router';
 import loginRoutes from 'domain/login/router';
 import { ZodAny, ZodError } from 'zod';
 import { Server } from 'http';
+import { exerciseRoutes } from 'domain/exercises/routes';
 
 function build(options: FastifyHttpOptions<Server, FastifyBaseLogger>) {
   const fastify = Fastify(options);
@@ -38,6 +39,7 @@ function build(options: FastifyHttpOptions<Server, FastifyBaseLogger>) {
   fastify.register(publicUserRoutes, { prefix: 'user' });
   fastify.register(privateUserRoutes, { prefix: 'user' });
   fastify.register(loginRoutes, { prefix: 'login' });
+  fastify.register(exerciseRoutes, { prefix: 'exercise' });
 
   fastify.setErrorHandler(function (
     error: any,

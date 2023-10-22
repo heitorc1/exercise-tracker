@@ -1,11 +1,7 @@
-import {
-  createExerciseSchema,
-  createUserSchema,
-  updateUserSchema,
-} from './schemas';
+import { createUserSchema, updateUserSchema } from './schemas';
 import makeUserService from 'domain/factories/service/UserServiceFactory';
 import { FastifyInstance } from 'fastify';
-import { ICreateExercise, ICreateUser, IUpdateUser } from './interfaces';
+import { ICreateUser, IUpdateUser } from './interfaces';
 import { authenticate } from 'hooks/authenticate';
 
 const service = makeUserService();
@@ -51,17 +47,4 @@ export async function privateUserRoutes(fastify: FastifyInstance) {
     const response = service.delete(req.user.id);
     reply.status(200).send(response);
   });
-
-  fastify.post<{ Body: ICreateExercise }>(
-    '/exercises',
-    {
-      schema: {
-        body: createExerciseSchema,
-      },
-    },
-    (req, reply) => {
-      const response = service.createExercise(req.user.id, req.body);
-      reply.status(201).send(response);
-    },
-  );
 }
