@@ -13,6 +13,12 @@ class Api {
         "Content-Type": "application/json",
       },
     });
+    const token = localStorage.getItem("token");
+    if (token) {
+      this._instance.defaults.headers.common[
+        "Authorization"
+      ] = `Bearer ${token}`;
+    }
   }
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any

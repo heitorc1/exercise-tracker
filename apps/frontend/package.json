@@ -11,8 +11,8 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@ant-design/icons": "^5.2.6",
     "@emotion/react": "^11.11.1",
-    "@emotion/styled": "^11.11.0",
     "@tanstack/react-query": "^4.32.1",
     "@tanstack/react-query-devtools": "^4.32.1",
     "antd": "^5.8.2",
@@ -27,7 +27,10 @@
     "@types/react": "^18.2.15",
     "@types/react-dom": "^18.2.7",
     "@vitejs/plugin-react": "^4.0.3",
+    "autoprefixer": "^10.4.16",
     "eslint-config-custom": "workspace:*",
+    "postcss": "^8.4.31",
+    "tailwindcss": "^3.3.3",
     "tsconfig": "workspace:*",
     "vite": "^4.5.0"
   }

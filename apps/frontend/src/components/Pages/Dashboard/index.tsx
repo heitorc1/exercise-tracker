@@ -1,6 +1,6 @@
 import React from "react";
-import PageHeader from "../../PageHeader";
 import { useGetUsers } from "../../../hooks/useGetUsers";
+import AppFrame from "../../AppFrame";
 
 const Dashboard = () => {
   const { data: users, isError, isLoading } = useGetUsers();
@@ -14,18 +14,16 @@ const Dashboard = () => {
   }
 
   return (
-    <>
-      <PageHeader title="Dashboard" />
-      <h3>Users</h3>
+    <AppFrame title="Users">
       {users.data.map((user, index) => (
-        <ul style={{ marginBottom: 16 }}>
+        <ul style={{ marginBottom: 16 }} key={user.id}>
           User {index}
           <li>id: {user.id}</li>
           <li>username: {user.username}</li>
           <li>email: {user.email}</li>
         </ul>
       ))}
-    </>
+    </AppFrame>
   );
 };
 

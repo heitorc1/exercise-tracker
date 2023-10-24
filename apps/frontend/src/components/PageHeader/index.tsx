@@ -1,5 +1,4 @@
 import React from "react";
-import { Row } from "antd";
 import { Typography } from "antd";
 
 type Props = {
@@ -10,9 +9,9 @@ const { Title } = Typography;
 
 const PageHeader = ({ title }: Props) => {
   return (
-    <Row justify="center">
+    <div className="flex flex-row justify-center mb-8">
       <Title level={2}>{title}</Title>
-    </Row>
+    </div>
   );
 };
 

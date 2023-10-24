@@ -1,4 +1,5 @@
 import build from './app';
+import { APP_PORT } from './config';
 
 const fastify = build({
   logger: true,
@@ -6,7 +7,7 @@ const fastify = build({
 
 const start = async () => {
   try {
-    fastify.listen({ port: 3000 });
+    fastify.listen({ port: APP_PORT });
   } catch (err) {
     fastify.log.error(err);
     process.exit(1);
