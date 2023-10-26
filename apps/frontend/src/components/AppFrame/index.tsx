@@ -1,6 +1,7 @@
 import React from "react";
 import Menu from "../Menu";
 import { Avatar, Dropdown, Layout, MenuProps } from "antd";
+import { Link } from "react-router-dom";
 
 const { Header, Content } = Layout;
 
@@ -12,7 +13,7 @@ type Props = {
 const items: MenuProps["items"] = [
   {
     key: "logout",
-    label: "Log out",
+    label: <Link to="/logout">Log out</Link>,
   },
 ];
 

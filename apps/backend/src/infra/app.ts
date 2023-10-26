@@ -7,7 +7,7 @@ import * as jwt from 'jsonwebtoken';
 import 'dotenv/config';
 
 import { privateUserRoutes, publicUserRoutes } from 'domain/user/router';
-import loginRoutes from 'domain/login/router';
+import authRoutes from 'domain/auth/router';
 import { ZodAny, ZodError } from 'zod';
 import { Server } from 'http';
 import { exerciseRoutes } from 'domain/exercises/routes';
@@ -38,7 +38,7 @@ function build(options: FastifyHttpOptions<Server, FastifyBaseLogger>) {
 
   fastify.register(publicUserRoutes, { prefix: 'user' });
   fastify.register(privateUserRoutes, { prefix: 'user' });
-  fastify.register(loginRoutes, { prefix: 'login' });
+  fastify.register(authRoutes, { prefix: 'auth' });
   fastify.register(exerciseRoutes, { prefix: 'exercise' });
 
   fastify.setErrorHandler(function (

@@ -1,27 +1,28 @@
 import { faker } from '@faker-js/faker';
 import unitTestDb from '__tests__/unit/db';
 import userHelper from '__tests__/unit/db/helpers/UserHelper';
-import { ILoginRepository, ILoginService } from 'domain/login/interfaces';
-import { LoginRepository } from 'domain/login/repository';
-import { LoginService } from 'domain/login/service';
+import { IAuthRepository, IAuthService } from 'domain/auth/interfaces';
+import { AuthRepository } from 'domain/auth/repository';
+import { AuthService } from 'domain/auth/service';
 import { IUserQueries, IUserRepository } from 'domain/user/interfaces';
 import { UserQueries } from 'domain/user/queries';
 import { UserRepository } from 'domain/user/repository';
 import jwtHandler from 'helpers/jwtHandler';
 import { InvalidCredentialsError } from 'infra/exception/InvalidCredentialsError';
+import { InvalidTokenError } from 'infra/exception/InvalidTokenError';
 import { UserNotFoundError } from 'infra/exception/UserNotFoundError';
 
-describe('LoginService', () => {
+describe('AuthService', () => {
   let userQueries: IUserQueries;
-  let loginRepository: ILoginRepository;
+  let authRepository: IAuthRepository;
   let userRepository: IUserRepository;
-  let service: ILoginService;
+  let service: IAuthService;
 
   beforeAll(() => {
     userQueries = new UserQueries(unitTestDb);
-    loginRepository = new LoginRepository(userQueries);
+    authRepository = new AuthRepository(userQueries);
     userRepository = new UserRepository(userQueries);
-    service = new LoginService(loginRepository, userRepository);
+    service = new AuthService(authRepository, userRepository);
   });
 
   it('should be defined', () => {
@@ -62,5 +63,27 @@ describe('LoginService', () => {
     expect(
       service.login({ username: user.username, password: 'invalid' }),
     ).rejects.toThrowError(InvalidCredentialsError);
+  });
+
+  it('should verify a correct token', () => {
+    const user = {
+      id: faker.string.uuid(),
+      username: faker.internet.userName(),
+      email: faker.internet.email(),
+    };
+
+    jest.spyOn(jwtHandler, 'verify').mockReturnValue({ data: user });
+
+    const response = service.verifyToken({ token: 'my-token' });
+
+    expect(response.data).toStrictEqual(user);
+  });
+
+  it('should throw an error if incorrect token is provided', () => {
+    jest.spyOn(jwtHandler, 'verify').mockReturnValue('incorrect-token');
+
+    expect(() => service.verifyToken({ token: 'my-token' })).toThrowError(
+      InvalidTokenError,
+    );
   });
 });

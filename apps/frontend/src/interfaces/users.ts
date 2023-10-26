@@ -12,4 +12,6 @@ export interface ICreateUser {
   password: string;
 }
 
-export type GetUserResponse = Response<IUser[]>;
+export type GetUserResponse = Response<IUser>;
+
+export type GetUsersResponse = Response<IUser[]>;

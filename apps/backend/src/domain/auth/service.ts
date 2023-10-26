@@ -1,12 +1,18 @@
-import { IUserRepository } from 'domain/user/interfaces';
-import { ILoginRepository, ILoginService, ILogin } from './interfaces';
+import { IResponse, IUser, IUserRepository } from 'domain/user/interfaces';
+import {
+  IAuthRepository,
+  IAuthService,
+  ILogin,
+  IVerifyToken,
+} from './interfaces';
 import { UserNotFoundError } from 'infra/exception/UserNotFoundError';
 import { InvalidCredentialsError } from 'infra/exception/InvalidCredentialsError';
 import jwtHandler from 'helpers/jwtHandler';
+import { InvalidTokenError } from 'infra/exception/InvalidTokenError';
 
-export class LoginService implements ILoginService {
+export class AuthService implements IAuthService {
   constructor(
-    private readonly loginRepository: ILoginRepository,
+    private readonly loginRepository: IAuthRepository,
     private readonly userRepository: IUserRepository,
   ) {}
 
@@ -26,5 +32,15 @@ export class LoginService implements ILoginService {
     const token = jwtHandler.sign(user);
 
     return { data: token };
+  }
+
+  public verifyToken(data: IVerifyToken): IResponse<IUser> {
+    const decoded = jwtHandler.verify(data.token);
+
+    if (typeof decoded === 'string') {
+      throw new InvalidTokenError();
+    }
+
+    return { data: decoded.data as IUser };
   }
 }

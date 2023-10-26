@@ -1,8 +1,8 @@
-import { ILoginRepository, ILogin } from './interfaces';
+import { IAuthRepository, ILogin } from './interfaces';
 import { comparePassword } from 'helpers/passwordHandler';
 import { IUserQueries } from 'domain/user/interfaces';
 
-export class LoginRepository implements ILoginRepository {
+export class AuthRepository implements IAuthRepository {
   constructor(private readonly userQueries: IUserQueries) {}
 
   public async checkLogin(data: ILogin) {

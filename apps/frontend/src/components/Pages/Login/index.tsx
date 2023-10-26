@@ -2,11 +2,10 @@ import React from "react";
 import { Button, Form, Input } from "antd";
 import { Link, useNavigate } from "react-router-dom";
 import { useMutation } from "@tanstack/react-query";
-import loginService from "../../../services/login";
 import { ILogin } from "../../../interfaces/login";
 import { toast } from "react-toastify";
-import api from "../../../api";
 import LoginFrame from "../../LoginFrame";
+import authService from "../../../services/auth";
 
 type FieldType = {
   username?: string;
@@ -17,15 +16,11 @@ const Login = () => {
   const navigate = useNavigate();
   const mutation = useMutation(
     (data: ILogin) => {
-      return loginService.login(data);
+      return authService.login(data);
     },
     {
-      onSuccess: (data) => {
+      onSuccess: () => {
         toast.success("User logged in");
-        localStorage.setItem("token", data);
-        api.instance.defaults.headers.common[
-          "Authorization"
-        ] = `Bearer ${data}`;
         navigate("/dashboard");
       },
       onError: () => {
