@@ -1,5 +1,5 @@
-import type { Database } from 'better-sqlite3';
 import { IExercise, IExerciseQueries } from './interfaces';
+import type { Database } from 'better-sqlite3';
 
 export class ExerciseQueries implements IExerciseQueries {
   constructor(private readonly db: Database) {}

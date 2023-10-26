@@ -1,9 +1,9 @@
-import React from "react";
+import { ReactNode } from "react";
 import PageHeader from "../PageHeader";
 
 type Props = {
   title: string;
-  children: React.ReactNode;
+  children: ReactNode;
 };
 
 const LoginFrame = ({ title, children }: Props) => {

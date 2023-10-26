@@ -1,5 +1,5 @@
-import api from "../api";
-import { ICreateUser, IUser } from "../interfaces/users";
+import api from "@/api";
+import { ICreateUser, IUser } from "@/interfaces/users";
 
 class UserService {
   public async getUsers() {

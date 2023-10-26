@@ -1,6 +1,6 @@
-import { IAuthRepository, ILogin } from './interfaces';
 import { comparePassword } from 'helpers/passwordHandler';
 import { IUserQueries } from 'domain/user/interfaces';
+import { IAuthRepository, ILogin } from './interfaces';
 
 export class AuthRepository implements IAuthRepository {
   constructor(private readonly userQueries: IUserQueries) {}

@@ -1,8 +1,8 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { HomeOutlined, UserOutlined } from "@ant-design/icons";
-import type { MenuProps } from "antd";
 import { Menu as AntdMenu } from "antd";
 import { Link, useLocation } from "react-router-dom";
+import type { MenuProps } from "antd";
 
 const items: MenuProps["items"] = [
   {

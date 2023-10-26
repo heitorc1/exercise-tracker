@@ -1,5 +1,5 @@
-import type { Database } from 'better-sqlite3';
 import { IUser, IUserQueries } from './interfaces';
+import type { Database } from 'better-sqlite3';
 
 export class UserQueries implements IUserQueries {
   constructor(private readonly db: Database) {}

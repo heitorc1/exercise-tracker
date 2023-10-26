@@ -1,14 +1,14 @@
 import { IResponse, IUser, IUserRepository } from 'domain/user/interfaces';
+import { UserNotFoundError } from 'infra/exception/UserNotFoundError';
+import { InvalidCredentialsError } from 'infra/exception/InvalidCredentialsError';
+import jwtHandler from 'helpers/jwtHandler';
+import { InvalidTokenError } from 'infra/exception/InvalidTokenError';
 import {
   IAuthRepository,
   IAuthService,
   ILogin,
   IVerifyToken,
 } from './interfaces';
-import { UserNotFoundError } from 'infra/exception/UserNotFoundError';
-import { InvalidCredentialsError } from 'infra/exception/InvalidCredentialsError';
-import jwtHandler from 'helpers/jwtHandler';
-import { InvalidTokenError } from 'infra/exception/InvalidTokenError';
 
 export class AuthService implements IAuthService {
   constructor(

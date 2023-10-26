@@ -1,7 +1,7 @@
-import { loginSchema, verifySchema } from './schemas';
 import { FastifyInstance } from 'fastify';
-import { ILogin, IVerifyToken } from './interfaces';
 import makeAuthService from 'domain/factories/service/AuthServiceFactory';
+import { loginSchema, verifySchema } from './schemas';
+import { ILogin, IVerifyToken } from './interfaces';
 
 const service = makeAuthService();
 

@@ -1,10 +1,9 @@
-import React from "react";
 import { createBrowserRouter, redirect } from "react-router-dom";
-import App from "./App";
-import Register from "./components/Pages/Register";
-import Login from "./components/Pages/Login";
 import Dashboard from "./components/Pages/Dashboard";
 import Profile from "./components/Pages/Profile";
+import App from "./App";
+import Login from "./components/Pages/Login";
+import Register from "./components/Pages/Register";
 import authService from "./services/auth";
 
 const router = createBrowserRouter([

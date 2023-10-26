@@ -1,8 +1,8 @@
-import { ExerciseQueries } from 'domain/exercises/queries';
-import unitTestDb from '..';
-import { IExerciseQueries } from 'domain/exercises/interfaces';
 import { v4 as uuidv4 } from 'uuid';
 import { faker } from '@faker-js/faker';
+import { ExerciseQueries } from 'domain/exercises/queries';
+import { IExerciseQueries } from 'domain/exercises/interfaces';
+import unitTestDb from '..';
 import userHelper from './UserHelper';
 
 class ExerciseHelper {

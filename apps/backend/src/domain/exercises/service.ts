@@ -1,13 +1,13 @@
 import { ExerciseNotFoundError } from 'infra/exception/ExerciseNotFoundError';
+import { NothingToUpdateError } from 'infra/exception/NothingToUpdateError';
 import {
   ICreateExercise,
-  IExerciseService,
-  IExerciseRepository,
   IExercise,
+  IExerciseRepository,
+  IExerciseService,
   IResponse,
   IUpdateExercise,
 } from './interfaces';
-import { NothingToUpdateError } from 'infra/exception/NothingToUpdateError';
 
 export class ExerciseService implements IExerciseService {
   constructor(private readonly exerciseRepository: IExerciseRepository) {}

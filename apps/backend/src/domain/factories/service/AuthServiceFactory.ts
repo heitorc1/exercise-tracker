@@ -1,7 +1,7 @@
 import { AuthService } from 'domain/auth/service';
+import { IAuthService } from 'domain/auth/interfaces';
 import makeAuthRepository from '../repository/AuthRepositoryFactory';
 import makeUserRepository from '../repository/UserRepositoryFactory';
-import { IAuthService } from 'domain/auth/interfaces';
 
 const makeAuthService = (): IAuthService => {
   const userRepository = makeUserRepository();

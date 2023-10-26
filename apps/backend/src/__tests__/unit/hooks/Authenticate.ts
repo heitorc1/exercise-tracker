@@ -1,4 +1,4 @@
-import * as httpMocks from 'node-mocks-http';
+import { createRequest, createResponse } from 'node-mocks-http';
 import * as jwt from 'jsonwebtoken';
 import { TokenNotFoundError } from 'infra/exception/TokenNotFoundError';
 import { InvalidTokenError } from 'infra/exception/InvalidTokenError';
@@ -8,12 +8,12 @@ import { UserRepository } from 'domain/user/repository';
 
 describe('Authenticate', () => {
   it('should return success', async () => {
-    const req = httpMocks.createRequest({
+    const req = createRequest({
       headers: {
         authorization: 'Bearer jwt',
       },
     });
-    const res = httpMocks.createResponse();
+    const res = createResponse();
     const next = jest.fn();
 
     const user = {
@@ -33,10 +33,10 @@ describe('Authenticate', () => {
   });
 
   it('should not proceed if authorization header does not exists', () => {
-    const req = httpMocks.createRequest({
+    const req = createRequest({
       headers: {},
     });
-    const res = httpMocks.createResponse();
+    const res = createResponse();
     const next = jest.fn();
 
     expect(req.headers.authorization).toBeUndefined();
@@ -44,24 +44,24 @@ describe('Authenticate', () => {
   });
 
   it('should not proceed if authorization header is invalid', () => {
-    const req = httpMocks.createRequest({
+    const req = createRequest({
       headers: {
         authorization: 'invalid',
       },
     });
-    const res = httpMocks.createResponse();
+    const res = createResponse();
     const next = jest.fn();
 
     expect(() => authenticate(req, res, next)).toThrow(InvalidTokenError);
   });
 
   it('should not proceed if verify return a string', () => {
-    const req = httpMocks.createRequest({
+    const req = createRequest({
       headers: {
         authorization: 'Bearer jwt',
       },
     });
-    const res = httpMocks.createResponse();
+    const res = createResponse();
     const next = jest.fn();
 
     jest.spyOn(Jwt.prototype, 'verify').mockReturnValue('mytoken');
@@ -70,12 +70,12 @@ describe('Authenticate', () => {
   });
 
   it('should not proceed if token is expired', () => {
-    const req = httpMocks.createRequest({
+    const req = createRequest({
       headers: {
         authorization: 'Bearer jwt',
       },
     });
-    const res = httpMocks.createResponse();
+    const res = createResponse();
     const next = jest.fn();
 
     jest.spyOn(Jwt.prototype, 'verify').mockImplementation(() => {

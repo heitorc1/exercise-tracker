@@ -1,13 +1,13 @@
 import { UsernameTakenError } from 'infra/exception/UsernameTakenError';
+import { EmailAlreadyInUseError } from 'infra/exception/EmailAlreadyInUseError';
+import { NothingToUpdateError } from 'infra/exception/NothingToUpdateError';
 import {
+  ICreateUser,
+  IResponse,
   IUpdateUser,
   IUserRepository,
   IUserService,
-  ICreateUser,
-  IResponse,
 } from './interfaces';
-import { EmailAlreadyInUseError } from 'infra/exception/EmailAlreadyInUseError';
-import { NothingToUpdateError } from 'infra/exception/NothingToUpdateError';
 
 export class UserService implements IUserService {
   constructor(private readonly userRepository: IUserRepository) {}

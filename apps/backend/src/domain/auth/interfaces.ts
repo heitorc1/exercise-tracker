@@ -1,6 +1,6 @@
 import { z } from 'zod';
-import { loginSchema, verifySchema } from './schemas';
 import { IResponse, IUser } from 'domain/user/interfaces';
+import { loginSchema, verifySchema } from './schemas';
 
 export interface ILogin extends z.infer<typeof loginSchema> {}
 export interface IVerifyToken extends z.infer<typeof verifySchema> {}

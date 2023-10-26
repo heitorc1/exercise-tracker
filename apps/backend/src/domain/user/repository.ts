@@ -1,12 +1,12 @@
+import { v4 as uuidv4 } from 'uuid';
+import { hashPassword } from 'helpers/passwordHandler';
 import {
-  IUser,
-  IUserRepository,
   ICreateUser,
   IUpdateUser,
+  IUser,
   IUserQueries,
+  IUserRepository,
 } from './interfaces';
-import { hashPassword } from 'helpers/passwordHandler';
-import { v4 as uuidv4 } from 'uuid';
 
 export class UserRepository implements IUserRepository {
   constructor(private readonly userQueries: IUserQueries) {}

@@ -1,8 +1,8 @@
 import { faker } from '@faker-js/faker';
 import { IUserQueries } from 'domain/user/interfaces';
 import { hashPassword } from 'helpers/passwordHandler';
-import unitTestDb from '..';
 import { UserQueries } from 'domain/user/queries';
+import unitTestDb from '..';
 
 class UserHelper {
   constructor(private readonly userQueries: IUserQueries) {}

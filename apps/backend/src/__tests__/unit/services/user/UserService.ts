@@ -1,3 +1,4 @@
+import { faker } from '@faker-js/faker';
 import unitTestDb from '__tests__/unit/db';
 import {
   IUserQueries,
@@ -8,7 +9,6 @@ import { UserRepository } from 'domain/user/repository';
 import { UserService } from 'domain/user/service';
 import { EmailAlreadyInUseError } from 'infra/exception/EmailAlreadyInUseError';
 import { UsernameTakenError } from 'infra/exception/UsernameTakenError';
-import { faker } from '@faker-js/faker';
 import { comparePassword } from 'helpers/passwordHandler';
 import { NothingToUpdateError } from 'infra/exception/NothingToUpdateError';
 import { UserQueries } from 'domain/user/queries';

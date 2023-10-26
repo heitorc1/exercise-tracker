@@ -1,13 +1,13 @@
-import React from "react";
-import Menu from "../Menu";
+import { ReactNode } from "react";
 import { Avatar, Dropdown, Layout, MenuProps } from "antd";
 import { Link } from "react-router-dom";
+import Menu from "../Menu";
 
 const { Header, Content } = Layout;
 
 type Props = {
   title: string;
-  children: React.ReactNode;
+  children: ReactNode;
 };
 
 const items: MenuProps["items"] = [

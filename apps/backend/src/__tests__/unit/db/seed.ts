@@ -1,6 +1,6 @@
 import { faker } from '@faker-js/faker';
-import type { Database } from 'better-sqlite3';
 import { hashPassword } from 'helpers/passwordHandler';
+import type { Database } from 'better-sqlite3';
 
 export async function seed(db: Database) {
   for (let i = 0; i < 10; i++) {

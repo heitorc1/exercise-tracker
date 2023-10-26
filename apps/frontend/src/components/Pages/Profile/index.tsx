@@ -1,5 +1,4 @@
-import React from "react";
-import AppFrame from "../../AppFrame";
+import AppFrame from "@/components/AppFrame";
 
 const Profile = () => {
   return <AppFrame title="Profile">To do</AppFrame>;

@@ -1,11 +1,10 @@
-import React from "react";
 import { useMutation } from "@tanstack/react-query";
 import { Button, Form, Input } from "antd";
 import { Link, redirect } from "react-router-dom";
-import userService from "../../../services/users";
-import { ICreateUser } from "../../../interfaces/users";
 import { toast } from "react-toastify";
-import LoginFrame from "../../LoginFrame";
+import userService from "@/services/users";
+import { ICreateUser } from "@/interfaces/users";
+import LoginFrame from "@/components/LoginFrame";
 
 const Register = () => {
   const mutation = useMutation(

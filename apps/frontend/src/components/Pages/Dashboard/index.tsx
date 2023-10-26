@@ -1,6 +1,5 @@
-import React from "react";
-import { useGetUsers } from "../../../hooks/useGetUsers";
-import AppFrame from "../../AppFrame";
+import AppFrame from "@/components/AppFrame";
+import { useGetUsers } from "@/hooks/useGetUsers";
 
 const Dashboard = () => {
   const { data: users, isError, isLoading } = useGetUsers();

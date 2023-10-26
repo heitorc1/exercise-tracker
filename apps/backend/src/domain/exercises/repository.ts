@@ -1,3 +1,4 @@
+import { v4 as uuidv4 } from 'uuid';
 import {
   ICreateExercise,
   IExercise,
@@ -5,7 +6,6 @@ import {
   IExerciseRepository,
   IUpdateExercise,
 } from './interfaces';
-import { v4 as uuidv4 } from 'uuid';
 
 export class ExerciseRepository implements IExerciseRepository {
   constructor(private readonly exerciseQueries: IExerciseQueries) {}

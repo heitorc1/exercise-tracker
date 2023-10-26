@@ -1,12 +1,12 @@
+import { FastifyInstance } from 'fastify';
+import { authenticate } from 'hooks/authenticate';
+import makeExerciseService from 'domain/factories/service/ExerciseServiceFactory';
+import { ICreateExercise, IFindExercise, IUpdateExercise } from './interfaces';
 import {
   createExerciseSchema,
   findExerciseSchema,
   updateExerciseSchema,
 } from './schemas';
-import { FastifyInstance } from 'fastify';
-import { ICreateExercise, IFindExercise, IUpdateExercise } from './interfaces';
-import { authenticate } from 'hooks/authenticate';
-import makeExerciseService from 'domain/factories/service/ExerciseServiceFactory';
 
 const service = makeExerciseService();
 

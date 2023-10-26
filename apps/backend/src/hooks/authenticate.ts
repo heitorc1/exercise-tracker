@@ -1,9 +1,9 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable @typescript-eslint/no-unused-vars */
+import { FastifyReply, FastifyRequest } from 'fastify';
 import makeUserRepository from 'domain/factories/repository/UserRepositoryFactory';
 import { IJwtUser } from 'domain/user/interfaces';
 import { jwtUserSchema } from 'domain/user/schemas';
-import { FastifyReply, FastifyRequest } from 'fastify';
 import jwtHandler from 'helpers/jwtHandler';
 import { InvalidTokenError } from 'infra/exception/InvalidTokenError';
 import { TokenNotFoundError } from 'infra/exception/TokenNotFoundError';

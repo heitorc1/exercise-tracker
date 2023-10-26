@@ -1,11 +1,10 @@
-import React from "react";
 import { Button, Form, Input } from "antd";
 import { Link, useNavigate } from "react-router-dom";
 import { useMutation } from "@tanstack/react-query";
-import { ILogin } from "../../../interfaces/login";
 import { toast } from "react-toastify";
-import LoginFrame from "../../LoginFrame";
-import authService from "../../../services/auth";
+import LoginFrame from "@/components/LoginFrame";
+import { ILogin } from "@/interfaces/login";
+import authService from "@/services/auth";
 
 type FieldType = {
   username?: string;

@@ -1,6 +1,6 @@
-import api from "../api";
-import { ILogin } from "../interfaces/login";
-import { IUser } from "../interfaces/users";
+import api from "@/api";
+import { ILogin } from "@/interfaces/login";
+import { IUser } from "@/interfaces/users";
 
 class AuthService {
   public async login(data: ILogin) {

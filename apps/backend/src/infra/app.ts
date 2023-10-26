@@ -1,15 +1,14 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import Fastify, { FastifyBaseLogger, FastifyHttpOptions } from 'fastify';
-import { FastifyReply, FastifyRequest, FastifySchemaCompiler } from 'fastify';
+import { Server } from 'http';
+import Fastify, { FastifyBaseLogger, FastifyHttpOptions , FastifyReply, FastifyRequest, FastifySchemaCompiler } from 'fastify';
 import cors from '@fastify/cors';
 import helmet from '@fastify/helmet';
 import * as jwt from 'jsonwebtoken';
 import 'dotenv/config';
 
+import { ZodAny, ZodError } from 'zod';
 import { privateUserRoutes, publicUserRoutes } from 'domain/user/router';
 import authRoutes from 'domain/auth/router';
-import { ZodAny, ZodError } from 'zod';
-import { Server } from 'http';
 import { exerciseRoutes } from 'domain/exercises/routes';
 
 function build(options: FastifyHttpOptions<Server, FastifyBaseLogger>) {

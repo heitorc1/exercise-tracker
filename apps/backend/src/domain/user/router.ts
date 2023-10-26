@@ -1,8 +1,8 @@
-import { createUserSchema, updateUserSchema } from './schemas';
-import makeUserService from 'domain/factories/service/UserServiceFactory';
 import { FastifyInstance } from 'fastify';
-import { ICreateUser, IUpdateUser } from './interfaces';
+import makeUserService from 'domain/factories/service/UserServiceFactory';
 import { authenticate } from 'hooks/authenticate';
+import { createUserSchema, updateUserSchema } from './schemas';
+import { ICreateUser, IUpdateUser } from './interfaces';
 
 const service = makeUserService();
 
