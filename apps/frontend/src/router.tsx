@@ -1,10 +1,11 @@
 import { createBrowserRouter, redirect } from "react-router-dom";
-import Dashboard from "./components/Pages/Dashboard";
-import Profile from "./components/Pages/Profile";
 import App from "./App";
-import Login from "./components/Pages/Login";
-import Register from "./components/Pages/Register";
-import authService from "./services/auth";
+import { getUser } from "./helper/user";
+import Login from "./Pages/Login";
+import Register from "./Pages/Register";
+import Dashboard from "./Pages/Dashboard";
+import Profile from "./Pages/Profile";
+import Exercises from "./Pages/Exercises";
 
 const router = createBrowserRouter([
   {
@@ -32,6 +33,10 @@ const router = createBrowserRouter([
             element: <Dashboard />,
           },
           {
+            path: "/exercises",
+            element: <Exercises />,
+          },
+          {
             path: "/profile",
             element: <Profile />,
           },
@@ -42,18 +47,16 @@ const router = createBrowserRouter([
 ]);
 
 async function redirectToDashboard() {
-  const token = localStorage.getItem("token");
-  if (token) {
-    await authService.getUser(token);
+  const user = await getUser();
+  if (user) {
     return redirect("/dashboard");
   }
   return null;
 }
 
 async function protectedLoader() {
-  const token = localStorage.getItem("token");
-  if (token) {
-    const user = await authService.getUser(token);
+  const user = await getUser();
+  if (user) {
     return user;
   }
   return redirect("/");

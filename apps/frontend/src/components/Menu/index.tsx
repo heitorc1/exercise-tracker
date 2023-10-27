@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { HomeOutlined, UserOutlined } from "@ant-design/icons";
+import { HomeOutlined, CheckOutlined } from "@ant-design/icons";
 import { Menu as AntdMenu } from "antd";
 import { Link, useLocation } from "react-router-dom";
 import type { MenuProps } from "antd";
@@ -11,9 +11,9 @@ const items: MenuProps["items"] = [
     icon: <HomeOutlined />,
   },
   {
-    label: <Link to="/profile">Profile</Link>,
-    key: "profile",
-    icon: <UserOutlined />,
+    label: <Link to="/exercises">Exercises</Link>,
+    key: "exercises",
+    icon: <CheckOutlined />,
   },
 ];
 

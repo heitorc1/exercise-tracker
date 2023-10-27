@@ -1,3 +1,5 @@
+const path = require("path");
+
 module.exports = {
   root: true,
   env: { browser: true, es2020: true },
@@ -11,10 +13,10 @@ module.exports = {
   ignorePatterns: ["dist", ".eslintrc.cjs", "vite.config.ts"],
   parser: "@typescript-eslint/parser",
   parserOptions: {
-    project: "../../apps/*/tsconfig.json",
+    project: path.resolve("../../apps/*/tsconfig.json"),
     tsconfigRootDir: "./",
   },
-  plugins: ["react-refresh"],
+  plugins: ["react-refresh", "import"],
   rules: {
     "react-refresh/only-export-components": [
       "warn",

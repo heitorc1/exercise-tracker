@@ -12,6 +12,10 @@ type Props = {
 
 const items: MenuProps["items"] = [
   {
+    key: "profile",
+    label: <Link to="/profile">Profile</Link>,
+  },
+  {
     key: "logout",
     label: <Link to="/logout">Log out</Link>,
   },
