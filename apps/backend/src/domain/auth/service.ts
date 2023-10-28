@@ -1,4 +1,9 @@
-import { IResponse, IUser, IUserRepository } from 'domain/user/interfaces';
+import {
+  IResponse,
+  IToken,
+  IUser,
+  IUserRepository,
+} from 'domain/user/interfaces';
 import { UserNotFoundError } from 'infra/exception/UserNotFoundError';
 import { InvalidCredentialsError } from 'infra/exception/InvalidCredentialsError';
 import jwtHandler from 'helpers/jwtHandler';
@@ -34,13 +39,19 @@ export class AuthService implements IAuthService {
     return { data: token };
   }
 
-  public verifyToken(data: IVerifyToken): IResponse<IUser> {
+  public verifyToken(data: IVerifyToken): IResponse<IToken> {
     const decoded = jwtHandler.verify(data.token);
 
     if (typeof decoded === 'string') {
       throw new InvalidTokenError();
     }
 
-    return { data: decoded.data as IUser };
+    return {
+      data: {
+        ...(decoded.data as IUser),
+        iat: decoded.iat,
+        exp: decoded.exp,
+      },
+    };
   }
 }

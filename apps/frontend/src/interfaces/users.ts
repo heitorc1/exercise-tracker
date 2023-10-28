@@ -1,5 +1,10 @@
 import { Response } from ".";
 
+export interface IToken extends IUser {
+  iat: number;
+  exp: number;
+}
+
 export interface IUser {
   id: string;
   username: string;
@@ -12,6 +17,6 @@ export interface ICreateUser {
   password: string;
 }
 
-export type GetUserResponse = Response<IUser>;
+export type GetUserResponse = IUser | void;
 
 export type GetUsersResponse = Response<IUser[]>;

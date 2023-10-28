@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { HomeOutlined, CheckOutlined } from "@ant-design/icons";
+import { HomeOutlined, ThunderboltOutlined } from "@ant-design/icons";
 import { Menu as AntdMenu } from "antd";
 import { Link, useLocation } from "react-router-dom";
 import type { MenuProps } from "antd";
@@ -13,7 +13,7 @@ const items: MenuProps["items"] = [
   {
     label: <Link to="/exercises">Exercises</Link>,
     key: "exercises",
-    icon: <CheckOutlined />,
+    icon: <ThunderboltOutlined />,
   },
 ];
 

@@ -1,11 +1,11 @@
 import { createBrowserRouter, redirect } from "react-router-dom";
 import App from "./App";
-import { getUser } from "./helper/user";
 import Login from "./Pages/Login";
 import Register from "./Pages/Register";
 import Dashboard from "./Pages/Dashboard";
 import Profile from "./Pages/Profile";
 import Exercises from "./Pages/Exercises";
+import authService from "./services/auth";
 
 const router = createBrowserRouter([
   {
@@ -15,11 +15,13 @@ const router = createBrowserRouter([
         path: "/",
         element: <Login />,
         loader: redirectToDashboard,
+        errorElement: <Login />,
       },
       {
         path: "/register",
         element: <Register />,
         loader: redirectToDashboard,
+        errorElement: <Register />,
       },
       {
         path: "/logout",
@@ -47,7 +49,7 @@ const router = createBrowserRouter([
 ]);
 
 async function redirectToDashboard() {
-  const user = await getUser();
+  const user = await authService.getUser();
   if (user) {
     return redirect("/dashboard");
   }
@@ -55,16 +57,15 @@ async function redirectToDashboard() {
 }
 
 async function protectedLoader() {
-  const user = await getUser();
+  const user = await authService.getUser();
   if (user) {
     return user;
   }
   return redirect("/");
 }
 
-async function logout() {
-  localStorage.removeItem("token");
-  localStorage.removeItem("userInfo");
+function logout() {
+  authService.logout();
   return redirect("/");
 }
 

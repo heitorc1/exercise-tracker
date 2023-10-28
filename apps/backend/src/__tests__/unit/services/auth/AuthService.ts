@@ -30,6 +30,8 @@ describe('AuthService', () => {
   });
 
   it('should create token for successful login', async () => {
+    jest.useFakeTimers();
+
     const data = {
       username: faker.internet.userName(),
       password: faker.internet.password(),
@@ -66,17 +68,25 @@ describe('AuthService', () => {
   });
 
   it('should verify a correct token', () => {
+    const date = Date.now();
+
     const user = {
       id: faker.string.uuid(),
       username: faker.internet.userName(),
       email: faker.internet.email(),
     };
 
-    jest.spyOn(jwtHandler, 'verify').mockReturnValue({ data: user });
+    jest
+      .spyOn(jwtHandler, 'verify')
+      .mockReturnValue({ data: user, iat: date, exp: 4 * 60 * 60 + date });
 
     const response = service.verifyToken({ token: 'my-token' });
 
-    expect(response.data).toStrictEqual(user);
+    expect(response.data).toStrictEqual({
+      ...user,
+      iat: date,
+      exp: 4 * 60 * 60 + date,
+    });
   });
 
   it('should throw an error if incorrect token is provided', () => {

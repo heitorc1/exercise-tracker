@@ -1,11 +1,16 @@
-import { IUser } from "@/interfaces/users";
+import { IToken } from "@/interfaces/users";
 import authService from "@/services/auth";
 
 export async function getUser() {
-  const token = localStorage.getItem("token");
-  let user: IUser | null = null;
-  if (token) {
-    user = (await authService.getUser(token)).data;
+  const user = localStorage.getItem("userInfo");
+
+  if (!user) {
+    return authService.logout();
   }
-  return user;
+
+  try {
+    return JSON.parse(user) as IToken;
+  } catch {
+    return authService.logout();
+  }
 }

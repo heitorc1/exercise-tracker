@@ -1,4 +1,4 @@
-const path = require("path");
+const { resolve } = require("path");
 
 module.exports = {
   root: true,
@@ -13,10 +13,10 @@ module.exports = {
   ignorePatterns: ["dist", ".eslintrc.cjs", "vite.config.ts"],
   parser: "@typescript-eslint/parser",
   parserOptions: {
-    project: path.resolve("../../apps/*/tsconfig.json"),
+    project: resolve("../../apps/*/tsconfig.json"),
     tsconfigRootDir: "./",
   },
-  plugins: ["react-refresh", "import"],
+  plugins: ["react-refresh"],
   rules: {
     "react-refresh/only-export-components": [
       "warn",
@@ -44,6 +44,11 @@ module.exports = {
     },
     "import/resolver": {
       typescript: {},
+      node: {},
+      alias: {
+        map: [["@", "./src"]],
+        extensions: [".ts", ".tsx", ".js", ".jsx", ".json"],
+      },
     },
   },
 };

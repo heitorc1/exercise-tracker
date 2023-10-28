@@ -1,12 +1,19 @@
 import * as jwt from 'jsonwebtoken';
-import { IUser } from 'domain/user/interfaces';
 import { APP_KEY } from 'infra/config';
+import { IUser } from 'domain/user/interfaces';
 
 export class Jwt {
   public sign(data: IUser) {
-    return jwt.sign({ data }, APP_KEY as jwt.Secret, {
-      expiresIn: '4h',
-    });
+    const now = Date.now();
+    const fourHours = 4 * 60 * 60;
+    return jwt.sign(
+      {
+        data,
+        iat: now,
+        exp: now + fourHours,
+      },
+      APP_KEY as jwt.Secret,
+    );
   }
 
   public verify(token: string) {

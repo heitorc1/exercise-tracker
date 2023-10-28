@@ -13,6 +13,11 @@ export interface IUser {
   updatedAt?: string;
 }
 
+export interface IToken extends IUser {
+  iat?: number;
+  exp?: number;
+}
+
 export interface IJwtUser extends z.infer<typeof jwtUserSchema> {}
 
 export interface IResponse<T> {
