@@ -42,12 +42,12 @@ exports.up = function (db) {
     ],
   );
 
-  for (let i = 0; i < 15; i++) {
+  for (let i = 0; i < 120; i++) {
     const exercise = {
       id: faker.string.uuid(),
       description: faker.lorem.sentence(),
       duration: faker.number.int({ min: 30, max: 90 }),
-      date: faker.date.recent({ days: 30 }).toISOString(),
+      date: faker.date.recent({ days: 180 }).toISOString(),
     };
     const date = new Date().toISOString();
 

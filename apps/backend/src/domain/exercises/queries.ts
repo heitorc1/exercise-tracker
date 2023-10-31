@@ -37,7 +37,9 @@ export class ExerciseQueries implements IExerciseQueries {
 
   public list(userId: string): IExercise[] {
     return this.db
-      .prepare('SELECT * FROM exercises WHERE userId = @userId')
+      .prepare(
+        'SELECT * FROM exercises WHERE userId = @userId ORDER BY date DESC',
+      )
       .all({ userId }) as IExercise[];
   }
 
