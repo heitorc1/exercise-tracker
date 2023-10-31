@@ -5,7 +5,11 @@ type Props = {
 };
 
 const CardGroup = ({ children }: Props) => {
-  return <div className="flex lg:flex-row flex-col gap-4">{children}</div>;
+  return (
+    <div className="flex lg:flex-row flex-col gap-4 lg:flex-wrap">
+      {children}
+    </div>
+  );
 };
 
 export default CardGroup;

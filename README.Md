@@ -16,7 +16,6 @@ cp apps/backend/env.example apps/backend/.env
 cp apps/frontend/env.example apps/frontend/.env
 pnpm -C apps/backend migrate up
 pnpm dev
-
 ```
 
 Frontend is now runing on http://localhost:3000 and backend on http://localhost:8000

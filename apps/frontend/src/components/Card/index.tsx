@@ -12,7 +12,7 @@ const Card = ({ title, children, actions }: Props) => {
     <AntdCard
       title={title}
       bordered={false}
-      className="w-full"
+      className="w-full max-w-xl"
       actions={actions}
     >
       {children}
