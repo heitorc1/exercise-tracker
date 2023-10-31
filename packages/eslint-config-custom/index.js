@@ -10,7 +10,13 @@ module.exports = {
     "plugin:import/recommended",
     "plugin:import/typescript",
   ],
-  ignorePatterns: ["dist", ".eslintrc.cjs", "vite.config.ts"],
+  ignorePatterns: [
+    "dist",
+    ".eslintrc.cjs",
+    "vite.config.ts",
+    "migrations",
+    "scripts",
+  ],
   parser: "@typescript-eslint/parser",
   parserOptions: {
     project: resolve("../../apps/*/tsconfig.json"),

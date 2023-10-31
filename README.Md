@@ -12,10 +12,24 @@ Then run
 
 ```
 pnpm install
-cp apps/backend/env.example apps/backend/env
-cp apps/frontend/env.example apps/frontend/env
+cp apps/backend/env.example apps/backend/.env
+cp apps/frontend/env.example apps/frontend/.env
+pnpm -C apps/backend migrate up
 pnpm dev
 
 ```
 
-Frontend is now runing on http://localhost:5173 and backend on http://localhost:3000
+Frontend is now runing on http://localhost:3000 and backend on http://localhost:8000
+
+To log in, use the following credentials:
+
+```
+username: admin
+password: admin
+```
+
+To run tests
+
+```
+pnpm test
+```
