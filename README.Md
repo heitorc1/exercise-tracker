@@ -24,7 +24,7 @@ To log in, use the following credentials:
 
 ```
 username: admin
-password: admin
+password: admin123
 ```
 
 To run tests
