@@ -1,10 +1,12 @@
 import { Button, Form, Input } from "antd";
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { useMutation } from "@tanstack/react-query";
 import { toast } from "react-toastify";
 import LoginFrame from "@/components/LoginFrame";
 import { ILogin } from "@/interfaces/login";
 import authService from "@/services/auth";
+import { useAuth } from "@/hooks/useAuth";
+import { IUser } from "@/interfaces/users";
 
 type FieldType = {
   username?: string;
@@ -12,15 +14,13 @@ type FieldType = {
 };
 
 const Login = () => {
-  const navigate = useNavigate();
+  const { login } = useAuth();
   const mutation = useMutation(
-    (data: ILogin) => {
-      return authService.login(data);
-    },
+    async (data: ILogin) => authService.login(data),
     {
-      onSuccess: () => {
+      onSuccess: (data: IUser | null) => {
+        login(data);
         toast.success("User logged in");
-        navigate("/dashboard");
       },
       onError: () => {
         toast.error("Incorrect data provided");

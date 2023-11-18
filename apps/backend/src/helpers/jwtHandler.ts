@@ -5,7 +5,7 @@ import { IUser } from 'domain/user/interfaces';
 export class Jwt {
   public sign(data: IUser) {
     const now = Date.now();
-    const fourHours = 4 * 60 * 60;
+    const fourHours = 4 * 60 * 60 * 1000;
     return jwt.sign(
       {
         data,

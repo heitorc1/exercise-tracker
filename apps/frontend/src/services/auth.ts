@@ -1,57 +1,35 @@
 import api from "@/api";
+import tokenHelper from "@/helper/token";
 import { ILogin } from "@/interfaces/login";
 import { IToken, IUser } from "@/interfaces/users";
 
 class AuthService {
-  public async login(data: ILogin) {
+  public async login(data: ILogin): Promise<IUser | null> {
     const response = await api.post<string>("/auth/login", data);
     const token = response.data;
-
-    if (token) {
-      localStorage.setItem("token", token);
-      api.instance.defaults.headers.common["Authorization"] = `Bearer ${token}`;
-
-      await this.getUser();
-    }
+    tokenHelper.token = token;
+    api.instance.defaults.headers.common["Authorization"] = `Bearer ${token}`;
+    return this.getUser();
   }
 
-  public logout() {
-    localStorage.removeItem("token");
-    localStorage.removeItem("userInfo");
+  public logout(): null {
     api.instance.defaults.headers.common["Authorization"] = undefined;
+    tokenHelper.clearToken();
+    return null;
   }
 
-  public async verify(token: string) {
+  public async verify(token: string | null): Promise<IToken> {
     const response = await api.post<IToken>("/auth/verify", { token });
     return response.data;
   }
 
-  public async getUser(): Promise<IUser | void> {
-    const storedUser = localStorage.getItem("userInfo");
-
-    if (storedUser) {
-      try {
-        const token: IToken = JSON.parse(storedUser);
-        if (token.exp < Date.now()) {
-          return token;
-        }
-      } catch (err) {
-        return this.logout();
-      }
+  public async getUser(): Promise<IUser | null> {
+    const token = tokenHelper.token;
+    if (!token) {
+      return this.logout();
     }
 
-    const token = localStorage.getItem("token");
-    if (token) {
-      const user = await this.verify(token);
-
-      if (user) {
-        if (user.exp < Date.now()) {
-          return this.logout();
-        }
-        localStorage.setItem("userInfo", JSON.stringify(user));
-        return user;
-      }
-    }
+    return this.verify(token);
   }
 }
 

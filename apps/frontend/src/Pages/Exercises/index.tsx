@@ -33,7 +33,11 @@ const Exercises = () => {
     <AppFrame title="Exercises">
       <CardGroup>
         {exercises?.data.map((exercise) => (
-          <Card title={dateFormatter(exercise.date)} actions={actions}>
+          <Card
+            key={exercise.id}
+            title={dateFormatter(exercise.date)}
+            actions={actions}
+          >
             Duration: {exercise.duration} minutes
           </Card>
         ))}

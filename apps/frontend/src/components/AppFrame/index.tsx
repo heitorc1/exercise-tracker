@@ -1,7 +1,7 @@
-import { ReactNode } from "react";
+import { ReactNode, useMemo } from "react";
 import { Avatar, Dropdown, Layout, MenuProps } from "antd";
 import { Link } from "react-router-dom";
-import { useGetUser } from "@/hooks/useGetUser";
+import { useAuth } from "@/hooks/useAuth";
 import Menu from "../Menu";
 
 const { Header, Content } = Layout;
@@ -11,19 +11,22 @@ type Props = {
   children: ReactNode;
 };
 
-const items: MenuProps["items"] = [
-  {
-    key: "profile",
-    label: <Link to="/profile">Profile</Link>,
-  },
-  {
-    key: "logout",
-    label: <Link to="/logout">Log out</Link>,
-  },
-];
-
 const AppFrame = ({ title, children }: Props) => {
-  const { data: user } = useGetUser();
+  const { user, logout } = useAuth();
+
+  const items: MenuProps["items"] = useMemo(
+    () => [
+      {
+        key: "profile",
+        label: <Link to="/profile">Profile</Link>,
+      },
+      {
+        key: "logout",
+        label: <span onClick={logout}>Log out</span>,
+      },
+    ],
+    [logout]
+  );
 
   return (
     <Layout>

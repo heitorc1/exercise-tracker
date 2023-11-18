@@ -5,7 +5,8 @@ import Register from "./Pages/Register";
 import Dashboard from "./Pages/Dashboard";
 import Profile from "./Pages/Profile";
 import Exercises from "./Pages/Exercises";
-import authService from "./services/auth";
+import ProtectedRouter from "./Pages/ProtectedRouter";
+import tokenHelper from "./helper/token";
 
 const router = createBrowserRouter([
   {
@@ -14,21 +15,17 @@ const router = createBrowserRouter([
       {
         path: "/",
         element: <Login />,
-        loader: redirectToDashboard,
         errorElement: <Login />,
+        loader: redirectToDashboard,
       },
       {
         path: "/register",
         element: <Register />,
-        loader: redirectToDashboard,
         errorElement: <Register />,
+        loader: redirectToDashboard,
       },
       {
-        path: "/logout",
-        loader: logout,
-      },
-      {
-        loader: protectedLoader,
+        element: <ProtectedRouter />,
         children: [
           {
             path: "/dashboard",
@@ -48,25 +45,12 @@ const router = createBrowserRouter([
   },
 ]);
 
-async function redirectToDashboard() {
-  const user = await authService.getUser();
-  if (user) {
-    return redirect("/dashboard");
+function redirectToDashboard() {
+  const token = tokenHelper.token;
+  if (token) {
+    return redirect("dashboard");
   }
   return null;
-}
-
-async function protectedLoader() {
-  const user = await authService.getUser();
-  if (user) {
-    return user;
-  }
-  return redirect("/");
-}
-
-function logout() {
-  authService.logout();
-  return redirect("/");
 }
 
 export default router;
