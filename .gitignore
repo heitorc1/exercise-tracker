@@ -38,3 +38,4 @@ pgdata
 .env
 .turbo
 *.db*
+coverage

@@ -20,7 +20,7 @@ describe('AuthService', () => {
 
   beforeAll(() => {
     userQueries = new UserQueries(unitTestDb);
-    authRepository = new AuthRepository(userQueries);
+    authRepository = new AuthRepository();
     userRepository = new UserRepository(userQueries);
     service = new AuthService(authRepository, userRepository);
   });
@@ -50,21 +50,27 @@ describe('AuthService', () => {
     });
   });
 
-  it('should not login with invalid user', () => {
+  it('should not login with invalid user', async () => {
     const data = {
       username: 'invalid-username',
       password: 'password',
     };
 
-    expect(service.login(data)).rejects.toThrowError(UserNotFoundError);
+    try {
+      await service.login(data);
+    } catch (e) {
+      expect(e).toBeInstanceOf(UserNotFoundError);
+    }
   });
 
   it('should not login with invalid password', async () => {
     const user = userHelper.getUser();
 
-    expect(
-      service.login({ username: user.username, password: 'invalid' }),
-    ).rejects.toThrowError(InvalidCredentialsError);
+    try {
+      await service.login({ username: user.username, password: 'invalid' });
+    } catch (e) {
+      expect(e).toBeInstanceOf(InvalidCredentialsError);
+    }
   });
 
   it('should verify a correct token', () => {

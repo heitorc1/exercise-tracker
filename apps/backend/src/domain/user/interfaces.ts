@@ -33,6 +33,7 @@ export interface IUserService {
 
 export interface IUserRepository {
   find(id: string): IUser | undefined;
+  getByUsername(username: string): IUser | undefined;
   list(): IUser[];
   create(data: ICreateUser): Promise<IUser>;
   update(id: string, data: IUpdateUser): Promise<IUser>;

@@ -15,6 +15,10 @@ export class UserRepository implements IUserRepository {
     return this.userQueries.find(id);
   }
 
+  public getByUsername(username: string): IUser | undefined {
+    return this.userQueries.getByUsername(username);
+  }
+
   public list(): IUser[] {
     return this.userQueries.list();
   }

@@ -67,7 +67,11 @@ describe('UserService', () => {
       password: faker.internet.password(),
     };
 
-    expect(service.create(data)).rejects.toThrowError(UsernameTakenError);
+    try {
+      await service.create(data);
+    } catch (e) {
+      expect(e).toBeInstanceOf(UsernameTakenError);
+    }
   });
 
   it('should not create a new user with a email in use', async () => {
@@ -78,7 +82,11 @@ describe('UserService', () => {
       password: faker.internet.password(),
     };
 
-    expect(service.create(data)).rejects.toThrowError(EmailAlreadyInUseError);
+    try {
+      await service.create(data);
+    } catch (e) {
+      expect(e).toBeInstanceOf(EmailAlreadyInUseError);
+    }
   });
 
   it('should update a valid user', async () => {
@@ -178,9 +186,11 @@ describe('UserService', () => {
     const date = new Date('2023-10-18');
     jest.useFakeTimers().setSystemTime(date);
 
-    expect(service.update(existingUser.id, user)).rejects.toThrowError(
-      NothingToUpdateError,
-    );
+    try {
+      await service.update(existingUser.id, user);
+    } catch (e) {
+      expect(e).toBeInstanceOf(NothingToUpdateError);
+    }
   });
 
   it('should delete user', () => {

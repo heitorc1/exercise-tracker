@@ -11,5 +11,5 @@ export interface IAuthService {
 }
 
 export interface IAuthRepository {
-  checkLogin: (data: ILogin) => Promise<IUser | null>;
+  checkLogin: (password: string, storedPassword: string) => Promise<boolean>;
 }

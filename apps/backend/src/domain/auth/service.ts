@@ -17,24 +17,30 @@ import {
 
 export class AuthService implements IAuthService {
   constructor(
-    private readonly loginRepository: IAuthRepository,
+    private readonly authRepository: IAuthRepository,
     private readonly userRepository: IUserRepository,
   ) {}
 
   public async login(data: ILogin) {
-    const userExists = this.userRepository.hasUsername(data.username);
-
-    if (!userExists) {
+    const user = this.userRepository.getByUsername(data.username);
+    if (!user) {
       throw new UserNotFoundError();
     }
 
-    const user = await this.loginRepository.checkLogin(data);
+    const samePassword = await this.authRepository.checkLogin(
+      data.password,
+      user.password!,
+    );
 
-    if (!user) {
+    if (!samePassword) {
       throw new InvalidCredentialsError();
     }
 
-    const token = jwtHandler.sign(user);
+    const token = jwtHandler.sign({
+      id: user.id,
+      username: user.username,
+      email: user.email,
+    });
 
     return { data: token };
   }
