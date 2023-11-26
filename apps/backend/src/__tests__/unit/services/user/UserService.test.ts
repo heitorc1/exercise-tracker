@@ -1,3 +1,5 @@
+import { afterEach, beforeEach, describe, it, mock } from 'node:test';
+import assert from 'node:assert';
 import { faker } from '@faker-js/faker';
 import unitTestDb from '__tests__/unit/db';
 import {
@@ -19,25 +21,33 @@ describe('UserService', () => {
   let service: IUserService;
   let userQueries: IUserQueries;
 
-  beforeAll(() => {
+  beforeEach(() => {
     userQueries = new UserQueries(unitTestDb);
     repository = new UserRepository(userQueries);
     service = new UserService(repository);
+    const date = new Date('2023-10-18');
+    mock.timers.enable({ apis: ['Date'], now: date });
+  });
+
+  afterEach(() => {
+    mock.timers.reset();
   });
 
   it('should be defined', () => {
-    expect(service).toBeDefined();
+    assert(service instanceof UserService);
   });
 
   it('should list users', () => {
     const response = service.list();
 
-    expect(response.data?.length).toBeGreaterThan(1);
-    expect(response.data?.[0]).toHaveProperty('id');
-    expect(response.data?.[0]).toHaveProperty('username');
-    expect(response.data?.[0]).toHaveProperty('email');
-    expect(response.data?.[0]).toHaveProperty('createdAt');
-    expect(response.data?.[0]).toHaveProperty('updatedAt');
+    assert(response.data?.length > 1);
+    assert.deepStrictEqual(Object.keys(response.data?.[0]), [
+      'id',
+      'username',
+      'email',
+      'createdAt',
+      'updatedAt',
+    ]);
   });
 
   it('should create a user', async () => {
@@ -53,10 +63,10 @@ describe('UserService', () => {
       response.data.password!,
     );
 
-    expect(response).toHaveProperty('data');
-    expect(response.data.username).toBe(user.username);
-    expect(isSamePassword).toBe(true);
-    expect(response.data.email).toBe(user.email);
+    assert(Object.keys(response).some((key) => key === 'data'));
+    assert.deepEqual(response.data.username, user.username);
+    assert.deepEqual(response.data.email, user.email);
+    assert.deepEqual(isSamePassword, true);
   });
 
   it('should not create a new user with a username in use', async () => {
@@ -67,11 +77,10 @@ describe('UserService', () => {
       password: faker.internet.password(),
     };
 
-    try {
-      await service.create(data);
-    } catch (e) {
-      expect(e).toBeInstanceOf(UsernameTakenError);
-    }
+    await assert.rejects(
+      async () => await service.create(data),
+      UsernameTakenError,
+    );
   });
 
   it('should not create a new user with a email in use', async () => {
@@ -82,11 +91,10 @@ describe('UserService', () => {
       password: faker.internet.password(),
     };
 
-    try {
-      await service.create(data);
-    } catch (e) {
-      expect(e).toBeInstanceOf(EmailAlreadyInUseError);
-    }
+    await assert.rejects(
+      async () => await service.create(data),
+      EmailAlreadyInUseError,
+    );
   });
 
   it('should update a valid user', async () => {
@@ -97,18 +105,15 @@ describe('UserService', () => {
       email: faker.internet.email(),
     };
 
-    const date = new Date('2023-10-18');
-    jest.useFakeTimers().setSystemTime(date);
-
     const response = await service.update(existingUser.id, user);
 
-    expect(response).toMatchObject({
+    assert.deepStrictEqual(response, {
       data: {
         id: existingUser.id,
         username: user.username,
         email: user.email,
         createdAt: existingUser.createdAt,
-        updatedAt: date.toISOString(),
+        updatedAt: new Date().toISOString(),
       },
     });
   });
@@ -119,18 +124,15 @@ describe('UserService', () => {
       username: faker.internet.userName(),
     };
 
-    const date = new Date('2023-10-18');
-    jest.useFakeTimers().setSystemTime(date);
-
     const response = await service.update(existingUser.id, user);
 
-    expect(response).toMatchObject({
+    assert.deepStrictEqual(response, {
       data: {
         id: existingUser.id,
         username: user.username,
         email: existingUser.email,
         createdAt: existingUser.createdAt,
-        updatedAt: date.toISOString(),
+        updatedAt: new Date().toISOString(),
       },
     });
   });
@@ -141,18 +143,15 @@ describe('UserService', () => {
       email: faker.internet.email(),
     };
 
-    const date = new Date('2023-10-18');
-    jest.useFakeTimers().setSystemTime(date);
-
     const response = await service.update(existingUser.id, user);
 
-    expect(response).toMatchObject({
+    assert.deepStrictEqual(response, {
       data: {
         id: existingUser.id,
         username: existingUser.username,
         email: user.email,
         createdAt: existingUser.createdAt,
-        updatedAt: date.toISOString(),
+        updatedAt: new Date().toISOString(),
       },
     });
   });
@@ -163,18 +162,15 @@ describe('UserService', () => {
       password: faker.internet.password(),
     };
 
-    const date = new Date('2023-10-18');
-    jest.useFakeTimers().setSystemTime(date);
-
     const response = await service.update(existingUser.id, user);
 
-    expect(response).toMatchObject({
+    assert.deepStrictEqual(response, {
       data: {
         id: existingUser.id,
         username: existingUser.username,
         email: existingUser.email,
         createdAt: existingUser.createdAt,
-        updatedAt: date.toISOString(),
+        updatedAt: new Date().toISOString(),
       },
     });
   });
@@ -183,19 +179,16 @@ describe('UserService', () => {
     const existingUser = userHelper.getUser();
     const user = {};
 
-    const date = new Date('2023-10-18');
-    jest.useFakeTimers().setSystemTime(date);
-
-    try {
-      await service.update(existingUser.id, user);
-    } catch (e) {
-      expect(e).toBeInstanceOf(NothingToUpdateError);
-    }
+    await assert.rejects(
+      async () => await service.update(existingUser.id, user),
+      NothingToUpdateError,
+    );
   });
 
   it('should delete user', () => {
     const existingUser = userHelper.getUser();
 
-    expect(service.delete(existingUser.id)).toStrictEqual({ data: true });
+    const response = service.delete(existingUser.id);
+    assert.deepStrictEqual(response, { data: true });
   });
 });

@@ -1,3 +1,5 @@
+import assert from 'node:assert';
+import { afterEach, beforeEach, describe, it, mock } from 'node:test';
 import { faker } from '@faker-js/faker';
 import unitTestDb from '__tests__/unit/db';
 import exerciseHelper from '__tests__/unit/db/helpers/ExerciseHelper';
@@ -18,14 +20,21 @@ describe('UserService', () => {
   let service: IExerciseService;
   let userQueries: IExerciseQueries;
 
-  beforeAll(() => {
+  beforeEach(() => {
     userQueries = new ExerciseQueries(unitTestDb);
     repository = new ExerciseRepository(userQueries);
     service = new ExerciseService(repository);
+
+    const date = new Date('2023-10-18');
+    mock.timers.enable({ apis: ['Date'], now: date });
+  });
+
+  afterEach(() => {
+    mock.timers.reset();
   });
 
   it('should be defined', () => {
-    expect(service).toBeDefined();
+    assert(service instanceof ExerciseService);
   });
 
   it('should find an exercise by id', () => {
@@ -33,14 +42,14 @@ describe('UserService', () => {
 
     const response = service.find(exercise.id, exercise.userId);
 
-    expect(response.data).toStrictEqual(exercise);
+    assert.deepStrictEqual(response.data, exercise);
   });
 
   it('should not find an exercise by invalid id', () => {
     const user = userHelper.getUser();
     const id = faker.string.uuid();
 
-    expect(() => service.find(id, user.id)).toThrowError(ExerciseNotFoundError);
+    assert.throws(() => service.find(id, user.id), ExerciseNotFoundError);
   });
 
   it('should create an exercise', () => {
@@ -53,9 +62,9 @@ describe('UserService', () => {
 
     const response = service.create(user.id, exercise);
 
-    expect(response.data.description).toBe(exercise.description);
-    expect(response.data.duration).toBe(exercise.duration);
-    expect(response.data.date).toBe(exercise.date);
+    const { description, date, duration } = response.data;
+
+    assert.deepStrictEqual({ description, date, duration }, exercise);
   });
 
   it('should list user exercises', () => {
@@ -64,7 +73,7 @@ describe('UserService', () => {
 
     const response = service.list(user.id);
 
-    expect(response.data.length).toBeGreaterThan(1);
+    assert(response.data.length > 1);
   });
 
   it('should return an empty array when there is no exercise', async () => {
@@ -75,13 +84,10 @@ describe('UserService', () => {
 
     const response = service.list(user.id);
 
-    expect(response.data.length).toBe(0);
+    assert.deepEqual(response.data.length, 0);
   });
 
   it('should update an exercise', () => {
-    const date = new Date('2023-10-18');
-    jest.useFakeTimers().setSystemTime(date);
-
     const user = userHelper.getUser();
     const exercise = exerciseHelper.createExercise(user.id);
     const updateObject = {
@@ -92,7 +98,7 @@ describe('UserService', () => {
 
     const response = service.update(exercise.id, user.id, updateObject);
 
-    expect(response.data).toMatchObject({
+    assert.deepStrictEqual(response.data, {
       ...exercise,
       description: updateObject.description,
       duration: updateObject.duration,
@@ -110,9 +116,10 @@ describe('UserService', () => {
       date: new Date().toISOString(),
     };
 
-    expect(() =>
-      service.update(exercise.id, invalidUserId, updateObject),
-    ).toThrowError(ExerciseNotFoundError);
+    assert.throws(
+      () => service.update(exercise.id, invalidUserId, updateObject),
+      ExerciseNotFoundError,
+    );
   });
 
   it('should update an exercise duration', () => {
@@ -124,7 +131,7 @@ describe('UserService', () => {
 
     const response = service.update(exercise.id, user.id, updateObject);
 
-    expect(response.data).toMatchObject({
+    assert.deepStrictEqual(response.data, {
       ...exercise,
       duration: updateObject.duration,
     });
@@ -139,7 +146,7 @@ describe('UserService', () => {
 
     const response = service.update(exercise.id, user.id, updateObject);
 
-    expect(response.data).toMatchObject({
+    assert.deepStrictEqual(response.data, {
       ...exercise,
       description: updateObject.description,
     });
@@ -154,7 +161,7 @@ describe('UserService', () => {
 
     const response = service.update(exercise.id, user.id, updateObject);
 
-    expect(response.data).toMatchObject({
+    assert.deepStrictEqual(response.data, {
       ...exercise,
       date: updateObject.date,
     });
@@ -165,9 +172,10 @@ describe('UserService', () => {
     const exercise = exerciseHelper.createExercise(user.id);
     const updateObject = {};
 
-    expect(() =>
-      service.update(exercise.id, user.id, updateObject),
-    ).toThrowError(NothingToUpdateError);
+    assert.throws(
+      () => service.update(exercise.id, user.id, updateObject),
+      NothingToUpdateError,
+    );
   });
 
   it('should delete an exercise', () => {
@@ -175,14 +183,15 @@ describe('UserService', () => {
 
     const response = service.delete(exercise.id, exercise.userId);
 
-    expect(response.data).toBe(true);
+    assert.deepEqual(response.data, true);
   });
 
   it('should not update an exercise with invalid userId', () => {
     const invalidUserId = faker.string.uuid();
     const exercise = exerciseHelper.findFirst();
 
-    expect(() => service.delete(exercise.id, invalidUserId)).toThrowError(
+    assert.throws(
+      () => service.delete(exercise.id, invalidUserId),
       ExerciseNotFoundError,
     );
   });

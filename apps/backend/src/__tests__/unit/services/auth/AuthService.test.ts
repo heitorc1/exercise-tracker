@@ -1,3 +1,6 @@
+import { beforeEach, describe, it } from 'node:test';
+import assert from 'node:assert/strict';
+
 import { faker } from '@faker-js/faker';
 import unitTestDb from '__tests__/unit/db';
 import userHelper from '__tests__/unit/db/helpers/UserHelper';
@@ -18,7 +21,7 @@ describe('AuthService', () => {
   let userRepository: IUserRepository;
   let service: IAuthService;
 
-  beforeAll(() => {
+  beforeEach(() => {
     userQueries = new UserQueries(unitTestDb);
     authRepository = new AuthRepository();
     userRepository = new UserRepository(userQueries);
@@ -26,11 +29,11 @@ describe('AuthService', () => {
   });
 
   it('should be defined', () => {
-    expect(service).toBeDefined();
+    assert(service instanceof AuthService);
   });
 
-  it('should create token for successful login', async () => {
-    jest.useFakeTimers();
+  it('should create token for successful login', async (t) => {
+    t.mock.timers.enable({ apis: ['Date'], now: new Date() });
 
     const data = {
       username: faker.internet.userName(),
@@ -41,7 +44,7 @@ describe('AuthService', () => {
 
     const response = await service.login(data);
 
-    expect(response).toStrictEqual({
+    assert.deepStrictEqual(response, {
       data: jwtHandler.sign({
         id: user.id,
         username: user.username,
@@ -56,24 +59,23 @@ describe('AuthService', () => {
       password: 'password',
     };
 
-    try {
-      await service.login(data);
-    } catch (e) {
-      expect(e).toBeInstanceOf(UserNotFoundError);
-    }
+    await assert.rejects(
+      async () => await service.login(data),
+      UserNotFoundError,
+    );
   });
 
   it('should not login with invalid password', async () => {
     const user = userHelper.getUser();
 
-    try {
-      await service.login({ username: user.username, password: 'invalid' });
-    } catch (e) {
-      expect(e).toBeInstanceOf(InvalidCredentialsError);
-    }
+    await assert.rejects(
+      async () =>
+        await service.login({ username: user.username, password: 'invalid' }),
+      InvalidCredentialsError,
+    );
   });
 
-  it('should verify a correct token', () => {
+  it('should verify a correct token', (t) => {
     const date = Date.now();
 
     const user = {
@@ -82,23 +84,28 @@ describe('AuthService', () => {
       email: faker.internet.email(),
     };
 
-    jest
-      .spyOn(jwtHandler, 'verify')
-      .mockReturnValue({ data: user, iat: date, exp: 4 * 60 * 60 + date });
+    t.mock.method(jwtHandler, 'verify').mock.mockImplementationOnce(() => ({
+      data: user,
+      iat: date,
+      exp: 4 * 60 * 60 + date,
+    }));
 
     const response = service.verifyToken({ token: 'my-token' });
 
-    expect(response.data).toStrictEqual({
+    assert.deepStrictEqual(response.data, {
       ...user,
       iat: date,
       exp: 4 * 60 * 60 + date,
     });
   });
 
-  it('should throw an error if incorrect token is provided', () => {
-    jest.spyOn(jwtHandler, 'verify').mockReturnValue('incorrect-token');
+  it('should throw an error if incorrect token is provided', (t) => {
+    t.mock
+      .method(jwtHandler, 'verify')
+      .mock.mockImplementationOnce(() => 'incorrect-token');
 
-    expect(() => service.verifyToken({ token: 'my-token' })).toThrowError(
+    assert.throws(
+      () => service.verifyToken({ token: 'my-token' }),
       InvalidTokenError,
     );
   });
