@@ -12,57 +12,63 @@ import {
 export class ExerciseService implements IExerciseService {
   constructor(private readonly exerciseRepository: IExerciseRepository) {}
 
-  public find(id: string, userId: string): IResponse<IExercise | null> {
-    const exercise = this.getExercise(id, userId);
+  public async find(
+    id: string,
+    userId: string,
+  ): Promise<IResponse<IExercise | null>> {
+    const exercise = await this.getExercise(id, userId);
 
     return {
       data: exercise,
     };
   }
 
-  public create(userId: string, body: ICreateExercise) {
-    const response = this.exerciseRepository.create(userId, body);
+  public async create(
+    userId: string,
+    body: ICreateExercise,
+  ): Promise<IResponse<IExercise>> {
+    const response = await this.exerciseRepository.create(userId, body);
 
     return {
       data: response,
     };
   }
 
-  public list(userId: string): IResponse<IExercise[]> {
-    const exercises = this.exerciseRepository.list(userId);
+  public async list(userId: string): Promise<IResponse<IExercise[]>> {
+    const exercises = await this.exerciseRepository.list(userId);
     return { data: exercises };
   }
 
-  public update(
+  public async update(
     id: string,
-    userId,
+    userId: string,
     body: IUpdateExercise,
-  ): IResponse<IExercise> {
+  ): Promise<IResponse<IExercise>> {
     if (Object.values(body).every((x) => !x)) {
       throw new NothingToUpdateError();
     }
 
-    this.getExercise(id, userId);
+    await this.getExercise(id, userId);
 
-    const response = this.exerciseRepository.update(id, body);
-
-    return {
-      data: response,
-    };
-  }
-
-  public delete(id: string, userId: string): IResponse<boolean> {
-    this.getExercise(id, userId);
-
-    const response = this.exerciseRepository.delete(id);
+    const response = await this.exerciseRepository.update(id, body);
 
     return {
       data: response,
     };
   }
 
-  private getExercise(id: string, userId: string): IExercise {
-    const exercise = this.exerciseRepository.find(id, userId);
+  public async delete(id: string, userId: string): Promise<IResponse<boolean>> {
+    await this.getExercise(id, userId);
+
+    const response = await this.exerciseRepository.delete(id);
+
+    return {
+      data: response,
+    };
+  }
+
+  private async getExercise(id: string, userId: string): Promise<IExercise> {
+    const exercise = await this.exerciseRepository.find(id, userId);
 
     if (!exercise) {
       throw new ExerciseNotFoundError();

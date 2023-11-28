@@ -25,8 +25,8 @@ export async function publicUserRoutes(fastify: FastifyInstance) {
 export async function privateUserRoutes(fastify: FastifyInstance) {
   fastify.addHook('preHandler', authenticate);
 
-  fastify.get('/', (req, reply) => {
-    const response = service.list();
+  fastify.get('/', async (req, reply) => {
+    const response = await service.list();
     reply.send(response);
   });
 
@@ -43,8 +43,8 @@ export async function privateUserRoutes(fastify: FastifyInstance) {
     },
   );
 
-  fastify.delete('/', (req, reply) => {
-    const response = service.delete(req.user.id);
+  fastify.delete('/', async (req, reply) => {
+    const response = await service.delete(req.user.id);
     reply.status(200).send(response);
   });
 }

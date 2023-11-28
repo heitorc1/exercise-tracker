@@ -20,8 +20,8 @@ exports.up = function (db) {
     username: { type: 'string', notNull: true },
     password: { type: 'string', notNull: true },
     email: { type: 'string', notNull: true },
-    createdAt: { type: 'string', notNull: true },
-    updatedAt: { type: 'string', notNull: true },
+    created_at: { type: 'timestamp', notNull: true },
+    updated_at: { type: 'timestamp', notNull: true },
   });
 };
 

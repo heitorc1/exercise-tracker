@@ -16,6 +16,7 @@ module.exports = {
     "vite.config.ts",
     "migrations",
     "scripts",
+    "pgdata",
   ],
   parser: "@typescript-eslint/parser",
   parserOptions: {

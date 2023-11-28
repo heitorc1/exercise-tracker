@@ -10,7 +10,7 @@ import {
 export class ExerciseRepository implements IExerciseRepository {
   constructor(private readonly exerciseQueries: IExerciseQueries) {}
 
-  public find(id: string, userId: string): IExercise | null {
+  public async find(id: string, userId: string): Promise<IExercise | null> {
     const exercise = this.exerciseQueries.find(id, userId);
 
     if (!exercise) {
@@ -20,7 +20,10 @@ export class ExerciseRepository implements IExerciseRepository {
     return exercise;
   }
 
-  public create(userId: string, body: ICreateExercise) {
+  public async create(
+    userId: string,
+    body: ICreateExercise,
+  ): Promise<IExercise> {
     const uuid = uuidv4();
     const date = new Date().toISOString();
     const formattedDate = new Date(body.date).toISOString();
@@ -36,11 +39,11 @@ export class ExerciseRepository implements IExerciseRepository {
     });
   }
 
-  public list(userId: string): IExercise[] {
+  public async list(userId: string): Promise<IExercise[]> {
     return this.exerciseQueries.list(userId);
   }
 
-  public update(id: string, body: IUpdateExercise): IExercise {
+  public async update(id: string, body: IUpdateExercise): Promise<IExercise> {
     const date = new Date().toISOString();
     return this.exerciseQueries.update(id, {
       ...body,
@@ -48,7 +51,7 @@ export class ExerciseRepository implements IExerciseRepository {
     });
   }
 
-  public delete(id: string): boolean {
+  public async delete(id: string): Promise<boolean> {
     return this.exerciseQueries.delete(id);
   }
 }

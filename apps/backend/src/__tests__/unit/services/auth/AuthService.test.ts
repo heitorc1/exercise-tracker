@@ -2,13 +2,10 @@ import { beforeEach, describe, it } from 'node:test';
 import assert from 'node:assert/strict';
 
 import { faker } from '@faker-js/faker';
-import unitTestDb from '__tests__/unit/db';
-import userHelper from '__tests__/unit/db/helpers/UserHelper';
 import { IAuthRepository, IAuthService } from 'domain/auth/interfaces';
 import { AuthRepository } from 'domain/auth/repository';
 import { AuthService } from 'domain/auth/service';
 import { IUserQueries, IUserRepository } from 'domain/user/interfaces';
-import { UserQueries } from 'domain/user/queries';
 import { UserRepository } from 'domain/user/repository';
 import jwtHandler from 'helpers/jwtHandler';
 import { InvalidCredentialsError } from 'infra/exception/InvalidCredentialsError';
@@ -22,7 +19,6 @@ describe('AuthService', () => {
   let service: IAuthService;
 
   beforeEach(() => {
-    userQueries = new UserQueries(unitTestDb);
     authRepository = new AuthRepository();
     userRepository = new UserRepository(userQueries);
     service = new AuthService(authRepository, userRepository);
@@ -35,12 +31,27 @@ describe('AuthService', () => {
   it('should create token for successful login', async (t) => {
     t.mock.timers.enable({ apis: ['Date'], now: new Date() });
 
-    const data = {
+    const user = {
+      id: faker.string.uuid(),
       username: faker.internet.userName(),
+      email: faker.internet.email(),
       password: faker.internet.password(),
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString(),
     };
 
-    const user = await userHelper.insertUser(data.username, data.password);
+    const data = {
+      username: user.username,
+      password: user.password,
+    };
+
+    t.mock
+      .method(UserRepository.prototype, 'getByUsername')
+      .mock.mockImplementationOnce(async () => user);
+
+    t.mock
+      .method(AuthRepository.prototype, 'checkLogin')
+      .mock.mockImplementationOnce(async () => true);
 
     const response = await service.login(data);
 
@@ -53,11 +64,15 @@ describe('AuthService', () => {
     });
   });
 
-  it('should not login with invalid user', async () => {
+  it('should not login with invalid user', async (t) => {
     const data = {
       username: 'invalid-username',
       password: 'password',
     };
+
+    t.mock
+      .method(UserRepository.prototype, 'getByUsername')
+      .mock.mockImplementationOnce(() => null);
 
     await assert.rejects(
       async () => await service.login(data),
@@ -65,8 +80,22 @@ describe('AuthService', () => {
     );
   });
 
-  it('should not login with invalid password', async () => {
-    const user = userHelper.getUser();
+  it('should not login with invalid password', async (t) => {
+    const user = {
+      id: faker.string.uuid(),
+      username: faker.internet.userName(),
+      email: faker.internet.email(),
+      password: faker.internet.password(),
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString(),
+    };
+
+    t.mock
+      .method(UserRepository.prototype, 'getByUsername')
+      .mock.mockImplementationOnce(async () => user);
+    t.mock
+      .method(AuthRepository.prototype, 'checkLogin')
+      .mock.mockImplementationOnce(async () => false);
 
     await assert.rejects(
       async () =>

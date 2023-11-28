@@ -13,8 +13,8 @@ const service = makeExerciseService();
 export async function exerciseRoutes(fastify: FastifyInstance) {
   fastify.addHook('preHandler', authenticate);
 
-  fastify.get('/', (req, reply) => {
-    const response = service.list(req.user.id);
+  fastify.get('/', async (req, reply) => {
+    const response = await service.list(req.user.id);
     reply.status(200).send(response);
   });
 
@@ -25,8 +25,8 @@ export async function exerciseRoutes(fastify: FastifyInstance) {
         params: findExerciseSchema,
       },
     },
-    (req, reply) => {
-      const response = service.find(req.params.id, req.user.id);
+    async (req, reply) => {
+      const response = await service.find(req.params.id, req.user.id);
       reply.status(200).send(response);
     },
   );
@@ -38,8 +38,8 @@ export async function exerciseRoutes(fastify: FastifyInstance) {
         body: createExerciseSchema,
       },
     },
-    (req, reply) => {
-      const response = service.create(req.user.id, req.body);
+    async (req, reply) => {
+      const response = await service.create(req.user.id, req.body);
       reply.status(201).send(response);
     },
   );
@@ -52,8 +52,12 @@ export async function exerciseRoutes(fastify: FastifyInstance) {
         body: updateExerciseSchema,
       },
     },
-    (req, reply) => {
-      const response = service.update(req.params.id, req.user.id, req.body);
+    async (req, reply) => {
+      const response = await service.update(
+        req.params.id,
+        req.user.id,
+        req.body,
+      );
       reply.status(200).send(response);
     },
   );
@@ -65,8 +69,8 @@ export async function exerciseRoutes(fastify: FastifyInstance) {
         params: findExerciseSchema,
       },
     },
-    (req, reply) => {
-      const response = service.delete(req.params.id, req.user.id);
+    async (req, reply) => {
+      const response = await service.delete(req.params.id, req.user.id);
       reply.status(200).send(response);
     },
   );

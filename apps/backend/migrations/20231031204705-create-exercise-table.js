@@ -18,11 +18,11 @@ exports.up = function (db) {
   return db.createTable('exercises', {
     id: { type: 'string', primaryKey: true, notNull: true },
     description: { type: 'string', notNull: true },
-    userId: { type: 'string', notNull: true },
+    user_id: { type: 'string', notNull: true },
     duration: { type: 'int', notNull: true },
     date: { type: 'string', notNull: true },
-    createdAt: { type: 'string', notNull: true },
-    updatedAt: { type: 'string', notNull: true },
+    created_at: { type: 'timestamp', notNull: true },
+    updated_at: { type: 'timestamp', notNull: true },
   });
 };
 

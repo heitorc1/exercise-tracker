@@ -1,86 +1,108 @@
+import { query } from 'infra/db';
 import { IUser, IUserQueries } from './interfaces';
-import type { Database } from 'better-sqlite3';
 
 export class UserQueries implements IUserQueries {
-  constructor(private readonly db: Database) {}
+  private defaultFields = `
+    id, 
+    username, 
+    email, 
+    password, 
+    created_at as "createdAt", 
+    updated_at as "updatedAt"
+  `;
 
-  public find(id: string): IUser | undefined {
-    return this.db.prepare('SELECT * FROM users WHERE id = @id').get({
-      id,
-    }) as IUser;
+  public async find(id: string): Promise<IUser | null> {
+    const { rows } = await query<IUser>(
+      `SELECT ${this.defaultFields} FROM users WHERE id = $1`,
+      [id],
+    );
+    if (!rows.length) {
+      return null;
+    }
+    return rows[0];
   }
 
-  public getByUsername(username: string): IUser | undefined {
-    return this.db
-      .prepare(
-        'SELECT id, username, email, password FROM users WHERE username = @username',
-      )
-      .get({ username }) as IUser;
+  public async getByUsername(username: string): Promise<IUser | null> {
+    const { rows } = await query<IUser>(
+      'SELECT id, username, email, password FROM users WHERE username = $1',
+      [username],
+    );
+    if (!rows.length) {
+      return null;
+    }
+    return rows[0];
   }
 
-  public list(): IUser[] {
-    return this.db
-      .prepare('SELECT id, username, email, createdAt, updatedAt FROM users')
-      .all() as IUser[];
+  public async list(): Promise<IUser[]> {
+    const { rows } = await query<IUser>(
+      `
+        SELECT id, username, email, created_at as "createdAt", updated_at as "updatedAt" 
+        FROM users
+      `,
+    );
+    return rows;
   }
 
-  public create(data: IUser): IUser {
-    return this.db
-      .prepare(
-        `
+  public async create(data: IUser): Promise<IUser> {
+    const { rows, rowCount } = await query<IUser>(
+      `
           INSERT INTO users
-          VALUES (@id, @username, @password, @email, @createdAt, @updatedAt)
-          RETURNING id, username, email, password, createdAt, updatedAt
+          VALUES ($1, $2, $3, $4, $5, $6)
+          RETURNING ${this.defaultFields}
         `,
-      )
-      .get({
-        id: data.id,
-        username: data.username,
-        email: data.email,
-        password: data.password,
-        createdAt: data.createdAt,
-        updatedAt: data.updatedAt,
-      }) as IUser;
+      [
+        data.id,
+        data.username,
+        data.password,
+        data.email,
+        data.createdAt,
+        data.updatedAt,
+      ],
+    );
+    if (!rowCount) {
+      throw new Error('User not created');
+    }
+    return rows[0];
   }
 
-  public hasEmail(email: string): boolean {
-    return !!this.db
-      .prepare('SELECT COUNT(1) FROM users WHERE email = @email')
-      .pluck()
-      .get({
-        email,
-      });
+  public async hasEmail(email: string): Promise<boolean> {
+    const { rows } = await query<{ total: number }>(
+      'SELECT COUNT(1) as total FROM users WHERE email = $1',
+      [email],
+    );
+    if (!rows.length) {
+      return false;
+    }
+    return !!Number(rows[0].total);
   }
 
-  public update(id: string, data: Partial<IUser>): IUser {
-    return this.db
-      .prepare(
-        `
+  public async update(id: string, data: Partial<IUser>): Promise<IUser> {
+    const { rows, rowCount } = await query<IUser>(
+      `
           UPDATE users 
           SET 
-            username = IFNULL(@username, username),
-            email = IFNULL(@email, email),
-            password = IFNULL(@password, password),
-            updatedAt = @updatedAt
-          WHERE id = @id
-          RETURNING id, username, email, createdAt, updatedAt
+            username = COALESCE($1, username),
+            email = COALESCE($2, email),
+            password = COALESCE($3, password),
+            updated_at = $4
+          WHERE id = $5
+          RETURNING 
+            id, 
+            username, 
+            email, 
+            created_at as "createdAt", 
+            updated_at as "updatedAt"
         `,
-      )
-      .get({
-        username: data.username,
-        email: data.email,
-        password: data.password,
-        updatedAt: data.updatedAt,
-        id,
-      }) as IUser;
+      [data.username, data.email, data.password, data.updatedAt, id],
+    );
+    if (!rowCount) {
+      throw new Error('User not updated');
+    }
+    return rows[0];
   }
 
-  delete(id: string): boolean {
-    return !!this.db.prepare('DELETE FROM users WHERE id = @id').run({ id })
-      .changes;
-  }
-
-  public findFirst() {
-    return this.db.prepare('SELECT * FROM users LIMIT 1').get() as IUser;
+  public async delete(id: string): Promise<boolean> {
+    const { rowCount } = await query('DELETE FROM users WHERE id = $1', [id]);
+    return rowCount ? true : false;
   }
 }

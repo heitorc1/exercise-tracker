@@ -25,30 +25,29 @@ export interface IResponse<T> {
 }
 
 export interface IUserService {
-  list(): IResponse<IUser[]>;
+  list(): Promise<IResponse<IUser[]>>;
   create(data: ICreateUser): Promise<IResponse<IUser>>;
   update(id: string, data: IUpdateUser): Promise<IResponse<IUser>>;
-  delete(id: string): IResponse<boolean>;
+  delete(id: string): Promise<IResponse<boolean>>;
 }
 
 export interface IUserRepository {
-  find(id: string): IUser | undefined;
-  getByUsername(username: string): IUser | undefined;
-  list(): IUser[];
+  find(id: string): Promise<IUser | null>;
+  getByUsername(username: string): Promise<IUser | null>;
+  list(): Promise<IUser[]>;
   create(data: ICreateUser): Promise<IUser>;
   update(id: string, data: IUpdateUser): Promise<IUser>;
-  delete(id: string): boolean;
-  hasUsername(username: string): boolean;
-  hasEmail(email: string): boolean;
+  delete(id: string): Promise<boolean>;
+  hasUsername(username: string): Promise<boolean>;
+  hasEmail(email: string): Promise<boolean>;
 }
 
 export interface IUserQueries {
-  find(id: string): IUser | undefined;
-  list(): IUser[];
-  getByUsername(username: string): IUser | undefined;
-  create(data: IUser): IUser;
-  delete(id: string): boolean;
-  hasEmail(email: string): boolean;
-  update(id: string, data: Partial<IUser>): IUser;
-  findFirst(): IUser;
+  find(id: string): Promise<IUser | null>;
+  list(): Promise<IUser[]>;
+  getByUsername(username: string): Promise<IUser | null>;
+  create(data: IUser): Promise<IUser>;
+  delete(id: string): Promise<boolean>;
+  hasEmail(email: string): Promise<boolean>;
+  update(id: string, data: Partial<IUser>): Promise<IUser>;
 }

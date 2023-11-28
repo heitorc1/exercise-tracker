@@ -1,11 +1,11 @@
 {
   "defaultEnv": "local",
   "local": {
-    "driver": "sqlite3",
-    "filename": "./exercise.db"
-  },
-  "test": {
-    "driver": "sqlite3",
-    "filename": "./src/__tests__/unit/db/unit-testing.db"
+    "driver": "pg",
+    "host": "localhost",
+    "port": 5432,
+    "user": { "ENV": "DB_USER" },
+    "password": { "ENV": "DB_PASSWORD" },
+    "database": { "ENV": "DB_DATABASE" }
   }
 }

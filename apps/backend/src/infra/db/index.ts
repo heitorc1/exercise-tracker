@@ -1,7 +1,16 @@
-import SqlDatabase from 'better-sqlite3';
-import type { Database as DatabaseType } from 'better-sqlite3';
+/* eslint-disable @typescript-eslint/no-explicit-any */
+import { Pool, QueryResult, QueryResultRow } from 'pg';
+import { DB_DATABASE, DB_PASSWORD, DB_USER } from 'infra/config';
 
-const db: DatabaseType = new SqlDatabase('exercise.db');
-db.pragma('journal_mode = WAL');
+export const pool = new Pool({
+  host: 'localhost',
+  port: 5432,
+  database: DB_DATABASE,
+  user: DB_USER,
+  password: DB_PASSWORD,
+});
 
-export default db;
+export const query = <T extends QueryResultRow = any>(
+  text: string,
+  params?: any,
+): Promise<QueryResult<T>> => pool.query<T>(text, params);

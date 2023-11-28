@@ -11,15 +11,15 @@ import {
 export class UserRepository implements IUserRepository {
   constructor(private readonly userQueries: IUserQueries) {}
 
-  public find(id: string): IUser | undefined {
+  public async find(id: string): Promise<IUser | null> {
     return this.userQueries.find(id);
   }
 
-  public getByUsername(username: string): IUser | undefined {
+  public async getByUsername(username: string): Promise<IUser | null> {
     return this.userQueries.getByUsername(username);
   }
 
-  public list(): IUser[] {
+  public async list(): Promise<IUser[]> {
     return this.userQueries.list();
   }
 
@@ -37,11 +37,12 @@ export class UserRepository implements IUserRepository {
     });
   }
 
-  public hasUsername(username: string): boolean {
-    return !!this.userQueries.getByUsername(username);
+  public async hasUsername(username: string): Promise<boolean> {
+    const user = await this.userQueries.getByUsername(username);
+    return !!user;
   }
 
-  public hasEmail(email: string): boolean {
+  public async hasEmail(email: string): Promise<boolean> {
     return this.userQueries.hasEmail(email);
   }
 
@@ -52,7 +53,7 @@ export class UserRepository implements IUserRepository {
     }
     const date = new Date().toISOString();
 
-    return this.userQueries.update(id, {
+    return await this.userQueries.update(id, {
       username: data.username,
       email: data.email,
       password: modifiedPassword,
@@ -61,7 +62,7 @@ export class UserRepository implements IUserRepository {
     });
   }
 
-  public delete(id: string): boolean {
+  public async delete(id: string): Promise<boolean> {
     return this.userQueries.delete(id);
   }
 }

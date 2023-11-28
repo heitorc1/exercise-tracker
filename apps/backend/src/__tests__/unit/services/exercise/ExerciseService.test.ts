@@ -1,27 +1,22 @@
 import assert from 'node:assert';
 import { afterEach, beforeEach, describe, it, mock } from 'node:test';
 import { faker } from '@faker-js/faker';
-import unitTestDb from '__tests__/unit/db';
-import exerciseHelper from '__tests__/unit/db/helpers/ExerciseHelper';
-import userHelper from '__tests__/unit/db/helpers/UserHelper';
 import {
   IExerciseQueries,
   IExerciseRepository,
   IExerciseService,
 } from 'domain/exercises/interfaces';
-import { ExerciseQueries } from 'domain/exercises/queries';
 import { ExerciseRepository } from 'domain/exercises/repository';
 import { ExerciseService } from 'domain/exercises/service';
 import { ExerciseNotFoundError } from 'infra/exception/ExerciseNotFoundError';
 import { NothingToUpdateError } from 'infra/exception/NothingToUpdateError';
 
-describe('UserService', () => {
+describe('ExerciseService', () => {
   let repository: IExerciseRepository;
   let service: IExerciseService;
   let userQueries: IExerciseQueries;
 
   beforeEach(() => {
-    userQueries = new ExerciseQueries(unitTestDb);
     repository = new ExerciseRepository(userQueries);
     service = new ExerciseService(repository);
 
@@ -37,99 +32,191 @@ describe('UserService', () => {
     assert(service instanceof ExerciseService);
   });
 
-  it('should find an exercise by id', () => {
-    const exercise = exerciseHelper.findFirst();
+  it('should find an exercise by id', async (t) => {
+    const exercise = {
+      id: faker.string.uuid(),
+      userId: faker.string.uuid(),
+      description: faker.lorem.sentence(),
+      duration: faker.number.int({ min: 30, max: 90 }),
+      date: faker.date.recent().toISOString(),
+      createdAt: faker.date.recent().toISOString(),
+      updatedAt: faker.date.recent().toISOString(),
+    };
 
-    const response = service.find(exercise.id, exercise.userId);
+    t.mock
+      .method(ExerciseRepository.prototype, 'find')
+      .mock.mockImplementationOnce(async () => exercise);
+
+    const response = await service.find(exercise.id, exercise.userId);
 
     assert.deepStrictEqual(response.data, exercise);
   });
 
-  it('should not find an exercise by invalid id', () => {
-    const user = userHelper.getUser();
+  it('should not find an exercise by invalid id', async (t) => {
     const id = faker.string.uuid();
+    const userId = faker.string.uuid();
 
-    assert.throws(() => service.find(id, user.id), ExerciseNotFoundError);
-  });
+    t.mock
+      .method(ExerciseRepository.prototype, 'find')
+      .mock.mockImplementationOnce(async () => null);
 
-  it('should create an exercise', () => {
-    const user = userHelper.getUser();
-    const exercise = {
-      description: faker.lorem.sentence(),
-      duration: faker.number.int({ min: 10, max: 100 }),
-      date: faker.date.recent().toISOString(),
-    };
-
-    const response = service.create(user.id, exercise);
-
-    const { description, date, duration } = response.data;
-
-    assert.deepStrictEqual({ description, date, duration }, exercise);
-  });
-
-  it('should list user exercises', () => {
-    const user = userHelper.getUser();
-    exerciseHelper.createExercise(user.id);
-
-    const response = service.list(user.id);
-
-    assert(response.data.length > 1);
-  });
-
-  it('should return an empty array when there is no exercise', async () => {
-    const user = await userHelper.insertUser(
-      faker.internet.userName(),
-      faker.internet.password(),
-    );
-
-    const response = service.list(user.id);
-
-    assert.deepEqual(response.data.length, 0);
-  });
-
-  it('should update an exercise', () => {
-    const user = userHelper.getUser();
-    const exercise = exerciseHelper.createExercise(user.id);
-    const updateObject = {
-      description: 'New description',
-      duration: 55,
-      date: new Date().toISOString(),
-    };
-
-    const response = service.update(exercise.id, user.id, updateObject);
-
-    assert.deepStrictEqual(response.data, {
-      ...exercise,
-      description: updateObject.description,
-      duration: updateObject.duration,
-      date: updateObject.date,
-    });
-  });
-
-  it('should not update an exercise with invalid userId', () => {
-    const invalidUserId = faker.string.uuid();
-    const user = userHelper.getUser();
-    const exercise = exerciseHelper.createExercise(user.id);
-    const updateObject = {
-      description: 'New description',
-      duration: 55,
-      date: new Date().toISOString(),
-    };
-
-    assert.throws(
-      () => service.update(exercise.id, invalidUserId, updateObject),
+    assert.rejects(
+      async () => await service.find(id, userId),
       ExerciseNotFoundError,
     );
   });
 
-  it('should update an exercise duration', () => {
-    const user = userHelper.getUser();
-    const exercise = exerciseHelper.createExercise(user.id);
+  it('should create an exercise', async (t) => {
+    const exercise = {
+      id: faker.string.uuid(),
+      userId: faker.string.uuid(),
+      description: faker.lorem.sentence(),
+      duration: faker.number.int({ min: 30, max: 90 }),
+      date: faker.date.recent().toISOString(),
+      createdAt: faker.date.recent().toISOString(),
+      updatedAt: faker.date.recent().toISOString(),
+    };
+
+    t.mock
+      .method(ExerciseRepository.prototype, 'create')
+      .mock.mockImplementationOnce(async () => exercise);
+
+    const response = await service.create(exercise.userId, exercise);
+
+    assert.deepStrictEqual(response.data, exercise);
+  });
+
+  it('should list user exercises', async (t) => {
+    const exercise = {
+      id: faker.string.uuid(),
+      userId: faker.string.uuid(),
+      description: faker.lorem.sentence(),
+      duration: faker.number.int({ min: 30, max: 90 }),
+      date: faker.date.recent().toISOString(),
+      createdAt: faker.date.recent().toISOString(),
+      updatedAt: faker.date.recent().toISOString(),
+    };
+
+    t.mock
+      .method(ExerciseRepository.prototype, 'list')
+      .mock.mockImplementationOnce(async () => [exercise]);
+
+    const response = await service.list(exercise.userId);
+
+    assert(response.data.length >= 1);
+    assert.deepStrictEqual(response.data[0], exercise);
+  });
+
+  it('should return an empty array when there is no exercise', async (t) => {
+    const id = faker.string.uuid();
+
+    t.mock
+      .method(ExerciseRepository.prototype, 'list')
+      .mock.mockImplementationOnce(async () => []);
+
+    const response = await service.list(id);
+
+    assert.deepEqual(response.data.length, 0);
+  });
+
+  it('should update an exercise', async (t) => {
+    const exercise = {
+      id: faker.string.uuid(),
+      userId: faker.string.uuid(),
+      description: faker.lorem.sentence(),
+      duration: faker.number.int({ min: 30, max: 90 }),
+      date: faker.date.recent().toISOString(),
+      createdAt: faker.date.recent().toISOString(),
+      updatedAt: faker.date.recent().toISOString(),
+    };
+    const updateObject = {
+      description: 'New description',
+      duration: 55,
+      date: new Date().toISOString(),
+    };
+
+    t.mock
+      .method(ExerciseRepository.prototype, 'find')
+      .mock.mockImplementationOnce(async () => exercise);
+    t.mock
+      .method(ExerciseRepository.prototype, 'update')
+      .mock.mockImplementationOnce(async () => ({
+        ...exercise,
+        description: updateObject.description,
+        duration: updateObject.duration,
+        date: updateObject.date,
+      }));
+
+    const response = await service.update(
+      exercise.id,
+      exercise.userId,
+      updateObject,
+    );
+
+    assert.deepStrictEqual(response.data, {
+      ...exercise,
+      description: updateObject.description,
+      duration: updateObject.duration,
+      date: updateObject.date,
+    });
+  });
+
+  it('should not update an exercise with invalid userId', async (t) => {
+    const invalidId = faker.string.uuid();
+    const exercise = {
+      id: faker.string.uuid(),
+      userId: faker.string.uuid(),
+      description: faker.lorem.sentence(),
+      duration: faker.number.int({ min: 30, max: 90 }),
+      date: faker.date.recent().toISOString(),
+      createdAt: faker.date.recent().toISOString(),
+      updatedAt: faker.date.recent().toISOString(),
+    };
+    const updateObject = {
+      description: 'New description',
+      duration: 55,
+      date: new Date().toISOString(),
+    };
+
+    t.mock
+      .method(ExerciseRepository.prototype, 'find')
+      .mock.mockImplementationOnce(async () => null);
+
+    assert.rejects(
+      async () => await service.update(exercise.id, invalidId, updateObject),
+      ExerciseNotFoundError,
+    );
+  });
+
+  it('should update an exercise duration', async (t) => {
+    const exercise = {
+      id: faker.string.uuid(),
+      userId: faker.string.uuid(),
+      description: faker.lorem.sentence(),
+      duration: faker.number.int({ min: 30, max: 90 }),
+      date: faker.date.recent().toISOString(),
+      createdAt: faker.date.recent().toISOString(),
+      updatedAt: faker.date.recent().toISOString(),
+    };
     const updateObject = {
       duration: 55,
     };
 
-    const response = service.update(exercise.id, user.id, updateObject);
+    t.mock
+      .method(ExerciseRepository.prototype, 'find')
+      .mock.mockImplementationOnce(async () => exercise);
+    t.mock
+      .method(ExerciseRepository.prototype, 'update')
+      .mock.mockImplementationOnce(async () => ({
+        ...exercise,
+        duration: updateObject.duration,
+      }));
+
+    const response = await service.update(
+      exercise.id,
+      exercise.userId,
+      updateObject,
+    );
 
     assert.deepStrictEqual(response.data, {
       ...exercise,
@@ -137,14 +224,35 @@ describe('UserService', () => {
     });
   });
 
-  it('should update an exercise description', () => {
-    const user = userHelper.getUser();
-    const exercise = exerciseHelper.createExercise(user.id);
+  it('should update an exercise description', async (t) => {
+    const exercise = {
+      id: faker.string.uuid(),
+      userId: faker.string.uuid(),
+      description: faker.lorem.sentence(),
+      duration: faker.number.int({ min: 30, max: 90 }),
+      date: faker.date.recent().toISOString(),
+      createdAt: faker.date.recent().toISOString(),
+      updatedAt: faker.date.recent().toISOString(),
+    };
     const updateObject = {
       description: 'New description',
     };
 
-    const response = service.update(exercise.id, user.id, updateObject);
+    t.mock
+      .method(ExerciseRepository.prototype, 'find')
+      .mock.mockImplementationOnce(async () => exercise);
+    t.mock
+      .method(ExerciseRepository.prototype, 'update')
+      .mock.mockImplementationOnce(async () => ({
+        ...exercise,
+        description: updateObject.description,
+      }));
+
+    const response = await service.update(
+      exercise.id,
+      exercise.userId,
+      updateObject,
+    );
 
     assert.deepStrictEqual(response.data, {
       ...exercise,
@@ -152,14 +260,35 @@ describe('UserService', () => {
     });
   });
 
-  it('should update an exercise date', () => {
-    const user = userHelper.getUser();
-    const exercise = exerciseHelper.createExercise(user.id);
+  it('should update an exercise date', async (t) => {
+    const exercise = {
+      id: faker.string.uuid(),
+      userId: faker.string.uuid(),
+      description: faker.lorem.sentence(),
+      duration: faker.number.int({ min: 30, max: 90 }),
+      date: faker.date.recent().toISOString(),
+      createdAt: faker.date.recent().toISOString(),
+      updatedAt: faker.date.recent().toISOString(),
+    };
     const updateObject = {
       date: new Date().toISOString(),
     };
 
-    const response = service.update(exercise.id, user.id, updateObject);
+    t.mock
+      .method(ExerciseRepository.prototype, 'find')
+      .mock.mockImplementationOnce(async () => exercise);
+    t.mock
+      .method(ExerciseRepository.prototype, 'update')
+      .mock.mockImplementationOnce(async () => ({
+        ...exercise,
+        date: updateObject.date,
+      }));
+
+    const response = await service.update(
+      exercise.id,
+      exercise.userId,
+      updateObject,
+    );
 
     assert.deepStrictEqual(response.data, {
       ...exercise,
@@ -167,31 +296,66 @@ describe('UserService', () => {
     });
   });
 
-  it('should not update an exercise without data', () => {
-    const user = userHelper.getUser();
-    const exercise = exerciseHelper.createExercise(user.id);
+  it('should not update an exercise without data', async () => {
+    const exercise = {
+      id: faker.string.uuid(),
+      userId: faker.string.uuid(),
+      description: faker.lorem.sentence(),
+      duration: faker.number.int({ min: 30, max: 90 }),
+      date: faker.date.recent().toISOString(),
+      createdAt: faker.date.recent().toISOString(),
+      updatedAt: faker.date.recent().toISOString(),
+    };
     const updateObject = {};
 
-    assert.throws(
-      () => service.update(exercise.id, user.id, updateObject),
+    assert.rejects(
+      async () =>
+        await service.update(exercise.id, exercise.userId, updateObject),
       NothingToUpdateError,
     );
   });
 
-  it('should delete an exercise', () => {
-    const exercise = exerciseHelper.findFirst();
+  it('should delete an exercise', async (t) => {
+    const exercise = {
+      id: faker.string.uuid(),
+      userId: faker.string.uuid(),
+      description: faker.lorem.sentence(),
+      duration: faker.number.int({ min: 30, max: 90 }),
+      date: faker.date.recent().toISOString(),
+      createdAt: faker.date.recent().toISOString(),
+      updatedAt: faker.date.recent().toISOString(),
+    };
 
-    const response = service.delete(exercise.id, exercise.userId);
+    t.mock
+      .method(ExerciseRepository.prototype, 'find')
+      .mock.mockImplementationOnce(async () => exercise);
+    t.mock
+      .method(ExerciseRepository.prototype, 'delete')
+      .mock.mockImplementationOnce(async () => true);
+
+    const response = await service.delete(exercise.id, exercise.userId);
 
     assert.deepEqual(response.data, true);
   });
 
-  it('should not update an exercise with invalid userId', () => {
+  it('should not delete an exercise with invalid userId', async (t) => {
+    const exercise = {
+      id: faker.string.uuid(),
+      userId: faker.string.uuid(),
+      description: faker.lorem.sentence(),
+      duration: faker.number.int({ min: 30, max: 90 }),
+      date: faker.date.recent().toISOString(),
+      createdAt: faker.date.recent().toISOString(),
+      updatedAt: faker.date.recent().toISOString(),
+    };
     const invalidUserId = faker.string.uuid();
-    const exercise = exerciseHelper.findFirst();
 
-    assert.throws(
-      () => service.delete(exercise.id, invalidUserId),
+    t.mock
+      .method(ExerciseRepository.prototype, 'find')
+      .mock.mockImplementationOnce(async () => null);
+
+    assert.rejects(
+      async () => await service.delete(exercise.id, invalidUserId),
       ExerciseNotFoundError,
     );
   });

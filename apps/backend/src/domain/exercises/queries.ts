@@ -1,84 +1,93 @@
+import { query } from 'infra/db';
 import { IExercise, IExerciseQueries } from './interfaces';
-import type { Database } from 'better-sqlite3';
 
 export class ExerciseQueries implements IExerciseQueries {
-  constructor(private readonly db: Database) {}
+  private defaultFields = `
+    id, 
+    description, 
+    user_id as "userId", 
+    duration, 
+    date, 
+    created_at as "createdAt", 
+    updated_at as "updatedAt" 
+  `;
 
-  public find(id: string, userId: string): IExercise | undefined {
-    return this.db
-      .prepare(
-        `
-        SELECT * FROM exercises 
-        WHERE id = @id AND userId = @userId
+  public async find(id: string, userId: string): Promise<IExercise | null> {
+    const { rows } = await query<IExercise>(
+      `
+        SELECT ${this.defaultFields}          
+        FROM exercises 
+        WHERE id = $1 AND user_id = $2
       `,
-      )
-      .get({ id, userId }) as IExercise;
+      [id, userId],
+    );
+    if (!rows.length) {
+      return null;
+    }
+    return rows[0];
   }
 
-  public create(data: IExercise): IExercise {
-    return this.db
-      .prepare(
-        `
+  public async create(data: IExercise): Promise<IExercise> {
+    const { rows, rowCount } = await query<IExercise>(
+      `
           INSERT INTO exercises 
-          VALUES (@id, @description, @userId, @duration, @date, @createdAt, @updatedAt)
-          RETURNING *
+          VALUES ($1, $2, $3, $4, $5, $6, $7)
+          RETURNING ${this.defaultFields}
         `,
-      )
-      .get({
-        id: data.id,
-        description: data.description,
-        userId: data.userId,
-        duration: data.duration,
-        date: data.date,
-        createdAt: data.createdAt,
-        updatedAt: data.updatedAt,
-      }) as IExercise;
+      [
+        data.id,
+        data.description,
+        data.userId,
+        data.duration,
+        data.date,
+        data.createdAt,
+        data.updatedAt,
+      ],
+    );
+    if (!rowCount) {
+      throw new Error('Exercise not created');
+    }
+    return rows[0];
   }
 
-  public list(userId: string): IExercise[] {
-    return this.db
-      .prepare(
-        'SELECT * FROM exercises WHERE userId = @userId ORDER BY date DESC',
-      )
-      .all({ userId }) as IExercise[];
+  public async list(userId: string): Promise<IExercise[]> {
+    const { rows } = await query<IExercise>(
+      `SELECT ${this.defaultFields} 
+          FROM exercises 
+          WHERE user_id = $1 
+          ORDER BY date DESC`,
+      [userId],
+    );
+    return rows;
   }
 
-  public update(id: string, body: Partial<IExercise>): IExercise {
-    return this.db
-      .prepare(
-        `
+  public async update(
+    id: string,
+    body: Partial<IExercise>,
+  ): Promise<IExercise> {
+    const { rows, rowCount } = await query<IExercise>(
+      `
       UPDATE exercises
       SET 
-        description = IFNULL(@description, description),
-        duration = IFNULL(@duration, duration),
-        date = IFNULL(@date, date),
-        updatedAT = @updatedAt
-      WHERE id = @id
-      RETURNING *
+        description = COALESCE($1, description),
+        duration = COALESCE($2, duration),
+        date = COALESCE($3, date),
+        updated_at = $4
+      WHERE id = $5
+      RETURNING ${this.defaultFields}
     `,
-      )
-      .get({
-        description: body.description,
-        duration: body.duration,
-        date: body.date,
-        updatedAt: body.updatedAt,
-        id,
-      }) as IExercise;
+      [body.description, body.duration, body.date, body.updatedAt, id],
+    );
+    if (!rowCount) {
+      throw new Error('Exercise not updated');
+    }
+    return rows[0];
   }
 
-  public delete(id: string): boolean {
-    return !!this.db.prepare('DELETE FROM exercises WHERE id = @id').run({ id })
-      .changes;
-  }
-
-  public findFirst(): IExercise {
-    return this.db
-      .prepare(
-        `
-          SELECT * FROM exercises
-          LIMIT 1
-        `,
-      )
-      .get() as IExercise;
+  public async delete(id: string): Promise<boolean> {
+    const { rowCount } = await query('DELETE FROM exercises WHERE id = $1', [
+      id,
+    ]);
+    return !!rowCount;
   }
 }

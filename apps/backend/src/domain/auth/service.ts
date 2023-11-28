@@ -22,7 +22,7 @@ export class AuthService implements IAuthService {
   ) {}
 
   public async login(data: ILogin) {
-    const user = this.userRepository.getByUsername(data.username);
+    const user = await this.userRepository.getByUsername(data.username);
     if (!user) {
       throw new UserNotFoundError();
     }

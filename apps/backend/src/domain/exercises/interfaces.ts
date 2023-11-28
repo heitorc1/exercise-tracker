@@ -24,30 +24,29 @@ export interface IResponse<T> {
 }
 
 export interface IExerciseService {
-  find(id: string, userId: string): IResponse<IExercise | null>;
-  list(userId: string): IResponse<IExercise[]>;
-  create(userId: string, body: ICreateExercise): IResponse<IExercise>;
+  find(id: string, userId: string): Promise<IResponse<IExercise | null>>;
+  list(userId: string): Promise<IResponse<IExercise[]>>;
+  create(userId: string, body: ICreateExercise): Promise<IResponse<IExercise>>;
   update(
     id: string,
     userId: string,
     body: IUpdateExercise,
-  ): IResponse<IExercise>;
-  delete(id: string, userId: string): IResponse<boolean>;
+  ): Promise<IResponse<IExercise>>;
+  delete(id: string, userId: string): Promise<IResponse<boolean>>;
 }
 
 export interface IExerciseRepository {
-  find(id: string, userId: string): IExercise | null;
-  list(userId: string): IExercise[];
-  create(userId: string, body: ICreateExercise): IExercise;
-  update(id: string, body: IUpdateExercise): IExercise;
-  delete(id: string): boolean;
+  find(id: string, userId: string): Promise<IExercise | null>;
+  list(userId: string): Promise<IExercise[]>;
+  create(userId: string, body: ICreateExercise): Promise<IExercise>;
+  update(id: string, body: IUpdateExercise): Promise<IExercise>;
+  delete(id: string): Promise<boolean>;
 }
 
 export interface IExerciseQueries {
-  find(id: string, userId: string): IExercise | undefined;
-  list(userId: string): IExercise[];
-  create(body: IExercise): IExercise;
-  update(id: string, body: Partial<IExercise>): IExercise;
-  delete(id: string): boolean;
-  findFirst(): IExercise | undefined;
+  find(id: string, userId: string): Promise<IExercise | null>;
+  list(userId: string): Promise<IExercise[]>;
+  create(body: IExercise): Promise<IExercise>;
+  update(id: string, body: Partial<IExercise>): Promise<IExercise>;
+  delete(id: string): Promise<boolean>;
 }

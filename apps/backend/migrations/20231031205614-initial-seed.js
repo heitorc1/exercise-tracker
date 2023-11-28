@@ -31,7 +31,7 @@ exports.up = function (db) {
 
   db.insert(
     'users',
-    ['id', 'username', 'password', 'email', 'createdAt', 'updatedAt'],
+    ['id', 'username', 'password', 'email', 'created_at', 'updated_at'],
     [
       adminUser.id,
       adminUser.username,
@@ -57,11 +57,11 @@ exports.up = function (db) {
         [
           'id',
           'description',
-          'userId',
+          'user_id',
           'duration',
           'date',
-          'createdAt',
-          'updatedAt',
+          'created_at',
+          'updated_at',
         ],
         [
           exercise.id,
