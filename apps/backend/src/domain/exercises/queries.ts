@@ -1,4 +1,4 @@
-import { query } from 'infra/db';
+import { query } from '@/infra/db';
 import { IExercise, IExerciseQueries } from './interfaces';
 
 export class ExerciseQueries implements IExerciseQueries {

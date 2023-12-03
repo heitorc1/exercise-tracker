@@ -3,7 +3,7 @@ import {
   createExerciseSchema,
   findExerciseSchema,
   updateExerciseSchema,
-} from './schemas';
+} from '@exercise-tracker/shared/schemas/exercise';
 
 export interface IExercise {
   id: string;

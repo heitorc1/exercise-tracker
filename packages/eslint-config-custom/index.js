@@ -53,7 +53,10 @@ module.exports = {
       typescript: {},
       node: {},
       alias: {
-        map: [["@", "./src"]],
+        map: [
+          ["@", "./src"],
+          ["@exercise-tracker/shared", "../../packages/shared"],
+        ],
         extensions: [".ts", ".tsx", ".js", ".jsx", ".json"],
       },
     },

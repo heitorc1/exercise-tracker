@@ -6,7 +6,8 @@
     "typeRoots": ["./src/types", "./node_modules/@types"],
     "baseUrl": ".",
     "paths": {
-      "@/*": ["src/*"]
+      "@/*": ["src/*"],
+      "@exercise-tracker/shared/*": ["../../packages/shared/*"]
     }
   }
 }

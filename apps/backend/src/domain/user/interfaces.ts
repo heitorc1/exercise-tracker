@@ -1,5 +1,9 @@
 import { z } from 'zod';
-import { createUserSchema, jwtUserSchema, updateUserSchema } from './schemas';
+import {
+  createUserSchema,
+  jwtUserSchema,
+  updateUserSchema,
+} from '@exercise-tracker/shared/schemas/user';
 
 export interface ICreateUser extends z.infer<typeof createUserSchema> {}
 export interface IUpdateUser extends z.infer<typeof updateUserSchema> {}

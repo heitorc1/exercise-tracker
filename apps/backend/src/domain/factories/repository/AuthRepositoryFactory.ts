@@ -1,5 +1,5 @@
-import { IAuthRepository } from 'domain/auth/interfaces';
-import { AuthRepository } from 'domain/auth/repository';
+import { IAuthRepository } from '@/domain/auth/interfaces';
+import { AuthRepository } from '@/domain/auth/repository';
 
 const makeAuthRepository = (): IAuthRepository => {
   return new AuthRepository();

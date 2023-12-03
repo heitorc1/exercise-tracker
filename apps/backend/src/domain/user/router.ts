@@ -1,7 +1,10 @@
 import { FastifyInstance } from 'fastify';
-import makeUserService from 'domain/factories/service/UserServiceFactory';
-import { authenticate } from 'hooks/authenticate';
-import { createUserSchema, updateUserSchema } from './schemas';
+import {
+  createUserSchema,
+  updateUserSchema,
+} from '@exercise-tracker/shared/schemas/user';
+import makeUserService from '@/domain/factories/service/UserServiceFactory';
+import { authenticate } from '@/hooks/authenticate';
 import { ICreateUser, IUpdateUser } from './interfaces';
 
 const service = makeUserService();

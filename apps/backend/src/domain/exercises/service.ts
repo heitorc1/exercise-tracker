@@ -1,5 +1,5 @@
-import { ExerciseNotFoundError } from 'infra/exception/ExerciseNotFoundError';
-import { NothingToUpdateError } from 'infra/exception/NothingToUpdateError';
+import { ExerciseNotFoundError } from '@/infra/exception/ExerciseNotFoundError';
+import { NothingToUpdateError } from '@/infra/exception/NothingToUpdateError';
 import {
   ICreateExercise,
   IExercise,

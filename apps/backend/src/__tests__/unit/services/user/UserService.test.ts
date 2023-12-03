@@ -5,12 +5,12 @@ import {
   IUserQueries,
   IUserRepository,
   IUserService,
-} from 'domain/user/interfaces';
-import { UserRepository } from 'domain/user/repository';
-import { UserService } from 'domain/user/service';
-import { EmailAlreadyInUseError } from 'infra/exception/EmailAlreadyInUseError';
-import { UsernameTakenError } from 'infra/exception/UsernameTakenError';
-import { NothingToUpdateError } from 'infra/exception/NothingToUpdateError';
+} from '@/domain/user/interfaces';
+import { UserRepository } from '@/domain/user/repository';
+import { UserService } from '@/domain/user/service';
+import { EmailAlreadyInUseError } from '@/infra/exception/EmailAlreadyInUseError';
+import { UsernameTakenError } from '@/infra/exception/UsernameTakenError';
+import { NothingToUpdateError } from '@/infra/exception/NothingToUpdateError';
 
 describe('UserService', () => {
   let repository: IUserRepository;

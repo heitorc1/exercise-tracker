@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { Pool, QueryResult, QueryResultRow } from 'pg';
-import { DB_DATABASE, DB_PASSWORD, DB_USER } from 'infra/config';
+import { DB_DATABASE, DB_PASSWORD, DB_USER } from '@/infra/config';
 
 export const pool = new Pool({
   host: 'localhost',

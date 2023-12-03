@@ -1,5 +1,5 @@
 import { v4 as uuidv4 } from 'uuid';
-import { hashPassword } from 'helpers/passwordHandler';
+import { hashPassword } from '@/helpers/passwordHandler';
 import {
   ICreateUser,
   IUpdateUser,

@@ -1,5 +1,5 @@
-import { AuthService } from 'domain/auth/service';
-import { IAuthService } from 'domain/auth/interfaces';
+import { AuthService } from '@/domain/auth/service';
+import { IAuthService } from '@/domain/auth/interfaces';
 import makeAuthRepository from '../repository/AuthRepositoryFactory';
 import makeUserRepository from '../repository/UserRepositoryFactory';
 

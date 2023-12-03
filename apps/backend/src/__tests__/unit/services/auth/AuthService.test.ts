@@ -2,15 +2,15 @@ import { beforeEach, describe, it } from 'node:test';
 import assert from 'node:assert/strict';
 
 import { faker } from '@faker-js/faker';
-import { IAuthRepository, IAuthService } from 'domain/auth/interfaces';
-import { AuthRepository } from 'domain/auth/repository';
-import { AuthService } from 'domain/auth/service';
-import { IUserQueries, IUserRepository } from 'domain/user/interfaces';
-import { UserRepository } from 'domain/user/repository';
-import jwtHandler from 'helpers/jwtHandler';
-import { InvalidCredentialsError } from 'infra/exception/InvalidCredentialsError';
-import { InvalidTokenError } from 'infra/exception/InvalidTokenError';
-import { UserNotFoundError } from 'infra/exception/UserNotFoundError';
+import { IAuthRepository, IAuthService } from '@/domain/auth/interfaces';
+import { AuthRepository } from '@/domain/auth/repository';
+import { AuthService } from '@/domain/auth/service';
+import { IUserQueries, IUserRepository } from '@/domain/user/interfaces';
+import { UserRepository } from '@/domain/user/repository';
+import jwtHandler from '@/helpers/jwtHandler';
+import { InvalidCredentialsError } from '@/infra/exception/InvalidCredentialsError';
+import { InvalidTokenError } from '@/infra/exception/InvalidTokenError';
+import { UserNotFoundError } from '@/infra/exception/UserNotFoundError';
 
 describe('AuthService', () => {
   let userQueries: IUserQueries;

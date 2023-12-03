@@ -5,11 +5,11 @@ import {
   IExerciseQueries,
   IExerciseRepository,
   IExerciseService,
-} from 'domain/exercises/interfaces';
-import { ExerciseRepository } from 'domain/exercises/repository';
-import { ExerciseService } from 'domain/exercises/service';
-import { ExerciseNotFoundError } from 'infra/exception/ExerciseNotFoundError';
-import { NothingToUpdateError } from 'infra/exception/NothingToUpdateError';
+} from '@/domain/exercises/interfaces';
+import { ExerciseRepository } from '@/domain/exercises/repository';
+import { ExerciseService } from '@/domain/exercises/service';
+import { ExerciseNotFoundError } from '@/infra/exception/ExerciseNotFoundError';
+import { NothingToUpdateError } from '@/infra/exception/NothingToUpdateError';
 
 describe('ExerciseService', () => {
   let repository: IExerciseRepository;

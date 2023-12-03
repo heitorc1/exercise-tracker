@@ -1,4 +1,4 @@
-import { query } from 'infra/db';
+import { query } from '@/infra/db';
 import { IUser, IUserQueries } from './interfaces';
 
 export class UserQueries implements IUserQueries {

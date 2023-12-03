@@ -8,7 +8,10 @@
     "build": "turbo build",
     "test": "turbo test",
     "lint": "turbo lint",
-    "prepare": "husky install"
+    "prepare": "husky install",
+    "migrate": "pnpm -C apps/backend migrate up",
+    "docker:up": "docker compose -f apps/backend/docker-compose.yml up -d",
+    "docker:down": "docker compose -f apps/backend/docker-compose.yml down"
   },
   "keywords": [],
   "author": "",

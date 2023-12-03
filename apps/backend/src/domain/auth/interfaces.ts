@@ -1,6 +1,9 @@
 import { z } from 'zod';
-import { IResponse, IUser } from 'domain/user/interfaces';
-import { loginSchema, verifySchema } from './schemas';
+import {
+  loginSchema,
+  verifySchema,
+} from '@exercise-tracker/shared/schemas/auth';
+import { IResponse, IUser } from '@/domain/user/interfaces';
 
 export interface ILogin extends z.infer<typeof loginSchema> {}
 export interface IVerifyToken extends z.infer<typeof verifySchema> {}

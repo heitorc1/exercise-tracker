@@ -1,6 +1,6 @@
-import { UsernameTakenError } from 'infra/exception/UsernameTakenError';
-import { EmailAlreadyInUseError } from 'infra/exception/EmailAlreadyInUseError';
-import { NothingToUpdateError } from 'infra/exception/NothingToUpdateError';
+import { UsernameTakenError } from '@/infra/exception/UsernameTakenError';
+import { EmailAlreadyInUseError } from '@/infra/exception/EmailAlreadyInUseError';
+import { NothingToUpdateError } from '@/infra/exception/NothingToUpdateError';
 import {
   ICreateUser,
   IResponse,

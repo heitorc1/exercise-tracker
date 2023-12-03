@@ -3,7 +3,10 @@
   "include": ["**/*.ts"],
   "exclude": ["node_modules"],
   "compilerOptions": {
-    "baseUrl": "./src",
-    "typeRoots": ["./node_modules/@types", "./@types"]
+    "baseUrl": ".",
+    "typeRoots": ["./node_modules/@types", "./@types"],
+    "paths": {
+      "@/*": ["./src/*"]
+    }
   }
 }

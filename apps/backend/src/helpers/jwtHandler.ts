@@ -1,6 +1,6 @@
 import * as jwt from 'jsonwebtoken';
-import { APP_KEY } from 'infra/config';
-import { IUser } from 'domain/user/interfaces';
+import { APP_KEY } from '@/infra/config';
+import { IUser } from '@/domain/user/interfaces';
 
 export class Jwt {
   public sign(data: IUser) {

@@ -2,11 +2,11 @@ import assert from 'node:assert';
 import { describe, it } from 'node:test';
 import { createRequest, createResponse } from 'node-mocks-http';
 import * as jwt from 'jsonwebtoken';
-import { TokenNotFoundError } from 'infra/exception/TokenNotFoundError';
-import { InvalidTokenError } from 'infra/exception/InvalidTokenError';
-import { Jwt } from 'helpers/jwtHandler';
-import { authenticate } from 'hooks/authenticate';
-import { UserRepository } from 'domain/user/repository';
+import { UserRepository } from '@/domain/user/repository';
+import { TokenNotFoundError } from '@/infra/exception/TokenNotFoundError';
+import { InvalidTokenError } from '@/infra/exception/InvalidTokenError';
+import { Jwt } from '@/helpers/jwtHandler';
+import { authenticate } from '@/hooks/authenticate';
 
 describe('Authenticate', () => {
   it('should return success', async (t) => {

@@ -1,7 +1,9 @@
 import { Button, Form, Input } from "antd";
 import { Link } from "react-router-dom";
 import { useMutation } from "@tanstack/react-query";
+// import { useForm, SubmitHandler } from "react-hook-form";
 import { toast } from "react-toastify";
+// import { z } from "zod";
 import LoginFrame from "@/components/shared/LoginFrame";
 import { ILogin } from "@/interfaces/login";
 import authService from "@/services/auth";
@@ -15,6 +17,12 @@ type FieldType = {
 
 const Login = () => {
   const { login } = useAuth();
+  // const {
+  // register,
+  // handleSubmit,
+  // watch,
+  // formState: { erros },
+  // } = useForm<FieldType>();
   const mutation = useMutation(
     async (data: ILogin) => authService.login(data),
     {

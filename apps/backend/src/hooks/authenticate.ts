@@ -1,13 +1,12 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable @typescript-eslint/no-unused-vars */
+import { jwtUserSchema } from '@exercise-tracker/shared/schemas/user';
 import { FastifyReply, FastifyRequest } from 'fastify';
-import makeUserRepository from 'domain/factories/repository/UserRepositoryFactory';
-import { IJwtUser } from 'domain/user/interfaces';
-import { jwtUserSchema } from 'domain/user/schemas';
-import jwtHandler from 'helpers/jwtHandler';
-import { InvalidTokenError } from 'infra/exception/InvalidTokenError';
-import { TokenNotFoundError } from 'infra/exception/TokenNotFoundError';
-import { UserNotFoundError } from 'infra/exception/UserNotFoundError';
+import makeUserRepository from '@/domain/factories/repository/UserRepositoryFactory';
+import { IJwtUser } from '@/domain/user/interfaces';
+import jwtHandler from '@/helpers/jwtHandler';
+import { InvalidTokenError } from '@/infra/exception/InvalidTokenError';
+import { TokenNotFoundError } from '@/infra/exception/TokenNotFoundError';
 
 export function authenticate(
   req: FastifyRequest,
