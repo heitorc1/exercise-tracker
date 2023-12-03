@@ -4,7 +4,7 @@ import { Link, redirect } from "react-router-dom";
 import { toast } from "react-toastify";
 import userService from "@/services/users";
 import { ICreateUser } from "@/interfaces/users";
-import LoginFrame from "@/components/LoginFrame";
+import LoginFrame from "@/components/shared/LoginFrame";
 
 const Register = () => {
   const mutation = useMutation(

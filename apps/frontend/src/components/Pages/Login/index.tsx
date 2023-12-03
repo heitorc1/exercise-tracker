@@ -2,7 +2,7 @@ import { Button, Form, Input } from "antd";
 import { Link } from "react-router-dom";
 import { useMutation } from "@tanstack/react-query";
 import { toast } from "react-toastify";
-import LoginFrame from "@/components/LoginFrame";
+import LoginFrame from "@/components/shared/LoginFrame";
 import { ILogin } from "@/interfaces/login";
 import authService from "@/services/auth";
 import { useAuth } from "@/hooks/useAuth";

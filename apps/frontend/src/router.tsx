@@ -1,11 +1,11 @@
 import { createBrowserRouter, redirect } from "react-router-dom";
 import App from "./App";
-import Login from "./Pages/Login";
-import Register from "./Pages/Register";
-import Dashboard from "./Pages/Dashboard";
-import Profile from "./Pages/Profile";
-import Exercises from "./Pages/Exercises";
-import ProtectedRouter from "./Pages/ProtectedRouter";
+import Login from "./components/Pages/Login";
+import Register from "./components/Pages/Register";
+import Dashboard from "./components/Pages/Dashboard";
+import Profile from "./components/Pages/Profile";
+import Exercises from "./components/Pages/Exercises";
+import ProtectedRouter from "./components/Pages/ProtectedRouter";
 import tokenHelper from "./helper/token";
 
 const router = createBrowserRouter([

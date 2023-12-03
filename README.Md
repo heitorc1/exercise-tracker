@@ -14,8 +14,8 @@ Then run
 pnpm install
 cp apps/backend/env.example apps/backend/.env
 cp apps/frontend/env.example apps/frontend/.env
-docker compose -f apps/backend/docker-compose.yml up -d
-pnpm -C apps/backend migrate up
+pnpm docker:up
+pnpm migrate
 pnpm dev
 ```
 

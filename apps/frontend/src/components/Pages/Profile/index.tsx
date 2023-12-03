@@ -1,6 +1,6 @@
 import { Button, Form, Input } from "antd";
 import { useState } from "react";
-import AppFrame from "@/components/AppFrame";
+import AppFrame from "@/components/shared/AppFrame";
 import { ICreateUser } from "@/interfaces/users";
 
 const Profile = () => {

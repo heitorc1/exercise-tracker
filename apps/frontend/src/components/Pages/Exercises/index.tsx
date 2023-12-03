@@ -1,7 +1,7 @@
 import { DeleteOutlined, EditOutlined } from "@ant-design/icons";
-import AppFrame from "@/components/AppFrame";
-import Card from "@/components/Card";
-import CardGroup from "@/components/CardGroup";
+import AppFrame from "@/components/shared/AppFrame";
+import Card from "@/components/shared/Card";
+import CardGroup from "@/components/shared/CardGroup";
 import { useExerciseList } from "@/hooks/useExerciseList";
 import { dateFormatter } from "@/helper/dateFormatter";
 
