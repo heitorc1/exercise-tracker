@@ -1,28 +1,32 @@
-import { Button, Form, Input } from "antd";
+import { loginSchema } from "@exercise-tracker/shared/schemas/auth";
 import { Link } from "react-router-dom";
+import { zodResolver } from "@hookform/resolvers/zod";
 import { useMutation } from "@tanstack/react-query";
-// import { useForm, SubmitHandler } from "react-hook-form";
+import { useForm, SubmitHandler, Controller } from "react-hook-form";
 import { toast } from "react-toastify";
-// import { z } from "zod";
+import { Button, Input } from "antd";
 import LoginFrame from "@/components/shared/LoginFrame";
 import { ILogin } from "@/interfaces/login";
 import authService from "@/services/auth";
 import { useAuth } from "@/hooks/useAuth";
 import { IUser } from "@/interfaces/users";
+import FormInput from "@/components/shared/Form/FormInput";
+import FormGroup from "@/components/shared/Form/FormGroup";
+import Form from "@/components/shared/Form";
 
-type FieldType = {
-  username?: string;
-  password?: string;
+type InputProps = {
+  username: string;
+  password: string;
 };
 
 const Login = () => {
   const { login } = useAuth();
-  // const {
-  // register,
-  // handleSubmit,
-  // watch,
-  // formState: { erros },
-  // } = useForm<FieldType>();
+  const {
+    control,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<InputProps>({ resolver: zodResolver(loginSchema) });
+
   const mutation = useMutation(
     async (data: ILogin) => authService.login(data),
     {
@@ -36,7 +40,7 @@ const Login = () => {
     }
   );
 
-  const onSubmit = (values: ILogin) => {
+  const onSubmit: SubmitHandler<InputProps> = (values: InputProps) => {
     mutation.mutate({
       username: values.username,
       password: values.password,
@@ -45,33 +49,31 @@ const Login = () => {
 
   return (
     <LoginFrame title="Login">
-      <Form onFinish={onSubmit} style={{ maxWidth: "600px" }} layout="vertical">
-        <Form.Item<FieldType>
-          label="Username"
-          name="username"
-          rules={[{ required: true, message: "Please type your username!" }]}
-        >
-          <Input />
-        </Form.Item>
+      <Form onSubmit={handleSubmit(onSubmit)}>
+        <FormInput title="Username" errorMessage={errors.username?.message}>
+          <Controller
+            name="username"
+            control={control}
+            render={({ field }) => <Input {...field} />}
+          />
+        </FormInput>
 
-        <Form.Item<FieldType>
-          label="Password"
-          name="password"
-          rules={[{ required: true, message: "Please type your password!" }]}
-        >
-          <Input.Password />
-        </Form.Item>
+        <FormInput title="Password" errorMessage={errors.password?.message}>
+          <Controller
+            name="password"
+            control={control}
+            render={({ field }) => <Input.Password {...field} />}
+          />
+        </FormInput>
 
-        <Form.Item>
-          <div className="flex flex-row justify-center">
-            <Link to="register">
-              <Button type="text">Register</Button>
-            </Link>
-            <Button type="primary" htmlType="submit">
-              Submit
-            </Button>
-          </div>
-        </Form.Item>
+        <FormGroup>
+          <Link to="register">
+            <Button type="text">Register</Button>
+          </Link>
+          <Button type="primary" htmlType="submit">
+            Submit
+          </Button>
+        </FormGroup>
       </Form>
     </LoginFrame>
   );

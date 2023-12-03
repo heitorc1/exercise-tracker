@@ -1,12 +1,31 @@
+import { registerSchema } from "@exercise-tracker/shared/schemas/auth";
 import { useMutation } from "@tanstack/react-query";
-import { Button, Form, Input } from "antd";
+import { Button, Input } from "antd";
 import { Link, redirect } from "react-router-dom";
+import { Controller, SubmitHandler, useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
 import { toast } from "react-toastify";
 import userService from "@/services/users";
 import { ICreateUser } from "@/interfaces/users";
 import LoginFrame from "@/components/shared/LoginFrame";
+import FormGroup from "@/components/shared/Form/FormGroup";
+import Form from "@/components/shared/Form";
+import FormInput from "@/components/shared/Form/FormInput";
+
+type InputProps = {
+  username: string;
+  email: string;
+  password: string;
+  confirmPassword: string;
+};
 
 const Register = () => {
+  const {
+    control,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<InputProps>({ resolver: zodResolver(registerSchema) });
+
   const mutation = useMutation(
     (createUser: ICreateUser) => {
       return userService.createUser(createUser);
@@ -22,7 +41,7 @@ const Register = () => {
     }
   );
 
-  const onSubmit = (values: ICreateUser) => {
+  const onSubmit: SubmitHandler<InputProps> = (values: InputProps) => {
     mutation.mutate({
       username: values.username,
       email: values.email,
@@ -32,53 +51,43 @@ const Register = () => {
 
   return (
     <LoginFrame title="Register">
-      <Form onFinish={onSubmit} style={{ maxWidth: "600px" }} layout="vertical">
-        <Form.Item
-          label="Username"
-          name="username"
-          rules={[{ required: true, message: "Please type your username!" }]}
-        >
-          <Input />
-        </Form.Item>
+      <Form onSubmit={handleSubmit(onSubmit)}>
+        <FormInput title="Username" errorMessage={errors.username?.message}>
+          <Controller
+            name="username"
+            control={control}
+            render={({ field }) => <Input {...field} />}
+          />
+        </FormInput>
 
-        <Form.Item
-          label="Email"
-          name="email"
-          rules={[{ required: true, message: "Please type your email!" }]}
-        >
-          <Input />
-        </Form.Item>
+        <FormInput title="Email" errorMessage={errors.email?.message}>
+          <Controller
+            name="email"
+            control={control}
+            render={({ field }) => <Input {...field} />}
+          />
+        </FormInput>
 
-        <Form.Item
-          label="Password"
-          name="password"
-          rules={[{ required: true, message: "Please type your password!" }]}
-        >
-          <Input.Password />
-        </Form.Item>
+        <FormInput title="Password" errorMessage={errors.password?.message}>
+          <Controller
+            name="password"
+            control={control}
+            render={({ field }) => <Input.Password {...field} />}
+          />
+        </FormInput>
 
-        <Form.Item
-          label="Confirm your password"
-          name="confirmPassword"
-          dependencies={["password"]}
-          rules={[
-            { required: true, message: "Please confirm your password!" },
-            ({ getFieldValue }) => ({
-              validator(_, value) {
-                if (!value || getFieldValue("password") === value) {
-                  return Promise.resolve();
-                }
-                return Promise.reject(
-                  new Error("The password fields must be equals")
-                );
-              },
-            }),
-          ]}
+        <FormInput
+          title="Confirm your password"
+          errorMessage={errors.confirmPassword?.message}
         >
-          <Input.Password />
-        </Form.Item>
+          <Controller
+            name="confirmPassword"
+            control={control}
+            render={({ field }) => <Input.Password {...field} />}
+          />
+        </FormInput>
 
-        <Form.Item>
+        <FormGroup>
           <div className="flex flex-row justify-center">
             <Link to="/">
               <Button type="text">Cancel</Button>
@@ -87,7 +96,7 @@ const Register = () => {
               Submit
             </Button>
           </div>
-        </Form.Item>
+        </FormGroup>
       </Form>
     </LoginFrame>
   );
