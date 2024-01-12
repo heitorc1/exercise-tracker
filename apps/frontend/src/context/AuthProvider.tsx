@@ -28,13 +28,17 @@ export const AuthProvider = ({ children }: Props) => {
 
   const login = useCallback(
     (data: IUser | null) => {
-      setUser(data);
-      navigate("/dashboard");
+      if (data) {
+        setUser(data);
+        navigate("/dashboard");
+        authService.setUser(data);
+      }
     },
     [navigate]
   );
 
   const logout = useCallback(() => {
+    authService.setUser(null);
     authService.logout();
     setUser(null);
     navigate("/", { replace: true });

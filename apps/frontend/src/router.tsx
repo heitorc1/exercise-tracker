@@ -46,7 +46,7 @@ const router = createBrowserRouter([
 ]);
 
 function redirectToDashboard() {
-  const token = tokenHelper.token;
+  const token = tokenHelper.getToken();
   if (token) {
     return redirect("dashboard");
   }

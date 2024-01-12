@@ -1,13 +1,13 @@
+import { Observable, map } from "rxjs";
 import api from "@/api";
+import { Response } from "@/interfaces";
 import { ICreateUser, IUser } from "@/interfaces/users";
 
 class UserService {
-  public async getUsers() {
-    return api.get<IUser[]>("/user");
-  }
-
-  public async createUser(data: ICreateUser) {
-    return api.post<IUser>("/user", data);
+  public createUser(data: ICreateUser): Observable<IUser> {
+    return api
+      .post<Response<IUser>>("/user", data)
+      .pipe(map((res) => res.data));
   }
 }
 

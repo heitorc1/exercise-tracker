@@ -1,12 +1,32 @@
+import { useEffect, useState } from "react";
 import { DeleteOutlined, EditOutlined } from "@ant-design/icons";
+import { toast } from "react-toastify";
 import AppFrame from "@/components/shared/AppFrame";
 import Card from "@/components/shared/Card";
 import CardGroup from "@/components/shared/CardGroup";
-import { useExerciseList } from "@/hooks/useExerciseList";
 import { dateFormatter } from "@/helper/dateFormatter";
+import exerciseService from "@/services/exercises";
+import { IExercise } from "@/interfaces/exercises";
 
 const Exercises = () => {
-  const { isLoading, isError, data: exercises } = useExerciseList();
+  const [exercises, setExercises] = useState<IExercise[]>([]);
+  const [isError, setIsError] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+
+  useEffect(() => {
+    setIsLoading(true);
+    exerciseService.getExerciseList().subscribe({
+      next: (res) => {
+        setExercises(res);
+        setIsLoading(false);
+      },
+      error: (err) => {
+        setIsError(true);
+        setIsLoading(false);
+        toast.error(err);
+      },
+    });
+  }, []);
 
   const handleEdit = () => {
     console.log("edit");
@@ -32,7 +52,7 @@ const Exercises = () => {
   return (
     <AppFrame title="Exercises">
       <CardGroup>
-        {exercises?.data.map((exercise) => (
+        {exercises?.map((exercise) => (
           <Card
             key={exercise.id}
             title={dateFormatter(exercise.date)}

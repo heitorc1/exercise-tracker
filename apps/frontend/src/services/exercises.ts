@@ -1,9 +1,13 @@
+import { Observable, map } from "rxjs";
 import api from "@/api";
 import { IExercise } from "@/interfaces/exercises";
+import { Response } from "@/interfaces";
 
 class ExerciseService {
-  public async getExerciseList() {
-    return api.get<IExercise[]>("/exercise");
+  public getExerciseList(): Observable<IExercise[]> {
+    return api
+      .get<Response<IExercise[]>>("/exercise")
+      .pipe(map((res) => res.data));
   }
 }
 

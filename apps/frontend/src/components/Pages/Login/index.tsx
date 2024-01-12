@@ -1,18 +1,15 @@
 import { loginSchema } from "@exercise-tracker/shared/schemas/auth";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useMutation } from "@tanstack/react-query";
 import { useForm, SubmitHandler, Controller } from "react-hook-form";
 import { toast } from "react-toastify";
 import { Button, Input } from "antd";
 import LoginFrame from "@/components/shared/LoginFrame";
-import { ILogin } from "@/interfaces/login";
-import authService from "@/services/auth";
-import { useAuth } from "@/hooks/useAuth";
-import { IUser } from "@/interfaces/users";
 import FormInput from "@/components/shared/Form/FormInput";
 import FormGroup from "@/components/shared/Form/FormGroup";
 import Form from "@/components/shared/Form";
+import authService from "@/services/auth";
+import tokenHelper from "@/helper/token";
 
 type InputProps = {
   username: string;
@@ -20,30 +17,34 @@ type InputProps = {
 };
 
 const Login = () => {
-  const { login } = useAuth();
   const {
     control,
     handleSubmit,
     formState: { errors },
   } = useForm<InputProps>({ resolver: zodResolver(loginSchema) });
-
-  const mutation = useMutation(
-    async (data: ILogin) => authService.login(data),
-    {
-      onSuccess: (data: IUser | null) => {
-        login(data);
-        toast.success("User logged in");
-      },
-      onError: () => {
-        toast.error("Incorrect data provided");
-      },
-    }
-  );
+  const navigate = useNavigate();
 
   const onSubmit: SubmitHandler<InputProps> = (values: InputProps) => {
-    mutation.mutate({
+    const data = {
       username: values.username,
       password: values.password,
+    };
+    authService.login(data).subscribe({
+      next: (token) => {
+        tokenHelper.setToken(token);
+        authService.verify(token).subscribe((res) => {
+          authService.setUser({
+            id: res.id,
+            email: res.email,
+            username: res.username,
+          });
+        });
+        toast.success("User logged in");
+        navigate("/dashboard");
+      },
+      error: (err) => {
+        toast.error(err);
+      },
     });
   };
 

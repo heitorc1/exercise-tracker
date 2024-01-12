@@ -1,16 +1,14 @@
 import { registerSchema } from "@exercise-tracker/shared/schemas/auth";
-import { useMutation } from "@tanstack/react-query";
 import { Button, Input } from "antd";
 import { Link, redirect } from "react-router-dom";
 import { Controller, SubmitHandler, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { toast } from "react-toastify";
-import userService from "@/services/users";
-import { ICreateUser } from "@/interfaces/users";
 import LoginFrame from "@/components/shared/LoginFrame";
 import FormGroup from "@/components/shared/Form/FormGroup";
 import Form from "@/components/shared/Form";
 import FormInput from "@/components/shared/Form/FormInput";
+import userService from "@/services/users";
 
 type InputProps = {
   username: string;
@@ -26,26 +24,18 @@ const Register = () => {
     formState: { errors },
   } = useForm<InputProps>({ resolver: zodResolver(registerSchema) });
 
-  const mutation = useMutation(
-    (createUser: ICreateUser) => {
-      return userService.createUser(createUser);
-    },
-    {
-      onSuccess: () => {
-        toast.success("User created successfully");
-        redirect("/login");
-      },
-      onError: () => {
-        toast.error("User not created");
-      },
-    }
-  );
-
   const onSubmit: SubmitHandler<InputProps> = (values: InputProps) => {
-    mutation.mutate({
+    const data = {
       username: values.username,
       email: values.email,
       password: values.password,
+    };
+    userService.createUser(data).subscribe({
+      next: () => {
+        toast.success("User created successfully");
+        redirect("/login");
+      },
+      error: (err) => toast.error(err),
     });
   };
 

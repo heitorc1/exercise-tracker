@@ -14,8 +14,6 @@
     "@ant-design/icons": "^5.2.6",
     "@emotion/react": "^11.11.1",
     "@hookform/resolvers": "^3.3.2",
-    "@tanstack/react-query": "^4.32.1",
-    "@tanstack/react-query-devtools": "^4.32.1",
     "antd": "^5.8.2",
     "axios": "^1.4.0",
     "date-fns": "^2.30.0",
@@ -30,7 +28,6 @@
   },
   "devDependencies": {
     "@exercise-tracker/shared": "workspace:*",
-    "@tanstack/eslint-plugin-query": "^4.32.1",
     "@types/react": "^18.2.15",
     "@types/react-dom": "^18.2.7",
     "@vitejs/plugin-react": "^4.0.3",

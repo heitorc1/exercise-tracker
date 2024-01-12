@@ -1,54 +1,52 @@
+import { BehaviorSubject } from "rxjs";
 import { JwtPayload, jwtDecode } from "jwt-decode";
 import { IUser } from "@/interfaces/users";
 
 type JwtToken = JwtPayload & { data: IUser };
 
 class Token {
-  private _token: string | null = null;
+  private token$ = new BehaviorSubject<string>("");
 
   constructor() {
-    this._token = this.getFromLocalStorage();
+    this.token$.next(this.getFromLocalStorage());
   }
 
-  public get token() {
-    return this._token;
+  public getToken() {
+    return this.token$.getValue();
   }
 
-  public set token(data: string | null) {
-    if (!data) {
-      return;
-    }
+  public setToken(data: string) {
     window.localStorage.setItem("token", data);
-    this._token = data;
+    this.token$.next(data);
   }
 
   public clearToken() {
     window.localStorage.removeItem("token");
-    this._token = null;
+    this.token$.next("");
   }
 
   public isValidExpiration(): boolean {
-    if (!this._token) {
+    if (!this.token$.getValue()) {
       return false;
     }
-    const decoded = this.decodeToken(this._token);
+    const decoded = this.decodeToken(this.token$.getValue());
     return !!decoded;
   }
 
-  private getFromLocalStorage(): string | null {
+  private getFromLocalStorage(): string {
     const token = window.localStorage.getItem("token");
-
-    if (!token) {
-      return null;
+    if (!token || token === "null") {
+      this.clearToken();
+      return "";
     }
 
-    if (this._token && this._token !== token) {
-      this._token = token;
+    if (this.token$.getValue() && this.token$.getValue() !== token) {
+      this.token$.next(token);
     }
 
     const decoded = this.decodeToken(token);
     if (!decoded) {
-      return null;
+      return "";
     }
 
     return token;

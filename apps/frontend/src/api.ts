@@ -1,40 +1,65 @@
-import axios, { AxiosInstance } from "axios";
+import axios, { AxiosError, Method } from "axios";
+import { Observable, catchError, map, of, switchMap, throwError } from "rxjs";
 import { API_ENDPOINT } from "./config";
-import { Response } from "./interfaces";
+import tokenHelper from "./helper/token";
 
 class Api {
-  private _instance: AxiosInstance;
-
-  constructor() {
-    this._instance = axios.create({
-      baseURL: API_ENDPOINT,
-      timeout: 30000,
-      headers: {
-        "Content-Type": "application/json",
-      },
-    });
-    const token = localStorage.getItem("token");
-    if (token) {
-      this._instance.defaults.headers.common[
-        "Authorization"
-      ] = `Bearer ${token}`;
-    }
+  public get<T>(url: string, params?: unknown): Observable<T> {
+    return this.request<T>("GET", url, params).pipe(
+      map(({ response }) => response)
+    );
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  public async get<T>(url: string, params?: any): Promise<Response<T>> {
-    const response = await this._instance.get(url, params);
-    return response.data;
+  public post<T>(url: string, body?: unknown): Observable<T> {
+    return this.request<T>("POST", url, body).pipe(
+      map(({ response }) => response)
+    );
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  public async post<T>(url: string, body?: any): Promise<Response<T>> {
-    const response = await this._instance.post(url, body);
-    return response.data;
+  private getToken() {
+    const token = tokenHelper.getToken();
+    return token;
   }
 
-  public get instance() {
-    return this._instance;
+  private request<T>(
+    method: Method,
+    url: string,
+    data: unknown
+  ): Observable<{ response: T }> {
+    return of(true).pipe(
+      map(() => this.getToken()),
+      map((token) => ({
+        Authorization: `Bearer ${token}`,
+      })),
+      switchMap((headers) => {
+        return axios.request({
+          baseURL: API_ENDPOINT,
+          url,
+          method,
+          timeout: 30000,
+          headers: {
+            ...headers,
+            "Content-Type": "application/json",
+          },
+          params: method === "GET" ? data : null,
+          data: method !== "GET" ? data : null,
+        });
+      }),
+      map((res) => ({ response: res.data })),
+      catchError((err) =>
+        throwError(() => {
+          if (!err.response) {
+            return "Error connecting to server";
+          }
+
+          if (err instanceof AxiosError) {
+            return err.response.data.message;
+          }
+
+          return "Unknown error";
+        })
+      )
+    );
   }
 }
 
