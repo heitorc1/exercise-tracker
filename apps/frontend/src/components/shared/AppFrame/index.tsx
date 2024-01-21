@@ -1,10 +1,5 @@
-import { ReactNode, useMemo } from "react";
-import { Avatar, Dropdown, Layout, MenuProps } from "antd";
-import { Link } from "react-router-dom";
-import { useAuth } from "@/hooks/useAuth";
+import { ReactNode } from "react";
 import Menu from "../Menu";
-
-const { Header, Content } = Layout;
 
 type Props = {
   title: string;
@@ -12,41 +7,18 @@ type Props = {
 };
 
 const AppFrame = ({ title, children }: Props) => {
-  const { user, logout } = useAuth();
-
-  const items: MenuProps["items"] = useMemo(
-    () => [
-      {
-        key: "profile",
-        label: <Link to="/profile">Profile</Link>,
-      },
-      {
-        key: "logout",
-        label: <span onClick={logout}>Log out</span>,
-      },
-    ],
-    [logout]
-  );
-
   return (
-    <Layout>
-      <Header className="flex items-center p-0">
+    <div className="h-screen w-full">
+      <div className="bg-blue-950 h-20 flex items-center p-0">
         <Menu />
-        <div className="bg-white pr-4">
-          <Dropdown menu={{ items }}>
-            <Avatar className="cursor-pointer">
-              {user?.username.charAt(0).toUpperCase()}
-            </Avatar>
-          </Dropdown>
-        </div>
-      </Header>
-      <Content>
+      </div>
+      <div>
         <div className="max-h-screen p-8">
-          <h3 className="mb-8">{title}</h3>
+          <h1 className="mb-8 text-2xl font-bold">{title}</h1>
           {children}
         </div>
-      </Content>
-    </Layout>
+      </div>
+    </div>
   );
 };
 

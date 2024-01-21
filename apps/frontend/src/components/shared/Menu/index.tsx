@@ -1,44 +1,54 @@
-import { useEffect, useState } from "react";
-import { HomeOutlined, ThunderboltOutlined } from "@ant-design/icons";
-import { Menu as AntdMenu } from "antd";
-import { Link, useLocation } from "react-router-dom";
-import type { MenuProps } from "antd";
-
-const items: MenuProps["items"] = [
-  {
-    label: <Link to="/dashboard">Home</Link>,
-    key: "dashboard",
-    icon: <HomeOutlined />,
-  },
-  {
-    label: <Link to="/exercises">Exercises</Link>,
-    key: "exercises",
-    icon: <ThunderboltOutlined />,
-  },
-];
+import { Link } from "react-router-dom";
+import { Avatar, AvatarFallback } from "@/components/ui/avatar";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { useAuth } from "@/hooks/useAuth";
 
 const Menu = () => {
-  const [current, setCurrent] = useState("home");
-  const location = useLocation();
-
-  useEffect(() => {
-    setCurrent(location.pathname.slice(1));
-  }, [location.pathname]);
-
-  const onClick: MenuProps["onClick"] = (e) => {
-    setCurrent(e.key);
-  };
+  const { user, logout } = useAuth();
 
   return (
-    <div className="w-full">
-      <AntdMenu
-        onClick={onClick}
-        selectedKeys={[current]}
-        mode="horizontal"
-        items={items}
-      />
+    <div className="flex justify-between w-full p-8 ">
+      <div className="flex space-x-10 mt-1">
+        <LinkMenu name="Dashboard" to="/dashboard" />
+        <LinkMenu name="Exercises" to="/exercises" />
+      </div>
+      <DropdownMenu>
+        <DropdownMenuTrigger>
+          <Avatar>
+            <AvatarFallback>
+              {user?.username.charAt(0).toUpperCase()}
+            </AvatarFallback>
+          </Avatar>
+        </DropdownMenuTrigger>
+        <DropdownMenuContent>
+          <DropdownMenuItem>
+            <Link to="/profile">Profile</Link>
+          </DropdownMenuItem>
+          <DropdownMenuItem>
+            <Link to="/" onClick={logout}>
+              Logout
+            </Link>
+          </DropdownMenuItem>
+        </DropdownMenuContent>
+      </DropdownMenu>
     </div>
   );
 };
+
+type LinkMenuProps = {
+  name: string;
+  to: string;
+};
+
+const LinkMenu = ({ name, to }: LinkMenuProps) => (
+  <div className="text-gray-100 font-extrabold text-lg">
+    <Link to={to}>{name}</Link>
+  </div>
+);
 
 export default Menu;

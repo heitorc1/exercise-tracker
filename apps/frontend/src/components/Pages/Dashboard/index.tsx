@@ -1,23 +1,37 @@
 import AppFrame from "@/components/shared/AppFrame";
-import Card from "@/components/shared/Card";
-import CardGroup from "@/components/shared/CardGroup";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
 const Dashboard = () => {
   return (
     <AppFrame title="Dashboard">
-      <CardGroup>
-        <Card title="Last week">
-          <div>Teste</div>
+      <div className="w-full flex gap-8 justify-between">
+        <Card className="w-full p-2">
+          <CardHeader>
+            <CardTitle>Last week</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div>Teste</div>
+          </CardContent>
         </Card>
 
-        <Card title="Last month">
-          <div>Teste</div>
+        <Card className="w-full">
+          <CardHeader>
+            <CardTitle>Last month</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div>Teste</div>
+          </CardContent>
         </Card>
 
-        <Card title="Last six months">
-          <div>Teste</div>
+        <Card className="w-full">
+          <CardHeader>
+            <CardTitle>Last six months</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div>Teste</div>
+          </CardContent>
         </Card>
-      </CardGroup>
+      </div>
     </AppFrame>
   );
 };

@@ -1,11 +1,40 @@
-import { Button, Form, Input } from "antd";
+import { registerSchema } from "@exercise-tracker/shared/schemas/auth";
 import { useState } from "react";
+import { SubmitHandler, useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
 import AppFrame from "@/components/shared/AppFrame";
-import { ICreateUser } from "@/interfaces/users";
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
+import { Input } from "@/components/ui/input";
+import { Button, buttonVariants } from "@/components/ui/button";
+
+type InputProps = {
+  username: string;
+  email: string;
+  password: string;
+  confirmPassword: string;
+};
 
 const Profile = () => {
   const [isEdit, setIsEdit] = useState(false);
-  const onSubmit = (values: ICreateUser) => {
+
+  const form = useForm<InputProps>({
+    resolver: zodResolver(registerSchema),
+    defaultValues: {
+      username: "",
+      email: "",
+      password: "",
+      confirmPassword: "",
+    },
+  });
+
+  const onSubmit: SubmitHandler<InputProps> = (values: InputProps) => {
     console.log(values);
   };
 
@@ -16,77 +45,90 @@ const Profile = () => {
   return (
     <AppFrame title="Profile">
       <div className="p-4">
-        <Form
-          onFinish={onSubmit}
-          className="max-w-xl"
-          layout="vertical"
-          disabled={!isEdit}
-        >
-          <Form.Item
-            label="Username"
-            name="username"
-            rules={[{ required: true, message: "Please type your username!" }]}
-          >
-            <Input />
-          </Form.Item>
+        <Form {...form}>
+          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-2">
+            <FormField
+              control={form.control}
+              name="username"
+              disabled={!isEdit}
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Username</FormLabel>
+                  <FormControl>
+                    <Input placeholder="Username" {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
 
-          <Form.Item
-            label="Email"
-            name="email"
-            rules={[{ required: true, message: "Please type your email!" }]}
-          >
-            <Input />
-          </Form.Item>
+            <FormField
+              control={form.control}
+              name="email"
+              disabled={!isEdit}
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Email</FormLabel>
+                  <FormControl>
+                    <Input placeholder="Email" type="email" {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
 
-          <Form.Item
-            label="Password"
-            name="password"
-            rules={[{ required: true, message: "Please type your password!" }]}
-          >
-            <Input.Password />
-          </Form.Item>
+            <FormField
+              control={form.control}
+              name="password"
+              disabled={!isEdit}
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Password</FormLabel>
+                  <FormControl>
+                    <Input placeholder="Password" type="password" {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
 
-          <Form.Item
-            label="Confirm your password"
-            name="confirmPassword"
-            dependencies={["password"]}
-            rules={[
-              { required: true, message: "Please confirm your password!" },
-              ({ getFieldValue }) => ({
-                validator(_, value) {
-                  if (!value || getFieldValue("password") === value) {
-                    return Promise.resolve();
-                  }
-                  return Promise.reject(
-                    new Error("The password fields must be equals")
-                  );
-                },
-              }),
-            ]}
-          >
-            <Input.Password />
-          </Form.Item>
+            <FormField
+              control={form.control}
+              name="confirmPassword"
+              disabled={!isEdit}
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Confirm your password</FormLabel>
+                  <FormControl>
+                    <Input
+                      placeholder="Confirm your password"
+                      type="password"
+                      {...field}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
 
-          <Form.Item>
-            <div className="flex flex-row justify-center">
+            <div className="pt-4 flex flex-row justify-center gap-4">
               {isEdit && (
                 <>
-                  <Button type="text" onClick={handleEdit}>
+                  <Button
+                    onClick={handleEdit}
+                    className={buttonVariants({ variant: "destructive" })}
+                  >
                     Cancel
                   </Button>
-                  <Button type="primary" htmlType="submit">
-                    Submit
-                  </Button>
+                  <Button type="submit">Submit</Button>
                 </>
               )}
             </div>
-          </Form.Item>
+          </form>
         </Form>
         {!isEdit && (
           <div className="flex flex-row justify-end max-w-xl">
-            <Button type="primary" onClick={handleEdit}>
-              Edit
-            </Button>
+            <Button onClick={handleEdit}>Edit</Button>
           </div>
         )}
       </div>

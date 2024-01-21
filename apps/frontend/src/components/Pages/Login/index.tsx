@@ -1,15 +1,20 @@
 import { loginSchema } from "@exercise-tracker/shared/schemas/auth";
 import { Link, useNavigate } from "react-router-dom";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useForm, SubmitHandler, Controller } from "react-hook-form";
+import { useForm, SubmitHandler } from "react-hook-form";
 import { toast } from "react-toastify";
-import { Button, Input } from "antd";
 import LoginFrame from "@/components/shared/LoginFrame";
-import FormInput from "@/components/shared/Form/FormInput";
-import FormGroup from "@/components/shared/Form/FormGroup";
-import Form from "@/components/shared/Form";
 import authService from "@/services/auth";
 import tokenHelper from "@/helper/token";
+import { Input } from "@/components/ui/input";
+import { Button, buttonVariants } from "@/components/ui/button";
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+} from "@/components/ui/form";
 
 type InputProps = {
   username: string;
@@ -17,11 +22,7 @@ type InputProps = {
 };
 
 const Login = () => {
-  const {
-    control,
-    handleSubmit,
-    formState: { errors },
-  } = useForm<InputProps>({ resolver: zodResolver(loginSchema) });
+  const form = useForm<InputProps>({ resolver: zodResolver(loginSchema) });
   const navigate = useNavigate();
 
   const onSubmit: SubmitHandler<InputProps> = (values: InputProps) => {
@@ -50,31 +51,41 @@ const Login = () => {
 
   return (
     <LoginFrame title="Login">
-      <Form onSubmit={handleSubmit(onSubmit)}>
-        <FormInput title="Username" errorMessage={errors.username?.message}>
-          <Controller
+      <Form {...form}>
+        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-2">
+          <FormField
+            control={form.control}
             name="username"
-            control={control}
-            render={({ field }) => <Input {...field} />}
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Username</FormLabel>
+                <FormControl>
+                  <Input type="text" placeholder="Username" {...field} />
+                </FormControl>
+              </FormItem>
+            )}
           />
-        </FormInput>
 
-        <FormInput title="Password" errorMessage={errors.password?.message}>
-          <Controller
+          <FormField
+            control={form.control}
             name="password"
-            control={control}
-            render={({ field }) => <Input.Password {...field} />}
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Password</FormLabel>
+                <FormControl>
+                  <Input type="password" placeholder="Password" {...field} />
+                </FormControl>
+              </FormItem>
+            )}
           />
-        </FormInput>
 
-        <FormGroup>
-          <Link to="register">
-            <Button type="text">Register</Button>
-          </Link>
-          <Button type="primary" htmlType="submit">
-            Submit
-          </Button>
-        </FormGroup>
+          <div className="pt-4 flex gap-8 items-center justify-center">
+            <Button className={buttonVariants({ variant: "secondary" })}>
+              <Link to="register">Register</Link>
+            </Button>
+            <Button>Submit</Button>
+          </div>
+        </form>
       </Form>
     </LoginFrame>
   );

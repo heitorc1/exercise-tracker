@@ -1,12 +1,17 @@
 import { useEffect, useState } from "react";
-import { DeleteOutlined, EditOutlined } from "@ant-design/icons";
+import { Pencil1Icon, TrashIcon } from "@radix-ui/react-icons";
 import { toast } from "react-toastify";
 import AppFrame from "@/components/shared/AppFrame";
-import Card from "@/components/shared/Card";
-import CardGroup from "@/components/shared/CardGroup";
 import { dateFormatter } from "@/helper/dateFormatter";
 import exerciseService from "@/services/exercises";
 import { IExercise } from "@/interfaces/exercises";
+import {
+  Card,
+  CardContent,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 
 const Exercises = () => {
   const [exercises, setExercises] = useState<IExercise[]>([]);
@@ -36,11 +41,6 @@ const Exercises = () => {
     console.log("delete");
   };
 
-  const actions = [
-    <EditOutlined key="edit" onClick={handleEdit} />,
-    <DeleteOutlined key="delete" onClick={handleDelete} />,
-  ];
-
   if (isLoading) {
     return <div>Loading...</div>;
   }
@@ -51,17 +51,28 @@ const Exercises = () => {
 
   return (
     <AppFrame title="Exercises">
-      <CardGroup>
+      <div className="w-full flex flex-wrap gap-8">
         {exercises?.map((exercise) => (
-          <Card
-            key={exercise.id}
-            title={dateFormatter(exercise.date)}
-            actions={actions}
-          >
-            Duration: {exercise.duration} minutes
+          <Card key={exercise.id} className="p-2">
+            <CardHeader className="w-64">
+              <CardTitle>{dateFormatter(exercise.date)}</CardTitle>
+            </CardHeader>
+            <CardContent>Duration: {exercise.duration} minutes</CardContent>
+            <CardFooter>
+              <div className="flex w-full justify-between px-2">
+                <Pencil1Icon
+                  onClick={handleEdit}
+                  className="h-4 cursor-pointer"
+                />
+                <TrashIcon
+                  onClick={handleDelete}
+                  className="h-4 cursor-pointer"
+                />
+              </div>
+            </CardFooter>
           </Card>
         ))}
-      </CardGroup>
+      </div>
     </AppFrame>
   );
 };
