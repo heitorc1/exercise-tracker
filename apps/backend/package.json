@@ -8,7 +8,7 @@
   "main": "src/infra/server.ts",
   "types": "@types/**/index.d.ts",
   "engines": {
-    "node": ">= 21.0.0"
+    "node": ">= 20.11.0"
   },
   "scripts": {
     "prebuild": "rm -rf dist",
@@ -16,9 +16,8 @@
     "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
     "dev": "tsx watch src/infra/server.ts",
     "lint": "eslint \"{src,apps,libs,test}/**/*.ts\" --fix",
-    "test": "node --import tsx --test **/*.test.ts",
-    "test:watch": "node --import tsx --test --watch **/*.test.ts",
-    "test:cov": "node --import tsx --experimental-test-coverage --test",
+    "test": "node --import tsx --test ./src/__tests__/**/**/**/*test.ts",
+    "test:watch": "node --import tsx --test --watch ./src/__tests__/**/**/**/*test.ts",
     "migrate": "node node_modules/db-migrate/bin/db-migrate"
   },
   "dependencies": {
