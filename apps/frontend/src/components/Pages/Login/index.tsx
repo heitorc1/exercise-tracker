@@ -1,5 +1,5 @@
 import { loginSchema } from "@exercise-tracker/shared/schemas/auth";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, Navigate } from "react-router-dom";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm, SubmitHandler } from "react-hook-form";
 import { toast } from "react-toastify";
@@ -15,6 +15,7 @@ import {
   FormItem,
   FormLabel,
 } from "@/components/ui/form";
+import { useAuth } from "@/hooks/useAuth";
 
 type InputProps = {
   username: string;
@@ -23,7 +24,7 @@ type InputProps = {
 
 const Login = () => {
   const form = useForm<InputProps>({ resolver: zodResolver(loginSchema) });
-  const navigate = useNavigate();
+  const { user, login } = useAuth();
 
   const onSubmit: SubmitHandler<InputProps> = (values: InputProps) => {
     const data = {
@@ -33,21 +34,18 @@ const Login = () => {
     authService.login(data).subscribe({
       next: (token) => {
         tokenHelper.setToken(token);
-        authService.verify(token).subscribe((res) => {
-          authService.setUser({
-            id: res.id,
-            email: res.email,
-            username: res.username,
-          });
-        });
         toast.success("User logged in");
-        navigate("/dashboard");
+        login();
       },
       error: (err) => {
         toast.error(err);
       },
     });
   };
+
+  if (user) {
+    return <Navigate to="/dashboard" replace />;
+  }
 
   return (
     <LoginFrame title="Login">

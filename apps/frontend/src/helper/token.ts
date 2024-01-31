@@ -12,7 +12,7 @@ class Token {
   }
 
   public getToken() {
-    return this.token$.getValue();
+    return this.token$;
   }
 
   public setToken(data: string) {

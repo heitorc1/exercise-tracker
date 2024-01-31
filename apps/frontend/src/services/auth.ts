@@ -18,8 +18,8 @@ class AuthService {
     this.user$.next(data);
   }
 
-  public getUser() {
-    return this.user$.getValue();
+  public getUser(): Observable<IUser | null> {
+    return this.user$;
   }
 
   public logout(): null {
@@ -28,19 +28,9 @@ class AuthService {
   }
 
   public verify(token: string | null): Observable<IToken> {
-    return api.post<Response<IToken>>("/auth/verify", { token }).pipe(
-      map((res) => res.data),
-      map((response) => {
-        if (response) {
-          this.user$.next({
-            id: response.id,
-            username: response.username,
-            email: response.email,
-          });
-        }
-        return response;
-      })
-    );
+    return api
+      .post<Response<IToken>>("/auth/verify", { token })
+      .pipe(map((res) => res.data));
   }
 }
 

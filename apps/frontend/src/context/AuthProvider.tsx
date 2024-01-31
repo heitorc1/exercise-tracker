@@ -1,13 +1,8 @@
-import {
-  SetStateAction,
-  createContext,
-  useCallback,
-  useMemo,
-  useState,
-} from "react";
-import { useNavigate } from "react-router-dom";
+import { createContext, useEffect, useState } from "react";
+import { switchMap, take } from "rxjs";
 import { IUser } from "@/interfaces/users";
 import authService from "@/services/auth";
+import tokenHelper from "@/helper/token";
 
 type Props = {
   children: React.ReactNode;
@@ -15,39 +10,56 @@ type Props = {
 
 type AuthContextProps = {
   user: IUser | null;
-  login: (data: IUser | null) => void;
+  login: () => void;
   logout: () => void;
-  setUser: (data: SetStateAction<IUser | null>) => void;
 };
 
 export const AuthContext = createContext({} as AuthContextProps);
 
 export const AuthProvider = ({ children }: Props) => {
   const [user, setUser] = useState<IUser | null>(null);
-  const navigate = useNavigate();
 
-  const login = useCallback(
-    (data: IUser | null) => {
-      if (data) {
-        setUser(data);
-        navigate("/dashboard");
-        authService.setUser(data);
-      }
-    },
-    [navigate]
-  );
+  useEffect(() => {
+    if (user) {
+      return;
+    }
 
-  const logout = useCallback(() => {
+    login();
+  }, [user]);
+
+  const login = () => {
+    tokenHelper
+      .getToken()
+      .pipe(
+        take(1),
+        switchMap((token) => authService.verify(token))
+      )
+      .subscribe({
+        next: (res) => {
+          const userData = {
+            id: res.id,
+            email: res.email,
+            username: res.username,
+          };
+          authService.setUser(userData);
+          setUser(userData);
+        },
+        error: (err) => {
+          console.log(err);
+          authService.logout();
+        },
+      });
+  };
+
+  const logout = () => {
     authService.setUser(null);
     authService.logout();
     setUser(null);
-    navigate("/", { replace: true });
-  }, [navigate]);
+  };
 
-  const value = useMemo(
-    () => ({ user, login, logout, setUser }),
-    [login, logout, user]
+  return (
+    <AuthContext.Provider value={{ user, login, logout }}>
+      {children}
+    </AuthContext.Provider>
   );
-
-  return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 };
