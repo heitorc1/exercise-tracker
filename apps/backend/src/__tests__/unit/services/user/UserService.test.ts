@@ -20,8 +20,7 @@ describe('UserService', () => {
   beforeEach(() => {
     repository = new UserRepository(userQueries);
     service = new UserService(repository);
-    const date = new Date('2023-10-18');
-    mock.timers.enable({ apis: ['Date'], now: date });
+    mock.timers.enable();
   });
 
   afterEach(() => {

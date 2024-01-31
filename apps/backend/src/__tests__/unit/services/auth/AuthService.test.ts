@@ -29,7 +29,7 @@ describe('AuthService', () => {
   });
 
   it('should create token for successful login', async (t) => {
-    t.mock.timers.enable({ apis: ['Date'], now: new Date() });
+    t.mock.timers.enable();
 
     const user = {
       id: faker.string.uuid(),

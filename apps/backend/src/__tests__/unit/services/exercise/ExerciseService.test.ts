@@ -19,9 +19,7 @@ describe('ExerciseService', () => {
   beforeEach(() => {
     repository = new ExerciseRepository(userQueries);
     service = new ExerciseService(repository);
-
-    const date = new Date('2023-10-18');
-    mock.timers.enable({ apis: ['Date'], now: date });
+    mock.timers.enable();
   });
 
   afterEach(() => {
