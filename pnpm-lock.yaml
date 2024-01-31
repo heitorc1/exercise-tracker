@@ -4,11 +4,6 @@ settings:
   autoInstallPeers: true
   excludeLinksFromLockfile: false
 
-patchedDependencies:
-  '@types/node@20.10.0':
-    hash: 5s5e52ctdnn72lggn6pe55llju
-    path: patches/@types__node@20.10.0.patch
-
 importers:
 
   .:
@@ -76,7 +71,7 @@ importers:
         version: 9.0.3
       '@types/node':
         specifier: ^20.10.0
-        version: 20.10.0(patch_hash=5s5e52ctdnn72lggn6pe55llju)
+        version: 20.10.0
       '@types/pg':
         specifier: ^8.10.9
         version: 8.10.9
@@ -1548,7 +1543,7 @@ packages:
   /@types/bcrypt@5.0.0:
     resolution: {integrity: sha512-agtcFKaruL8TmcvqbndlqHPSJgsolhf/qPWchFlgnW1gECTN/nKbFcoFnvKAQRFfKbh+BO6A3SWdJu9t+xF3Lw==}
     dependencies:
-      '@types/node': 20.10.0(patch_hash=5s5e52ctdnn72lggn6pe55llju)
+      '@types/node': 20.10.0
     dev: true
 
   /@types/eslint-scope@3.7.7:
@@ -1584,20 +1579,19 @@ packages:
   /@types/jsonwebtoken@9.0.3:
     resolution: {integrity: sha512-b0jGiOgHtZ2jqdPgPnP6WLCXZk1T8p06A/vPGzUvxpFGgKMbjXJDjC5m52ErqBnIuWZFgGoIJyRdeG5AyreJjA==}
     dependencies:
-      '@types/node': 20.10.0(patch_hash=5s5e52ctdnn72lggn6pe55llju)
+      '@types/node': 20.10.0
     dev: true
 
-  /@types/node@20.10.0(patch_hash=5s5e52ctdnn72lggn6pe55llju):
+  /@types/node@20.10.0:
     resolution: {integrity: sha512-D0WfRmU9TQ8I9PFx9Yc+EBHw+vSpIub4IDvQivcp26PtPrdMGAq5SDcpXEo/epqa/DXotVpekHiLNTg3iaKXBQ==}
     dependencies:
       undici-types: 5.26.5
     dev: true
-    patched: true
 
   /@types/pg@8.10.9:
     resolution: {integrity: sha512-UksbANNE/f8w0wOMxVKKIrLCbEMV+oM1uKejmwXr39olg4xqcfBDbXxObJAt6XxHbDa4XTKOlUEcEltXDX+XLQ==}
     dependencies:
-      '@types/node': 20.10.0(patch_hash=5s5e52ctdnn72lggn6pe55llju)
+      '@types/node': 20.10.0
       pg-protocol: 1.6.0
       pg-types: 4.0.1
     dev: true
@@ -3724,7 +3718,7 @@ packages:
     resolution: {integrity: sha512-7vuh85V5cdDofPyxn58nrPjBktZo0u9x1g8WtjQol+jZDaE+fhN+cIvTj11GndBnMnyfrUOG1sZQxCdjKh+DKg==}
     engines: {node: '>= 10.13.0'}
     dependencies:
-      '@types/node': 20.10.0(patch_hash=5s5e52ctdnn72lggn6pe55llju)
+      '@types/node': 20.10.0
       merge-stream: 2.0.0
       supports-color: 8.1.1
     dev: true
