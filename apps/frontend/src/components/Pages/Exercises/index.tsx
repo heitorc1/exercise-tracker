@@ -12,26 +12,48 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import {
+  Pagination,
+  PaginationContent,
+  PaginationItem,
+  PaginationNext,
+  PaginationPrevious,
+} from "@/components/ui/pagination";
 
 const Exercises = () => {
   const [exercises, setExercises] = useState<IExercise[]>([]);
+  const [totalItems, setTotalItems] = useState(0);
+  const [page, setPage] = useState(1);
   const [isError, setIsError] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
-    setIsLoading(true);
-    exerciseService.getExerciseList().subscribe({
+    const obs = exerciseService.getExerciseList(page, 10).subscribe({
       next: (res) => {
-        setExercises(res);
-        setIsLoading(false);
+        setExercises(res.data);
+        setTotalItems(res.meta.total);
       },
       error: (err) => {
-        setIsError(true);
-        setIsLoading(false);
         toast.error(err);
+        setIsError(true);
       },
     });
-  }, []);
+
+    return () => obs.unsubscribe();
+  }, [page]);
+
+  const handlePagination = (type: "increment" | "decrement") => {
+    if (type === "decrement" && page - 1 === 0) {
+      return;
+    }
+
+    if (type === "increment" && page + 1 > totalItems / 10) {
+      return;
+    }
+
+    type === "decrement"
+      ? setPage((prev) => prev - 1)
+      : setPage((prev) => prev + 1);
+  };
 
   const handleEdit = () => {
     console.log("edit");
@@ -41,17 +63,10 @@ const Exercises = () => {
     console.log("delete");
   };
 
-  if (isLoading) {
-    return <div>Loading...</div>;
-  }
-
-  if (isError) {
-    return <div>Error fetching exercises</div>;
-  }
-
   return (
     <AppFrame title="Exercises">
-      <div className="w-full flex flex-wrap gap-8">
+      <div className="w-full flex flex-wrap gap-8 justify-center md:justify-start">
+        {isError && <div>Error fetching exercises</div>}
         {exercises?.map((exercise) => (
           <Card key={exercise.id} className="p-2">
             <CardHeader className="w-64">
@@ -72,6 +87,26 @@ const Exercises = () => {
             </CardFooter>
           </Card>
         ))}
+        <Pagination>
+          <PaginationContent>
+            {page > 1 && (
+              <PaginationItem>
+                <PaginationPrevious
+                  onClick={() => handlePagination("decrement")}
+                  className="cursor-pointer"
+                />
+              </PaginationItem>
+            )}
+            <PaginationItem>
+              {page !== totalItems / 10 && (
+                <PaginationNext
+                  onClick={() => handlePagination("increment")}
+                  className="cursor-pointer"
+                />
+              )}
+            </PaginationItem>
+          </PaginationContent>
+        </Pagination>
       </div>
     </AppFrame>
   );

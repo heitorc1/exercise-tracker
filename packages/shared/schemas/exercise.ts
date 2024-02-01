@@ -1,4 +1,9 @@
-import { z } from 'zod';
+import { z } from "zod";
+
+export const listExerciseSchema = z.object({
+  page: z.coerce.number().int().positive(),
+  pageSize: z.coerce.number().int().positive(),
+});
 
 export const findExerciseSchema = z.object({
   id: z.string().uuid(),

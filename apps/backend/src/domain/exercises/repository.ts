@@ -5,6 +5,7 @@ import {
   IExerciseQueries,
   IExerciseRepository,
   IUpdateExercise,
+  IPaginatedQuery,
 } from './interfaces';
 
 export class ExerciseRepository implements IExerciseRepository {
@@ -39,8 +40,12 @@ export class ExerciseRepository implements IExerciseRepository {
     });
   }
 
-  public async list(userId: string): Promise<IExercise[]> {
-    return this.exerciseQueries.list(userId);
+  public async list(
+    userId: string,
+    page: number,
+    pageSize: number,
+  ): Promise<IPaginatedQuery<IExercise>> {
+    return this.exerciseQueries.list(userId, page, pageSize);
   }
 
   public async update(id: string, body: IUpdateExercise): Promise<IExercise> {

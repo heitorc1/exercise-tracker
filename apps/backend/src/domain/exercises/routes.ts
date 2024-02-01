@@ -1,7 +1,8 @@
-import { FastifyInstance } from 'fastify';
+import { FastifyInstance, FastifyRequest } from 'fastify';
 import {
   createExerciseSchema,
   findExerciseSchema,
+  listExerciseSchema,
   updateExerciseSchema,
 } from '@exercise-tracker/shared/schemas/exercise';
 import { authenticate } from '@/hooks/authenticate';
@@ -13,10 +14,25 @@ const service = makeExerciseService();
 export async function exerciseRoutes(fastify: FastifyInstance) {
   fastify.addHook('preHandler', authenticate);
 
-  fastify.get('/', async (req, reply) => {
-    const response = await service.list(req.user.id);
-    reply.status(200).send(response);
-  });
+  fastify.get(
+    '/',
+    {
+      schema: {
+        querystring: listExerciseSchema,
+      },
+    },
+    async (
+      req: FastifyRequest<{ Querystring: { page: number; pageSize: number } }>,
+      reply,
+    ) => {
+      const response = await service.list(
+        req.user.id,
+        req.query.page,
+        req.query.pageSize,
+      );
+      reply.status(200).send(response);
+    },
+  );
 
   fastify.get<{ Params: IFindExercise }>(
     '/:id',

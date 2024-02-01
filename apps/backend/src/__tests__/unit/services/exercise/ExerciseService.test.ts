@@ -86,23 +86,36 @@ describe('ExerciseService', () => {
 
   it('should list user exercises', async (t) => {
     const exercise = {
-      id: faker.string.uuid(),
-      userId: faker.string.uuid(),
-      description: faker.lorem.sentence(),
-      duration: faker.number.int({ min: 30, max: 90 }),
-      date: faker.date.recent().toISOString(),
-      createdAt: faker.date.recent().toISOString(),
-      updatedAt: faker.date.recent().toISOString(),
+      data: [
+        {
+          id: faker.string.uuid(),
+          userId: faker.string.uuid(),
+          description: faker.lorem.sentence(),
+          duration: faker.number.int({ min: 30, max: 90 }),
+          date: faker.date.recent().toISOString(),
+          createdAt: faker.date.recent().toISOString(),
+          updatedAt: faker.date.recent().toISOString(),
+        },
+      ],
+      total: 1,
+    };
+    const meta = {
+      page: 1,
+      perPage: 10,
+      from: 0,
+      to: 10,
+      total: 1,
     };
 
     t.mock
       .method(ExerciseRepository.prototype, 'list')
-      .mock.mockImplementationOnce(async () => [exercise]);
+      .mock.mockImplementationOnce(async () => exercise);
 
-    const response = await service.list(exercise.userId);
+    const response = await service.list(exercise.data[0].userId, 1, 10);
 
     assert(response.data.length >= 1);
-    assert.deepStrictEqual(response.data[0], exercise);
+    assert.deepStrictEqual(response.data[0], exercise.data[0]);
+    assert.deepStrictEqual(response.meta, meta);
   });
 
   it('should return an empty array when there is no exercise', async (t) => {
@@ -110,9 +123,9 @@ describe('ExerciseService', () => {
 
     t.mock
       .method(ExerciseRepository.prototype, 'list')
-      .mock.mockImplementationOnce(async () => []);
+      .mock.mockImplementationOnce(async () => ({ data: [], total: 0 }));
 
-    const response = await service.list(id);
+    const response = await service.list(id, 1, 10);
 
     assert.deepEqual(response.data.length, 0);
   });

@@ -27,7 +27,7 @@ class Api {
     data: unknown
   ): Observable<{ response: T }> {
     return of(true).pipe(
-      map(() => this.getToken()),
+      switchMap(() => this.getToken()),
       map((token) => ({
         Authorization: `Bearer ${token}`,
       })),

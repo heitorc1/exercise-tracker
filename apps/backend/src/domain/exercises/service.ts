@@ -7,6 +7,7 @@ import {
   IExerciseService,
   IResponse,
   IUpdateExercise,
+  IPaginatedResponse,
 } from './interfaces';
 
 export class ExerciseService implements IExerciseService {
@@ -34,9 +35,26 @@ export class ExerciseService implements IExerciseService {
     };
   }
 
-  public async list(userId: string): Promise<IResponse<IExercise[]>> {
-    const exercises = await this.exerciseRepository.list(userId);
-    return { data: exercises };
+  public async list(
+    userId: string,
+    page: number,
+    pageSize: number,
+  ): Promise<IPaginatedResponse<IExercise>> {
+    const exercises = await this.exerciseRepository.list(
+      userId,
+      page,
+      pageSize,
+    );
+    return {
+      data: exercises.data,
+      meta: {
+        page,
+        perPage: pageSize,
+        from: (page - 1) * pageSize,
+        to: page * pageSize,
+        total: exercises.total,
+      },
+    };
   }
 
   public async update(

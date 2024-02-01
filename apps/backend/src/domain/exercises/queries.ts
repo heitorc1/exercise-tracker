@@ -1,5 +1,5 @@
 import { query } from '@/infra/db';
-import { IExercise, IExerciseQueries } from './interfaces';
+import { IExercise, IExerciseQueries, IPaginatedQuery } from './interfaces';
 
 export class ExerciseQueries implements IExerciseQueries {
   private defaultFields = `
@@ -50,15 +50,28 @@ export class ExerciseQueries implements IExerciseQueries {
     return rows[0];
   }
 
-  public async list(userId: string): Promise<IExercise[]> {
+  public async list(
+    userId: string,
+    page: number,
+    pageSize: number,
+  ): Promise<IPaginatedQuery<IExercise>> {
+    const response = await query<{ total: number }>(
+      `SELECT COUNT(*) as total FROM exercises WHERE user_id = $1`,
+      [userId],
+    );
+    const total = response.rows[0].total;
+
+    const offset = (page - 1) * pageSize;
     const { rows } = await query<IExercise>(
       `SELECT ${this.defaultFields} 
           FROM exercises 
           WHERE user_id = $1 
-          ORDER BY date DESC`,
-      [userId],
+          ORDER BY date DESC
+          LIMIT $2
+          OFFSET $3`,
+      [userId, pageSize, offset],
     );
-    return rows;
+    return { data: rows, total };
   }
 
   public async update(

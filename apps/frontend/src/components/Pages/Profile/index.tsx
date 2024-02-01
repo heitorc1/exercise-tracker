@@ -13,6 +13,7 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Button, buttonVariants } from "@/components/ui/button";
+import { useAuth } from "@/hooks/useAuth";
 
 type InputProps = {
   username: string;
@@ -22,13 +23,14 @@ type InputProps = {
 };
 
 const Profile = () => {
+  const { user } = useAuth();
   const [isEdit, setIsEdit] = useState(false);
 
   const form = useForm<InputProps>({
     resolver: zodResolver(registerSchema),
     defaultValues: {
-      username: "",
-      email: "",
+      username: user?.username ?? "",
+      email: user?.email ?? "",
       password: "",
       confirmPassword: "",
     },

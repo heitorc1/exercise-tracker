@@ -1,13 +1,17 @@
-import { Observable, map } from "rxjs";
+import { Observable } from "rxjs";
 import api from "@/api";
 import { IExercise } from "@/interfaces/exercises";
-import { Response } from "@/interfaces";
+import { IPaginatedResponse } from "@/interfaces";
 
 class ExerciseService {
-  public getExerciseList(): Observable<IExercise[]> {
-    return api
-      .get<Response<IExercise[]>>("/exercise")
-      .pipe(map((res) => res.data));
+  public getExerciseList(
+    page: number,
+    pageSize: number
+  ): Observable<IPaginatedResponse<IExercise>> {
+    return api.get<IPaginatedResponse<IExercise>>("/exercise", {
+      page,
+      pageSize,
+    });
   }
 }
 
