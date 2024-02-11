@@ -1,7 +1,17 @@
+import { createFileRoute } from "@tanstack/react-router";
 import AppFrame from "@/components/shared/AppFrame";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
-const Dashboard = () => {
+export const Route = createFileRoute("/dashboard")({
+  component: Dashboard,
+  beforeLoad: ({ context }) => {
+    if (!context.auth.isAuthenticated) {
+      return { to: "/" };
+    }
+  },
+});
+
+function Dashboard() {
   return (
     <AppFrame title="Dashboard">
       <div className="w-full flex gap-8 justify-between">
@@ -34,6 +44,4 @@ const Dashboard = () => {
       </div>
     </AppFrame>
   );
-};
-
-export default Dashboard;
+}

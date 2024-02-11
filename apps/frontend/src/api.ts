@@ -1,5 +1,13 @@
 import axios, { AxiosError, Method } from "axios";
-import { Observable, catchError, map, of, switchMap, throwError } from "rxjs";
+import {
+  Observable,
+  catchError,
+  map,
+  of,
+  switchMap,
+  take,
+  throwError,
+} from "rxjs";
 import { API_ENDPOINT } from "./config";
 import tokenHelper from "./helper/token";
 
@@ -17,8 +25,7 @@ class Api {
   }
 
   private getToken() {
-    const token = tokenHelper.getToken();
-    return token;
+    return tokenHelper.getToken();
   }
 
   private request<T>(
@@ -27,7 +34,8 @@ class Api {
     data: unknown
   ): Observable<{ response: T }> {
     return of(true).pipe(
-      switchMap(() => this.getToken()),
+      switchMap(this.getToken),
+      take(1),
       map((token) => ({
         Authorization: `Bearer ${token}`,
       })),

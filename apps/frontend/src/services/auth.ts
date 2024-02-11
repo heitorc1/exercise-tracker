@@ -1,4 +1,4 @@
-import { BehaviorSubject, Observable, map } from "rxjs";
+import { BehaviorSubject, Observable, distinctUntilChanged, map } from "rxjs";
 import api from "@/api";
 import tokenHelper from "@/helper/token";
 import { Response } from "@/interfaces";
@@ -19,7 +19,7 @@ class AuthService {
   }
 
   public getUser(): Observable<IUser | null> {
-    return this.user$;
+    return this.user$.pipe(distinctUntilChanged());
   }
 
   public logout(): null {

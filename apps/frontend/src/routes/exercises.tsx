@@ -1,6 +1,6 @@
+import { createFileRoute } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { Pencil1Icon, TrashIcon } from "@radix-ui/react-icons";
-import { toast } from "react-toastify";
 import AppFrame from "@/components/shared/AppFrame";
 import { dateFormatter } from "@/helper/dateFormatter";
 import exerciseService from "@/services/exercises";
@@ -20,22 +20,24 @@ import {
   PaginationPrevious,
 } from "@/components/ui/pagination";
 
-const Exercises = () => {
+export const Route = createFileRoute("/exercises")({
+  component: Exercises,
+  beforeLoad: ({ context }) => {
+    if (!context.auth.isAuthenticated) {
+      return { to: "/" };
+    }
+  },
+});
+
+function Exercises() {
   const [exercises, setExercises] = useState<IExercise[]>([]);
   const [totalItems, setTotalItems] = useState(0);
   const [page, setPage] = useState(1);
-  const [isError, setIsError] = useState(false);
 
   useEffect(() => {
-    const obs = exerciseService.getExerciseList(page, 10).subscribe({
-      next: (res) => {
-        setExercises(res.data);
-        setTotalItems(res.meta.total);
-      },
-      error: (err) => {
-        toast.error(err);
-        setIsError(true);
-      },
+    const obs = exerciseService.getExerciseList(page, 10).subscribe((res) => {
+      setExercises(res.data);
+      setTotalItems(res.meta.total);
     });
 
     return () => obs.unsubscribe();
@@ -66,7 +68,6 @@ const Exercises = () => {
   return (
     <AppFrame title="Exercises">
       <div className="w-full flex flex-wrap gap-8 justify-center md:justify-start">
-        {isError && <div>Error fetching exercises</div>}
         {exercises?.map((exercise) => (
           <Card key={exercise.id} className="p-2">
             <CardHeader className="w-64">
@@ -110,6 +111,4 @@ const Exercises = () => {
       </div>
     </AppFrame>
   );
-};
-
-export default Exercises;
+}

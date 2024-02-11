@@ -1,5 +1,7 @@
+import { useEffect } from "react";
+import { Link, createFileRoute, useNavigate } from "@tanstack/react-router";
+import { catchError, distinctUntilChanged, filter, of, switchMap } from "rxjs";
 import { loginSchema } from "@exercise-tracker/shared/schemas/auth";
-import { Link, Navigate } from "react-router-dom";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm, SubmitHandler } from "react-hook-form";
 import { toast } from "react-toastify";
@@ -15,37 +17,85 @@ import {
   FormItem,
   FormLabel,
 } from "@/components/ui/form";
-import { useAuth } from "@/hooks/useAuth";
+import { useAuth } from "@/context/AuthProvider";
+
+export const Route = createFileRoute("/")({
+  component: Login,
+});
 
 type InputProps = {
   username: string;
   password: string;
 };
 
-const Login = () => {
+function Login() {
   const form = useForm<InputProps>({ resolver: zodResolver(loginSchema) });
-  const { user, login } = useAuth();
+  const navigate = useNavigate({ from: "/" });
+  const auth = useAuth();
+
+  useEffect(() => {
+    if (auth.user) {
+      navigate({ to: "/dashboard" });
+    }
+
+    tokenHelper
+      .getToken()
+      .pipe(
+        distinctUntilChanged(),
+        filter((token) => !!token),
+        switchMap((token) => authService.verify(token)),
+        catchError(() => {
+          tokenHelper.clearToken();
+          return of(undefined);
+        }),
+        switchMap((token) => {
+          if (token) {
+            const userData = {
+              id: token.id,
+              username: token.username,
+              email: token.email,
+            };
+            authService.setUser(userData);
+            return of(userData);
+          }
+          return of(undefined);
+        })
+      )
+      .subscribe((token) => {
+        if (token) {
+          const userData = {
+            id: token.id,
+            username: token.username,
+            email: token.email,
+          };
+          auth.login(userData);
+        }
+      });
+  });
 
   const onSubmit: SubmitHandler<InputProps> = (values: InputProps) => {
     const data = {
       username: values.username,
       password: values.password,
     };
-    authService.login(data).subscribe({
-      next: (token) => {
-        tokenHelper.setToken(token);
+    authService
+      .login(data)
+      .pipe(
+        distinctUntilChanged(),
+        switchMap((token) => tokenHelper.setToken(token)),
+        switchMap((token) => authService.verify(token))
+      )
+      .subscribe((token) => {
+        const userData = {
+          id: token.id,
+          username: token.username,
+          email: token.email,
+        };
+        auth.login(userData);
         toast.success("User logged in");
-        login();
-      },
-      error: (err) => {
-        toast.error(err);
-      },
-    });
+        navigate({ to: "/dashboard" });
+      });
   };
-
-  if (user) {
-    return <Navigate to="/dashboard" replace />;
-  }
 
   return (
     <LoginFrame title="Login">
@@ -87,6 +137,4 @@ const Login = () => {
       </Form>
     </LoginFrame>
   );
-};
-
-export default Login;
+}

@@ -1,15 +1,26 @@
-import { ToastContainer } from "react-toastify";
-import { Outlet } from "react-router-dom";
-import { AuthProvider } from "./context/AuthProvider";
+import { RouterProvider, createRouter } from "@tanstack/react-router";
 
-import "./app.css";
-import "react-toastify/dist/ReactToastify.min.css";
+import { routeTree } from "./routeTree.gen";
+import { AuthProvider, useAuth } from "./context/AuthProvider";
+
+const router = createRouter({
+  routeTree,
+  context: {
+    auth: undefined!,
+  },
+});
+
+declare module "@tanstack/react-router" {
+  interface Register {
+    router: typeof router;
+  }
+}
 
 function App() {
+  const auth = useAuth();
   return (
     <AuthProvider>
-      <Outlet />
-      <ToastContainer />
+      <RouterProvider router={router} context={{ auth }} />
     </AuthProvider>
   );
 }

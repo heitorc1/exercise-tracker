@@ -1,5 +1,5 @@
 import { registerSchema } from "@exercise-tracker/shared/schemas/auth";
-import { Link, redirect } from "react-router-dom";
+import { Link, createFileRoute, useNavigate } from "@tanstack/react-router";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { toast } from "react-toastify";
@@ -23,7 +23,12 @@ type InputProps = {
   confirmPassword: string;
 };
 
-const Register = () => {
+export const Route = createFileRoute("/register")({
+  component: Register,
+});
+
+function Register() {
+  const navigate = useNavigate({from: "register"});
   const form = useForm<InputProps>({
     resolver: zodResolver(registerSchema),
     defaultValues: {
@@ -43,7 +48,7 @@ const Register = () => {
     userService.createUser(data).subscribe({
       next: () => {
         toast.success("User created successfully");
-        redirect("/login");
+        navigate({to: "/"});
       },
       error: (err) => toast.error(err),
     });
@@ -119,6 +124,4 @@ const Register = () => {
       </Form>
     </LoginFrame>
   );
-};
-
-export default Register;
+}

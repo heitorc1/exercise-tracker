@@ -1,65 +1,54 @@
-import { createContext, useEffect, useState } from "react";
-import { switchMap, take } from "rxjs";
+import { createContext, useContext, useState } from "react";
 import { IUser } from "@/interfaces/users";
-import authService from "@/services/auth";
 import tokenHelper from "@/helper/token";
+import authService from "@/services/auth";
 
 type Props = {
   children: React.ReactNode;
 };
 
-type AuthContextProps = {
+export type AuthContextProps = {
   user: IUser | null;
-  login: () => void;
+  login: (value: IUser) => void;
+  isAuthenticated: boolean;
   logout: () => void;
 };
 
-export const AuthContext = createContext({} as AuthContextProps);
+export const AuthContext = createContext({
+  isAuthenticated: false,
+  user: null,
+  login: () => {},
+  logout: () => {},
+} as AuthContextProps);
 
 export const AuthProvider = ({ children }: Props) => {
   const [user, setUser] = useState<IUser | null>(null);
-
-  useEffect(() => {
-    if (user) {
-      return;
-    }
-
-    login();
-  }, [user]);
-
-  const login = () => {
-    tokenHelper
-      .getToken()
-      .pipe(
-        take(1),
-        switchMap((token) => authService.verify(token))
-      )
-      .subscribe({
-        next: (res) => {
-          const userData = {
-            id: res.id,
-            email: res.email,
-            username: res.username,
-          };
-          authService.setUser(userData);
-          setUser(userData);
-        },
-        error: (err) => {
-          console.log(err);
-          authService.logout();
-        },
-      });
-  };
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
 
   const logout = () => {
     authService.setUser(null);
-    authService.logout();
+    tokenHelper.clearToken();
     setUser(null);
+    setIsAuthenticated(false);
+  };
+
+  const login = (user: IUser) => {
+    setUser(user);
+    setIsAuthenticated(true);
   };
 
   return (
-    <AuthContext.Provider value={{ user, login, logout }}>
+    <AuthContext.Provider value={{ user, login, isAuthenticated, logout }}>
       {children}
     </AuthContext.Provider>
   );
 };
+
+// eslint-disable-next-line react-refresh/only-export-components
+export function useAuth() {
+  const context = useContext(AuthContext);
+  if (!context) {
+    throw new Error("useAuth must be used within an AuthProvider");
+  }
+  return context;
+}

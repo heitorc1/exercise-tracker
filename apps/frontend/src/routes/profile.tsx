@@ -2,6 +2,7 @@ import { registerSchema } from "@exercise-tracker/shared/schemas/auth";
 import { useState } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { createFileRoute } from "@tanstack/react-router";
 import AppFrame from "@/components/shared/AppFrame";
 import {
   Form,
@@ -13,7 +14,7 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Button, buttonVariants } from "@/components/ui/button";
-import { useAuth } from "@/hooks/useAuth";
+import { useAuth } from "@/context/AuthProvider";
 
 type InputProps = {
   username: string;
@@ -22,7 +23,16 @@ type InputProps = {
   confirmPassword: string;
 };
 
-const Profile = () => {
+export const Route = createFileRoute("/profile")({
+  component: Profile,
+  beforeLoad: ({ context }) => {
+    if (!context.auth.isAuthenticated) {
+      return { to: "/" };
+    }
+  },
+});
+
+function Profile() {
   const { user } = useAuth();
   const [isEdit, setIsEdit] = useState(false);
 
@@ -136,6 +146,4 @@ const Profile = () => {
       </div>
     </AppFrame>
   );
-};
-
-export default Profile;
+}
