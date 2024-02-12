@@ -62,11 +62,14 @@ function AddModal({ setExercises }: AddModalProps) {
   });
 
   const handleSubmit: SubmitHandler<InputProps> = (exercise: InputProps) => {
+    const date = new Date().toISOString();
     exerciseService
       .addExercise({
         description: exercise.description,
         duration: exercise.duration,
         date: exercise.date,
+        createdAt: date,
+        updatedAt: date,
       })
       .pipe(distinctUntilChanged())
       .subscribe({

@@ -46,7 +46,7 @@ function Login() {
         switchMap((token) => authService.verify(token)),
         catchError(() => {
           tokenHelper.clearToken();
-          return of(undefined);
+          return of(null);
         }),
         switchMap((token) => {
           if (token) {
@@ -58,7 +58,7 @@ function Login() {
             authService.setUser(userData);
             return of(userData);
           }
-          return of(undefined);
+          return of(null);
         })
       )
       .subscribe((token) => {
@@ -71,7 +71,7 @@ function Login() {
           auth.login(userData);
         }
       });
-  });
+  }, [auth, navigate]);
 
   const onSubmit: SubmitHandler<InputProps> = (values: InputProps) => {
     const data = {

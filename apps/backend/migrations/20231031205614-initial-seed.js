@@ -43,13 +43,15 @@ exports.up = function (db) {
   );
 
   for (let i = 0; i < 120; i++) {
+    const exerciseDate = faker.date.recent({ days: 180 }).toISOString();
     const exercise = {
       id: faker.string.uuid(),
       description: faker.lorem.sentence(),
       duration: faker.number.int({ min: 30, max: 90 }),
-      date: faker.date.recent({ days: 180 }).toISOString(),
+      date: exerciseDate,
+      createdAt: exerciseDate,
+      updatedAt: exerciseDate,
     };
-    const date = new Date().toISOString();
 
     stmt.push(
       db.insert(
@@ -69,8 +71,8 @@ exports.up = function (db) {
           adminUser.id,
           exercise.duration,
           exercise.date,
-          date,
-          date,
+          exercise.date,
+          exercise.date,
         ],
       ),
     );

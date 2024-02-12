@@ -128,7 +128,7 @@ function Profile() {
                 <>
                   <Button
                     onClick={handleEdit}
-                    className={buttonVariants({ variant: "destructive" })}
+                    className={buttonVariants({ variant: "outline" })}
                   >
                     Cancel
                   </Button>

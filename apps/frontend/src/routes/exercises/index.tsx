@@ -81,10 +81,10 @@ function Exercises() {
               <TableCell className="font-medium">
                 {exercise.description}
               </TableCell>
-              <TableCell>{format(new Date(exercise.date), "PPPP")}</TableCell>
+              <TableCell>{format(new Date(exercise.date), "PPP")}</TableCell>
               <TableCell className="text-center">{exercise.duration}</TableCell>
               <TableCell>
-                {format(new Date(exercise.createdAt), "Pp")}
+                {format(new Date(exercise.createdAt), "yyyy-MM-dd HH:mm")}
               </TableCell>
               <TableCell className="flex justify-center items-center gap-4">
                 <EditModal exercise={exercise} setExercises={setExercises} />

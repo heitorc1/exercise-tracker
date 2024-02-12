@@ -64,12 +64,14 @@ function EditModal({ exercise, setExercises }: EditModalProps) {
   });
 
   const handleEdit: SubmitHandler<InputProps> = (edit: InputProps) => {
+    const updateDate = new Date().toISOString();
     exerciseService
       .editExercise({
         id: exercise.id,
         description: edit.description,
         duration: edit.duration,
         date: edit.date,
+        updatedAt: updateDate,
       })
       .pipe(distinctUntilChanged())
       .subscribe({
@@ -79,6 +81,7 @@ function EditModal({ exercise, setExercises }: EditModalProps) {
             description: edit.description,
             duration: edit.duration,
             date: edit.date,
+            updatedAt: updateDate,
           };
           setExercises((state) =>
             state.map((e) => (e.id === exercise.id ? updateData : e))
