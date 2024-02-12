@@ -1,7 +1,7 @@
-import { Observable } from "rxjs";
+import { Observable, map } from "rxjs";
 import api from "@/api";
 import { IExercise } from "@/interfaces/exercises";
-import { IPaginatedResponse } from "@/interfaces";
+import { IPaginatedResponse, Response } from "@/interfaces";
 
 class ExerciseService {
   public getExerciseList(
@@ -12,6 +12,12 @@ class ExerciseService {
       page,
       pageSize,
     });
+  }
+
+  public addExercise(exercise: Partial<IExercise>): Observable<IExercise> {
+    return api
+      .post<Response<IExercise>>(`/exercise`, exercise)
+      .pipe(map((res) => res.data));
   }
 
   public editExercise(exercise: Partial<IExercise>): Observable<IExercise> {

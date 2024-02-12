@@ -1,6 +1,5 @@
 import { Dispatch, SetStateAction, useState } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Pencil1Icon } from "@radix-ui/react-icons";
 import { CalendarIcon } from "lucide-react";
 import { format } from "date-fns";
 import { type SubmitHandler, useForm } from "react-hook-form";
@@ -34,8 +33,7 @@ import {
 import { Calendar } from "@/components/ui/calendar";
 import exerciseService from "@/services/exercises";
 
-type EditModalProps = {
-  exercise: IExercise;
+type AddModalProps = {
   setExercises: Dispatch<SetStateAction<IExercise[]>>;
 };
 
@@ -51,39 +49,30 @@ const schema = z.object({
   date: z.coerce.date(),
 });
 
-function EditModal({ exercise, setExercises }: EditModalProps) {
+function AddModal({ setExercises }: AddModalProps) {
   const [open, setOpen] = useState(false);
 
   const form = useForm<InputProps>({
     resolver: zodResolver(schema),
     defaultValues: {
-      description: exercise.description,
-      duration: exercise.duration,
-      date: exercise.date,
+      description: "",
+      duration: 0,
+      date: new Date().toISOString(),
     },
   });
 
-  const handleEdit: SubmitHandler<InputProps> = (edit: InputProps) => {
+  const handleSubmit: SubmitHandler<InputProps> = (exercise: InputProps) => {
     exerciseService
-      .editExercise({
-        id: exercise.id,
-        description: edit.description,
-        duration: edit.duration,
-        date: edit.date,
+      .addExercise({
+        description: exercise.description,
+        duration: exercise.duration,
+        date: exercise.date,
       })
       .pipe(distinctUntilChanged())
       .subscribe({
-        next: () => {
-          const updateData = {
-            ...exercise,
-            description: edit.description,
-            duration: edit.duration,
-            date: edit.date,
-          };
-          setExercises((state) =>
-            state.map((e) => (e.id === exercise.id ? updateData : e))
-          );
-          toast.success("Exercise updated successfully");
+        next: (response) => {
+          setExercises((state) => [response, ...state]);
+          toast.success("Exercise added successfully");
           setOpen(false);
         },
         error: () => {
@@ -97,18 +86,18 @@ function EditModal({ exercise, setExercises }: EditModalProps) {
     <Dialog open={open} onOpenChange={setOpen}>
       <Form {...form}>
         <form
-          id="edit-form"
-          onSubmit={form.handleSubmit(handleEdit)}
+          id="add-form"
+          onSubmit={form.handleSubmit(handleSubmit)}
           className="space-y-2"
         >
-          <DialogTrigger>
-            <Pencil1Icon className="h-4 cursor-pointer" />
+          <DialogTrigger asChild>
+            <Button>Create new exercise</Button>
           </DialogTrigger>
           <DialogContent>
             <DialogHeader>
-              <DialogTitle>Edit your exercise</DialogTitle>
+              <DialogTitle>Add your exercise</DialogTitle>
               <DialogDescription>
-                Change your exercise details here.
+                Add your exercise details here.
               </DialogDescription>
             </DialogHeader>
             <FormField
@@ -175,8 +164,8 @@ function EditModal({ exercise, setExercises }: EditModalProps) {
               <Button variant="outline" onClick={() => setOpen(false)}>
                 Cancel
               </Button>
-              <Button type="submit" form="edit-form">
-                Edit
+              <Button type="submit" form="add-form">
+                Add
               </Button>
             </DialogFooter>
           </DialogContent>
@@ -186,4 +175,4 @@ function EditModal({ exercise, setExercises }: EditModalProps) {
   );
 }
 
-export default EditModal;
+export default AddModal;

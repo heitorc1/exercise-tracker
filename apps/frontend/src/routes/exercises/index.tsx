@@ -1,16 +1,8 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import AppFrame from "@/components/shared/AppFrame";
-import { dateFormatter } from "@/helper/dateFormatter";
-import exerciseService from "@/services/exercises";
 import { IExercise } from "@/interfaces/exercises";
-import {
-  Card,
-  CardContent,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
+import exerciseService from "@/services/exercises";
 import {
   Pagination,
   PaginationContent,
@@ -18,8 +10,8 @@ import {
   PaginationNext,
   PaginationPrevious,
 } from "@/components/ui/pagination";
-import EditModal from "./-components/EditModal";
-import DeleteModal from "./-components/DeleteModal";
+import AddModal from "./-components/AddModal";
+import ExerciseCard from "./-components/ExerciseCard";
 
 export const Route = createFileRoute("/exercises/")({
   component: Exercises,
@@ -60,20 +52,14 @@ function Exercises() {
 
   return (
     <AppFrame title="Exercises">
-      <div className="w-full flex flex-wrap gap-8 justify-center md:justify-start">
+      <AddModal setExercises={setExercises} />
+      <div className="w-full flex flex-wrap gap-8 justify-center mt-8 md:justify-start">
         {exercises?.map((exercise) => (
-          <Card key={exercise.id} className="p-2">
-            <CardHeader className="w-64">
-              <CardTitle>{dateFormatter(exercise.date)}</CardTitle>
-            </CardHeader>
-            <CardContent>Duration: {exercise.duration} minutes</CardContent>
-            <CardFooter>
-              <div className="flex w-full justify-between px-2">
-                <EditModal exercise={exercise} />
-                <DeleteModal exercise={exercise} />
-              </div>
-            </CardFooter>
-          </Card>
+          <ExerciseCard
+            key={exercise.id}
+            exercise={exercise}
+            setExercises={setExercises}
+          />
         ))}
         <Pagination>
           <PaginationContent>
