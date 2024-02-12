@@ -24,6 +24,18 @@ class Api {
     );
   }
 
+  public patch<T>(url: string, body?: unknown): Observable<T> {
+    return this.request<T>("PATCH", url, body).pipe(
+      map(({ response }) => response)
+    );
+  }
+
+  public delete<T>(url: string): Observable<T> {
+    return this.request<T>("DELETE", url, null).pipe(
+      map(({ response }) => response)
+    );
+  }
+
   private getToken() {
     return tokenHelper.getToken();
   }

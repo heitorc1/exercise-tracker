@@ -1,6 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
-import { Pencil1Icon, TrashIcon } from "@radix-ui/react-icons";
 import AppFrame from "@/components/shared/AppFrame";
 import { dateFormatter } from "@/helper/dateFormatter";
 import exerciseService from "@/services/exercises";
@@ -19,8 +18,10 @@ import {
   PaginationNext,
   PaginationPrevious,
 } from "@/components/ui/pagination";
+import EditModal from "./-components/EditModal";
+import DeleteModal from "./-components/DeleteModal";
 
-export const Route = createFileRoute("/exercises")({
+export const Route = createFileRoute("/exercises/")({
   component: Exercises,
   beforeLoad: ({ context }) => {
     if (!context.auth.isAuthenticated) {
@@ -57,14 +58,6 @@ function Exercises() {
       : setPage((prev) => prev + 1);
   };
 
-  const handleEdit = () => {
-    console.log("edit");
-  };
-
-  const handleDelete = () => {
-    console.log("delete");
-  };
-
   return (
     <AppFrame title="Exercises">
       <div className="w-full flex flex-wrap gap-8 justify-center md:justify-start">
@@ -76,14 +69,8 @@ function Exercises() {
             <CardContent>Duration: {exercise.duration} minutes</CardContent>
             <CardFooter>
               <div className="flex w-full justify-between px-2">
-                <Pencil1Icon
-                  onClick={handleEdit}
-                  className="h-4 cursor-pointer"
-                />
-                <TrashIcon
-                  onClick={handleDelete}
-                  className="h-4 cursor-pointer"
-                />
+                <EditModal exercise={exercise} />
+                <DeleteModal exercise={exercise} />
               </div>
             </CardFooter>
           </Card>

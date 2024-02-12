@@ -3,13 +3,13 @@ import { Link, createFileRoute, useNavigate } from "@tanstack/react-router";
 import { catchError, distinctUntilChanged, filter, of, switchMap } from "rxjs";
 import { loginSchema } from "@exercise-tracker/shared/schemas/auth";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useForm, SubmitHandler } from "react-hook-form";
+import { useForm, type SubmitHandler } from "react-hook-form";
 import { toast } from "react-toastify";
 import LoginFrame from "@/components/shared/LoginFrame";
 import authService from "@/services/auth";
 import tokenHelper from "@/helper/token";
 import { Input } from "@/components/ui/input";
-import { Button, buttonVariants } from "@/components/ui/button";
+import { Button } from "@/components/ui/button";
 import {
   Form,
   FormControl,
@@ -128,7 +128,7 @@ function Login() {
           />
 
           <div className="pt-4 flex gap-8 items-center justify-center">
-            <Button className={buttonVariants({ variant: "secondary" })}>
+            <Button variant="secondary">
               <Link to="register">Register</Link>
             </Button>
             <Button>Submit</Button>

@@ -5,9 +5,9 @@
 import { Route as rootRoute } from './routes/__root'
 import { Route as RegisterImport } from './routes/register'
 import { Route as ProfileImport } from './routes/profile'
-import { Route as ExercisesImport } from './routes/exercises'
 import { Route as DashboardImport } from './routes/dashboard'
 import { Route as IndexImport } from './routes/index'
+import { Route as ExercisesIndexImport } from './routes/exercises/index'
 
 // Create/Update Routes
 
@@ -21,11 +21,6 @@ const ProfileRoute = ProfileImport.update({
   getParentRoute: () => rootRoute,
 } as any)
 
-const ExercisesRoute = ExercisesImport.update({
-  path: '/exercises',
-  getParentRoute: () => rootRoute,
-} as any)
-
 const DashboardRoute = DashboardImport.update({
   path: '/dashboard',
   getParentRoute: () => rootRoute,
@@ -33,6 +28,11 @@ const DashboardRoute = DashboardImport.update({
 
 const IndexRoute = IndexImport.update({
   path: '/',
+  getParentRoute: () => rootRoute,
+} as any)
+
+const ExercisesIndexRoute = ExercisesIndexImport.update({
+  path: '/exercises/',
   getParentRoute: () => rootRoute,
 } as any)
 
@@ -48,16 +48,16 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof DashboardImport
       parentRoute: typeof rootRoute
     }
-    '/exercises': {
-      preLoaderRoute: typeof ExercisesImport
-      parentRoute: typeof rootRoute
-    }
     '/profile': {
       preLoaderRoute: typeof ProfileImport
       parentRoute: typeof rootRoute
     }
     '/register': {
       preLoaderRoute: typeof RegisterImport
+      parentRoute: typeof rootRoute
+    }
+    '/exercises/': {
+      preLoaderRoute: typeof ExercisesIndexImport
       parentRoute: typeof rootRoute
     }
   }
@@ -68,7 +68,7 @@ declare module '@tanstack/react-router' {
 export const routeTree = rootRoute.addChildren([
   IndexRoute,
   DashboardRoute,
-  ExercisesRoute,
   ProfileRoute,
   RegisterRoute,
+  ExercisesIndexRoute,
 ])
