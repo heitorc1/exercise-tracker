@@ -1,5 +1,5 @@
+import { lazy, Suspense } from "react";
 import { createRootRouteWithContext, Outlet } from "@tanstack/react-router";
-import { TanStackRouterDevtools } from "@tanstack/router-devtools";
 
 import "../app.css";
 import { AuthContextProps } from "@/context/AuthProvider";
@@ -9,16 +9,23 @@ interface RouterContext {
   auth: AuthContextProps;
 }
 
-export const Route = createRootRouteWithContext<RouterContext>()({
-  component: RootComponent,
-});
+const TanStackRouterDevtools =
+  import.meta.env.NODE_ENV === "production"
+    ? () => null
+    : lazy(() =>
+        import("@tanstack/router-devtools").then((res) => ({
+          default: res.TanStackRouterDevtools,
+        }))
+      );
 
-function RootComponent() {
-  return (
+export const Route = createRootRouteWithContext<RouterContext>()({
+  component: () => (
     <>
       <Outlet />
       <Toaster />
-      <TanStackRouterDevtools />
+      <Suspense>
+        <TanStackRouterDevtools />
+      </Suspense>
     </>
-  );
-}
+  ),
+});

@@ -1,6 +1,12 @@
 import { useEffect } from "react";
-import { Link, createFileRoute, useNavigate } from "@tanstack/react-router";
-import { catchError, distinctUntilChanged, filter, of, switchMap } from "rxjs";
+import {
+  Link,
+  createFileRoute,
+  getRouteApi,
+  redirect,
+  useNavigate,
+} from "@tanstack/react-router";
+import { distinctUntilChanged, switchMap } from "rxjs";
 import { loginSchema } from "@exercise-tracker/shared/schemas/auth";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm, type SubmitHandler } from "react-hook-form";
@@ -21,6 +27,11 @@ import { toast } from "@/components/ui/use-toast";
 
 export const Route = createFileRoute("/")({
   component: Login,
+  loader: ({ context }) => {
+    if (context.auth.isAuthenticated) {
+      throw redirect({ to: "/dashboard" });
+    }
+  },
 });
 
 type InputProps = {
@@ -28,50 +39,19 @@ type InputProps = {
   password: string;
 };
 
+const routeApi = getRouteApi("/");
+
 function Login() {
   const form = useForm<InputProps>({ resolver: zodResolver(loginSchema) });
-  const navigate = useNavigate({ from: "/" });
+  const navigate = useNavigate();
   const auth = useAuth();
+  const search = routeApi.useSearch();
 
   useEffect(() => {
     if (auth.user) {
-      navigate({ to: "/dashboard" });
+      navigate({ to: search.redirect });
     }
-
-    tokenHelper
-      .getToken()
-      .pipe(
-        distinctUntilChanged(),
-        filter((token) => !!token),
-        switchMap((token) => authService.verify(token)),
-        catchError(() => {
-          tokenHelper.clearToken();
-          return of(null);
-        }),
-        switchMap((token) => {
-          if (token) {
-            const userData = {
-              id: token.id,
-              username: token.username,
-              email: token.email,
-            };
-            authService.setUser(userData);
-            return of(userData);
-          }
-          return of(null);
-        })
-      )
-      .subscribe((token) => {
-        if (token) {
-          const userData = {
-            id: token.id,
-            username: token.username,
-            email: token.email,
-          };
-          auth.login(userData);
-        }
-      });
-  }, [auth, navigate]);
+  }, [auth.user, navigate, search.redirect]);
 
   const onSubmit: SubmitHandler<InputProps> = (values: InputProps) => {
     const data = {

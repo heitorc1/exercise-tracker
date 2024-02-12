@@ -1,4 +1,5 @@
-import { createContext, useContext, useState } from "react";
+import { createContext, useContext, useEffect, useState } from "react";
+import { catchError, distinctUntilChanged, filter, of, switchMap } from "rxjs";
 import { IUser } from "@/interfaces/users";
 import tokenHelper from "@/helper/token";
 import authService from "@/services/auth";
@@ -24,6 +25,47 @@ export const AuthContext = createContext({
 export const AuthProvider = ({ children }: Props) => {
   const [user, setUser] = useState<IUser | null>(null);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
+
+  useEffect(() => {
+    if (user) {
+      return;
+    }
+
+    tokenHelper
+      .getToken()
+      .pipe(
+        distinctUntilChanged(),
+        filter((token) => !!token),
+        switchMap((token) => authService.verify(token)),
+        catchError(() => {
+          tokenHelper.clearToken();
+          return of(null);
+        }),
+        switchMap((token) => {
+          if (token) {
+            const userData = {
+              id: token.id,
+              username: token.username,
+              email: token.email,
+            };
+            authService.setUser(userData);
+            return of(userData);
+          }
+          return of(null);
+        })
+      )
+      .subscribe((token) => {
+        if (token) {
+          const userData = {
+            id: token.id,
+            username: token.username,
+            email: token.email,
+          };
+          setUser(userData);
+          setIsAuthenticated(true);
+        }
+      });
+  }, [user]);
 
   const logout = () => {
     authService.setUser(null);

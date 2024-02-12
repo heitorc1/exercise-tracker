@@ -1,4 +1,4 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, redirect } from "@tanstack/react-router";
 import { format } from "date-fns";
 import { useEffect, useState } from "react";
 import AppFrame from "@/components/shared/AppFrame";
@@ -27,9 +27,14 @@ import DeleteModal from "./-components/DeleteModal";
 
 export const Route = createFileRoute("/exercises/")({
   component: Exercises,
-  beforeLoad: ({ context }) => {
+  beforeLoad: ({ context, location }) => {
     if (!context.auth.isAuthenticated) {
-      return { to: "/" };
+      throw redirect({
+        to: "/",
+        search: {
+          redirect: location.href,
+        },
+      });
     }
   },
 });

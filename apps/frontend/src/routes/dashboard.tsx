@@ -1,12 +1,17 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, redirect } from "@tanstack/react-router";
 import AppFrame from "@/components/shared/AppFrame";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
 export const Route = createFileRoute("/dashboard")({
   component: Dashboard,
-  beforeLoad: ({ context }) => {
+  beforeLoad: ({ context, location }) => {
     if (!context.auth.isAuthenticated) {
-      return { to: "/" };
+      throw redirect({
+        to: "/",
+        search: {
+          redirect: location.href,
+        },
+      });
     }
   },
 });

@@ -2,7 +2,7 @@ import { registerSchema } from "@exercise-tracker/shared/schemas/auth";
 import { useState } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, redirect } from "@tanstack/react-router";
 import AppFrame from "@/components/shared/AppFrame";
 import {
   Form,
@@ -25,9 +25,14 @@ type InputProps = {
 
 export const Route = createFileRoute("/profile")({
   component: Profile,
-  beforeLoad: ({ context }) => {
+  beforeLoad: ({ context, location }) => {
     if (!context.auth.isAuthenticated) {
-      return { to: "/" };
+      throw redirect({
+        to: "/",
+        search: {
+          redirect: location.href,
+        },
+      });
     }
   },
 });
