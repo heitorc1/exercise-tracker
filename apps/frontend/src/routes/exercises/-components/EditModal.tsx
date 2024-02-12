@@ -4,7 +4,6 @@ import { Pencil1Icon } from "@radix-ui/react-icons";
 import { CalendarIcon } from "lucide-react";
 import { format } from "date-fns";
 import { type SubmitHandler, useForm } from "react-hook-form";
-import { toast } from "react-toastify";
 import { distinctUntilChanged } from "rxjs";
 import { z } from "zod";
 import {
@@ -33,6 +32,7 @@ import {
 } from "@/components/ui/popover";
 import { Calendar } from "@/components/ui/calendar";
 import exerciseService from "@/services/exercises";
+import { toast } from "@/components/ui/use-toast";
 
 type EditModalProps = {
   exercise: IExercise;
@@ -83,11 +83,14 @@ function EditModal({ exercise, setExercises }: EditModalProps) {
           setExercises((state) =>
             state.map((e) => (e.id === exercise.id ? updateData : e))
           );
-          toast.success("Exercise updated successfully");
+          toast({ description: "Exercise updated successfully" });
           setOpen(false);
         },
         error: () => {
-          toast.error("Failed to update exercise");
+          toast({
+            description: "Failed to update exercise",
+            variant: "destructive",
+          });
           setOpen(false);
         },
       });
@@ -102,7 +105,7 @@ function EditModal({ exercise, setExercises }: EditModalProps) {
           className="space-y-2"
         >
           <DialogTrigger>
-            <Pencil1Icon className="h-4 cursor-pointer" />
+            <Pencil1Icon className="mt-2 h-4 cursor-pointer" />
           </DialogTrigger>
           <DialogContent>
             <DialogHeader>

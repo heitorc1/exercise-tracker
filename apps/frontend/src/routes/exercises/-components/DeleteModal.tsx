@@ -1,5 +1,4 @@
 import { Dispatch, SetStateAction, useState } from "react";
-import { toast } from "react-toastify";
 import { TrashIcon } from "@radix-ui/react-icons";
 import {
   Dialog,
@@ -14,6 +13,7 @@ import {
 import { Button } from "@/components/ui/button";
 import exerciseService from "@/services/exercises";
 import { IExercise } from "@/interfaces/exercises";
+import { toast } from "@/components/ui/use-toast";
 
 type DeleteModalProps = {
   exercise: IExercise;
@@ -27,11 +27,16 @@ function DeleteModal({ exercise, setExercises }: DeleteModalProps) {
     exerciseService.deleteExercise(exercise.id).subscribe({
       next: () => {
         setExercises((state) => state.filter((e) => e.id !== exercise.id));
-        toast.success("Exercise deleted successfully");
+        toast({
+          description: "Exercise deleted successfully",
+        });
         setOpen(false);
       },
       error: () => {
-        toast.error("Failed to delete exercise");
+        toast({
+          description: "Failed to delete exercise",
+          variant: "destructive",
+        });
         setOpen(false);
       },
     });

@@ -3,7 +3,6 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { CalendarIcon } from "lucide-react";
 import { format } from "date-fns";
 import { type SubmitHandler, useForm } from "react-hook-form";
-import { toast } from "react-toastify";
 import { distinctUntilChanged } from "rxjs";
 import { z } from "zod";
 import {
@@ -32,6 +31,7 @@ import {
 } from "@/components/ui/popover";
 import { Calendar } from "@/components/ui/calendar";
 import exerciseService from "@/services/exercises";
+import { toast } from "@/components/ui/use-toast";
 
 type AddModalProps = {
   setExercises: Dispatch<SetStateAction<IExercise[]>>;
@@ -72,11 +72,14 @@ function AddModal({ setExercises }: AddModalProps) {
       .subscribe({
         next: (response) => {
           setExercises((state) => [response, ...state]);
-          toast.success("Exercise added successfully");
+          toast({ description: "Exercise added successfully" });
           setOpen(false);
         },
         error: () => {
-          toast.error("Failed to update exercise");
+          toast({
+            description: "Failed to update exercise",
+            variant: "destructive",
+          });
           setOpen(false);
         },
       });

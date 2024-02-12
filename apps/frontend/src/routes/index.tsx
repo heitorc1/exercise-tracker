@@ -4,7 +4,6 @@ import { catchError, distinctUntilChanged, filter, of, switchMap } from "rxjs";
 import { loginSchema } from "@exercise-tracker/shared/schemas/auth";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm, type SubmitHandler } from "react-hook-form";
-import { toast } from "react-toastify";
 import LoginFrame from "@/components/shared/LoginFrame";
 import authService from "@/services/auth";
 import tokenHelper from "@/helper/token";
@@ -18,6 +17,7 @@ import {
   FormLabel,
 } from "@/components/ui/form";
 import { useAuth } from "@/context/AuthProvider";
+import { toast } from "@/components/ui/use-toast";
 
 export const Route = createFileRoute("/")({
   component: Login,
@@ -85,15 +85,19 @@ function Login() {
         switchMap((token) => tokenHelper.setToken(token)),
         switchMap((token) => authService.verify(token))
       )
-      .subscribe((token) => {
-        const userData = {
-          id: token.id,
-          username: token.username,
-          email: token.email,
-        };
-        auth.login(userData);
-        toast.success("User logged in");
-        navigate({ to: "/dashboard" });
+      .subscribe({
+        next: (token) => {
+          const userData = {
+            id: token.id,
+            username: token.username,
+            email: token.email,
+          };
+          auth.login(userData);
+          toast({ description: "User logged in" });
+          navigate({ to: "/dashboard" });
+        },
+        error: () =>
+          toast({ description: "Failed to login", variant: "destructive" }),
       });
   };
 

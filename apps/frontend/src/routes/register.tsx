@@ -2,7 +2,6 @@ import { registerSchema } from "@exercise-tracker/shared/schemas/auth";
 import { Link, createFileRoute, useNavigate } from "@tanstack/react-router";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { toast } from "react-toastify";
 import LoginFrame from "@/components/shared/LoginFrame";
 import userService from "@/services/users";
 import { Input } from "@/components/ui/input";
@@ -15,6 +14,7 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
+import { toast } from "@/components/ui/use-toast";
 
 type InputProps = {
   username: string;
@@ -28,7 +28,7 @@ export const Route = createFileRoute("/register")({
 });
 
 function Register() {
-  const navigate = useNavigate({from: "register"});
+  const navigate = useNavigate({ from: "register" });
   const form = useForm<InputProps>({
     resolver: zodResolver(registerSchema),
     defaultValues: {
@@ -47,10 +47,11 @@ function Register() {
     };
     userService.createUser(data).subscribe({
       next: () => {
-        toast.success("User created successfully");
-        navigate({to: "/"});
+        toast({ description: "User created successfully" });
+        navigate({ to: "/" });
       },
-      error: (err) => toast.error(err),
+      error: () =>
+        toast({ description: "Failed to create user", variant: "destructive" }),
     });
   };
 
