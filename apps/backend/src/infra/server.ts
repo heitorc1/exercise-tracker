@@ -1,5 +1,5 @@
 import build from './app';
-import { APP_PORT } from './config';
+import { APP_HOST, APP_PORT } from './config';
 import { pool } from './db';
 
 const fastify = build({
@@ -8,7 +8,7 @@ const fastify = build({
 
 const start = async () => {
   try {
-    fastify.listen({ port: APP_PORT });
+    fastify.listen({ host: APP_HOST, port: APP_PORT });
   } catch (err) {
     fastify.log.error(err);
     process.exit(1);

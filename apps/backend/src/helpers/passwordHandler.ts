@@ -1,15 +1,31 @@
-import * as bcrypt from 'bcrypt';
+import { scrypt, scryptSync } from 'crypto';
+import { APP_KEY } from '@/infra/config';
 
-const SALT_ROUNDS = 10;
+const salt = APP_KEY;
+const keylen = 64;
 
 export async function hashPassword(password: string) {
-  return bcrypt.hash(password, SALT_ROUNDS);
+  return new Promise<string>((resolve, reject) => {
+    scrypt(password, salt, keylen, (err, derivedKey) => {
+      if (err) reject(err);
+      resolve(derivedKey.toString('hex'));
+    });
+  });
 }
 
-export async function comparePassword(password, hashedPassword: string) {
-  return bcrypt.compare(password, hashedPassword);
+export async function comparePassword(
+  password: string,
+  hashedPassword: string,
+) {
+  return new Promise<boolean>((resolve, reject) => {
+    scrypt(password, salt, keylen, (err, derivedKey) => {
+      if (err) reject(err);
+      const derivedPassword = derivedKey.toString('hex');
+      resolve(derivedPassword === hashedPassword);
+    });
+  });
 }
 
 export function hashPasswordSync(password: string) {
-  bcrypt.hashSync(password, SALT_ROUNDS);
+  return scryptSync(password, salt, keylen);
 }

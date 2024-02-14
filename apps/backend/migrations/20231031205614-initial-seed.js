@@ -5,8 +5,7 @@ var type;
 var seed;
 
 const { faker } = require('@faker-js/faker');
-const bcrypt = require('bcrypt');
-// const { hashPassword } = require('../src/helpers/passwordHandler');
+const { scryptSync } = require('node:crypto');
 
 /**
  * We receive the dbmigrate dependency from dbmigrate initially.
@@ -19,13 +18,14 @@ exports.setup = function (options, seedLink) {
 };
 
 exports.up = function (db) {
+  const key = process.env.APP_KEY || 'app-key';
   const stmt = [];
 
   const date = new Date().toISOString();
   const adminUser = {
     id: faker.string.uuid(),
     username: 'admin',
-    password: bcrypt.hashSync('admin123', 10),
+    password: scryptSync('admin123', key, 64).toString('hex'),
     email: 'admin@admin.com',
   };
 

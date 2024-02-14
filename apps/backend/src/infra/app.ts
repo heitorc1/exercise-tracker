@@ -17,7 +17,7 @@ import { privateUserRoutes, publicUserRoutes } from '@/domain/user/router';
 import authRoutes from '@/domain/auth/router';
 import { exerciseRoutes } from '@/domain/exercises/routes';
 
-function build(options: FastifyHttpOptions<Server, FastifyBaseLogger>) {
+function build(options: FastifyHttpOptions<Server, FastifyBaseLogger> = {}) {
   const fastify = Fastify(options);
 
   fastify.register(helmet);

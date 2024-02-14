@@ -7,6 +7,7 @@ import {
 } from '@exercise-tracker/shared/schemas/exercise';
 import { authenticate } from '@/hooks/authenticate';
 import makeExerciseService from '@/domain/factories/service/ExerciseServiceFactory';
+import { UnauthorizedError } from '@/infra/exception/UnauthorizedError';
 import { ICreateExercise, IFindExercise, IUpdateExercise } from './interfaces';
 
 const service = makeExerciseService();
@@ -25,6 +26,7 @@ export async function exerciseRoutes(fastify: FastifyInstance) {
       req: FastifyRequest<{ Querystring: { page: number; pageSize: number } }>,
       reply,
     ) => {
+      if (!req.user) throw new UnauthorizedError();
       const response = await service.list(
         req.user.id,
         req.query.page,
@@ -42,6 +44,7 @@ export async function exerciseRoutes(fastify: FastifyInstance) {
       },
     },
     async (req, reply) => {
+      if (!req.user) throw new UnauthorizedError();
       const response = await service.find(req.params.id, req.user.id);
       reply.status(200).send(response);
     },
@@ -55,6 +58,7 @@ export async function exerciseRoutes(fastify: FastifyInstance) {
       },
     },
     async (req, reply) => {
+      if (!req.user) throw new UnauthorizedError();
       const response = await service.create(req.user.id, req.body);
       reply.status(201).send(response);
     },
@@ -69,6 +73,7 @@ export async function exerciseRoutes(fastify: FastifyInstance) {
       },
     },
     async (req, reply) => {
+      if (!req.user) throw new UnauthorizedError();
       const response = await service.update(
         req.params.id,
         req.user.id,
@@ -86,6 +91,7 @@ export async function exerciseRoutes(fastify: FastifyInstance) {
       },
     },
     async (req, reply) => {
+      if (!req.user) throw new UnauthorizedError();
       const response = await service.delete(req.params.id, req.user.id);
       reply.status(200).send(response);
     },

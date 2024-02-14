@@ -5,6 +5,7 @@ import {
 } from '@exercise-tracker/shared/schemas/user';
 import makeUserService from '@/domain/factories/service/UserServiceFactory';
 import { authenticate } from '@/hooks/authenticate';
+import { UnauthorizedError } from '@/infra/exception/UnauthorizedError';
 import { ICreateUser, IUpdateUser } from './interfaces';
 
 const service = makeUserService();
@@ -41,12 +42,14 @@ export async function privateUserRoutes(fastify: FastifyInstance) {
       },
     },
     async (req, reply) => {
+      if (!req.user) throw new UnauthorizedError();
       const response = await service.update(req.user.id, req.body);
       return reply.status(200).send(response);
     },
   );
 
   fastify.delete('/', async (req, reply) => {
+    if (!req.user) throw new UnauthorizedError();
     const response = await service.delete(req.user.id);
     reply.status(200).send(response);
   });

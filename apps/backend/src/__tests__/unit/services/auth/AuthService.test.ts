@@ -1,5 +1,5 @@
 import { beforeEach, describe, it } from 'node:test';
-import assert from 'node:assert/strict';
+import { strict as assert } from 'node:assert';
 
 import { faker } from '@faker-js/faker';
 import { IAuthRepository, IAuthService } from '@/domain/auth/interfaces';

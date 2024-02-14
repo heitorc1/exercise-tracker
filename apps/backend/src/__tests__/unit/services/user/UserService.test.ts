@@ -1,5 +1,5 @@
 import { afterEach, beforeEach, describe, it, mock } from 'node:test';
-import assert from 'node:assert';
+import { strict as assert } from 'node:assert';
 import { faker } from '@faker-js/faker';
 import {
   IUserQueries,
