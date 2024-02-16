@@ -94,7 +94,11 @@ function Register() {
               <FormItem>
                 <FormLabel>Password</FormLabel>
                 <FormControl>
-                  <Input placeholder="Password" {...field} />
+                  <Input
+                    placeholder="Password"
+                    data-testid="password"
+                    {...field}
+                  />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -108,7 +112,11 @@ function Register() {
               <FormItem>
                 <FormLabel>Confirm Password</FormLabel>
                 <FormControl>
-                  <Input placeholder="Confirm Password" {...field} />
+                  <Input
+                    placeholder="Confirm Password"
+                    data-testid="confirm-password"
+                    {...field}
+                  />
                 </FormControl>
                 <FormMessage />
               </FormItem>

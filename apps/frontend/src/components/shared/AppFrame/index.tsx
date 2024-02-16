@@ -14,7 +14,12 @@ const AppFrame = ({ title, children }: Props) => {
       </div>
       <div>
         <div className="max-h-screen p-8">
-          <h1 className="mb-8 text-2xl font-bold">{title}</h1>
+          <h1
+            className="mb-8 text-2xl font-bold"
+            data-testid={title.toLowerCase()}
+          >
+            {title}
+          </h1>
           {children}
         </div>
       </div>

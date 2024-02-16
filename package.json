@@ -6,6 +6,7 @@
   "scripts": {
     "dev": "turbo dev",
     "build": "turbo build",
+    "build:docker": "docker build . -t tracker-back",
     "test": "turbo test",
     "lint": "turbo lint",
     "prepare": "husky install",

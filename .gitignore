@@ -39,3 +39,5 @@ pgdata
 .turbo
 *.db*
 coverage
+# Local Netlify folder
+.netlify
