@@ -8,7 +8,7 @@ COPY . /usr/src/app
 WORKDIR /usr/src/app
 RUN --mount=type=cache,id=pnpm,target=/pnpm/store pnpm install --frozen-lockfile
 RUN pnpm run --filter=backend build
-RUN pnpm run --filter=frontend build:prod
+RUN pnpm deploy --filter=backend --prod /prod/backend
 
 FROM base
 COPY --from=build /prod/backend /prod/backend

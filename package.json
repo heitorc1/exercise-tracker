@@ -6,7 +6,10 @@
   "scripts": {
     "dev": "turbo dev",
     "build": "turbo build",
-    "build:docker": "docker build . -t tracker-back",
+    "docker:build": "docker build . -t tracker-back",
+    "docker:tag": "docker tag tracker-back heitorc1/tracker-back",
+    "docker:publish": "docker push heitorc1/tracker-back",
+    "docker:deploy": "pnpm docker:build && pnpm docker:tag && pnpm docker:publish",
     "test": "turbo test",
     "lint": "turbo lint",
     "prepare": "husky install",
